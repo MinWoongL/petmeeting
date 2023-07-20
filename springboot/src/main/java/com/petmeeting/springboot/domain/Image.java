@@ -20,4 +20,8 @@ public class Image {
     @Id @GeneratedValue
     @Column(name = "image_no")
     private Integer imageNo;
+
+
+
+
 }
