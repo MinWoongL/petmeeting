@@ -3,6 +3,7 @@ package com.petmeeting.springboot.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,7 +17,23 @@ public class Member extends Users {
     @Transient
     private Role userGroup = Role.ROLE_MEMBER;
 
-    // 여기서 꺼낸 Board를 List에서 삭제해도 Board의 상태는 변경 X
-    @OneToMany(mappedBy = "member")
+    @Column(name = "holding_token")
+    @ColumnDefault("0")
+    private Integer holdingToken;
+
+    @Column(name = "adopted")
+    @ColumnDefault("false")
+    private Boolean adopted;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Board> boardList;
+
+    /**
+     * holdingPoint(충전금액 합계와 후원금액 합계의 차이)를 반환합니다.
+     * @return holdingPoint
+     */
+    public Integer getHoldingPoint() {
+
+        return 0;
+    }
 }
