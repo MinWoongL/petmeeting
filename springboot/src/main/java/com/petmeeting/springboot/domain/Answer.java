@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -21,5 +18,15 @@ public class Answer {
     @GeneratedValue
     @Column(name = "answer_no")
     private Integer answerNo;
+
+    // 얘 추가했는데 맞나요?
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "inquiry_no")
+    private Inquiry inquiry;
+
+
+    @Column(name = "content", columnDefinition = "text", nullable = false)
+    private String content;
+
 
 }
