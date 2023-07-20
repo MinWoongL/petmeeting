@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -21,6 +18,8 @@ public class Inquiry {
     @Column(name = "inquiry_no")
     private Integer inquiryNo;
 
-
+    @JoinColumn(name = "user_no")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Users user;
 
 }

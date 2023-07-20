@@ -28,6 +28,29 @@ public class Member extends Users {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Board> boardList;
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<LikeDog> likeDogList;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<BookmarkDog> bookmarkDogList;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Adoption> adoptionList;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Charge> chargeList;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Donation> donationList;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Chat> chatList;
+
+    // user_no 라서 변수 Users
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Reply> replyList;
+
+
     /**
      * holdingPoint(충전금액 합계와 후원금액 합계의 차이)를 반환합니다.
      * @return holdingPoint

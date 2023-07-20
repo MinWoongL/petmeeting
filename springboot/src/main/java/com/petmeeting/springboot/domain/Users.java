@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,7 +26,27 @@ public abstract class Users {
     @Column(name = "password", nullable = false)
     private String password;
 
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_no")
+    private Image image;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<LikeBoard> likeBoardList;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<LikeReply> likeReplyList;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Inquiry> inquiryList;
+
+
+
     public void setPassword(String password) {
         this.password = password;
     }
+
+
+
+
 }

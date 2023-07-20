@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,5 +25,21 @@ public class Shelter extends Users {
     @Column(name = "on_broadcast_title", length = 60)
     private String onBroadCastTitle;
 
+
     // List<Dog> dogs 해야함
+    // 넹 하겠습니다 대장님
+    @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY)
+    private Regist regist;
+
+    @OneToMany(mappedBy = "shelter", fetch = FetchType.LAZY)
+    private List<Dog> dogList;
+
+    @OneToMany(mappedBy = "shelter", fetch = FetchType.LAZY)
+    private List<Iot> iotList;
+
+    @OneToMany(mappedBy = "shelter", fetch = FetchType.LAZY)
+    private List<Chat> chatList;
+
+    @OneToMany(mappedBy = "shelter", fetch = FetchType.LAZY)
+    private List<Donation> donationList;
 }
