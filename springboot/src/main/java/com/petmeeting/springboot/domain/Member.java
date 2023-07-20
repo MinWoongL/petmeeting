@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -14,4 +15,8 @@ import javax.persistence.*;
 public class Member extends Users {
     @Transient
     private Role userGroup = Role.ROLE_MEMBER;
+
+    // 여기서 꺼낸 Board를 List에서 삭제해도 Board의 상태는 변경 X
+    @OneToMany(mappedBy = "member")
+    private List<Board> boardList;
 }
