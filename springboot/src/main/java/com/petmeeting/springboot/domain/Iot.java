@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -20,5 +17,9 @@ public class Iot {
     @Id @GeneratedValue
     @Column(name = "iot_no")
     private Integer iotNo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shelter_no")
+    private Shelter shelter;
 
 }

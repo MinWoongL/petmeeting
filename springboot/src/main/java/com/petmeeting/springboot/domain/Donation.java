@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -20,5 +17,17 @@ public class Donation {
     @Id @GeneratedValue
     @Column(name = "donation_no")
     private Integer donationNo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_no")
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shelter_no")
+    private Shelter shelter;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dog_no")
+    private Dog dog;
 
 }
