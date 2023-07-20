@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+    body {
+        cursor: none; /* Hide the default cursor */
+    }
+
+    #custom-cursor {
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        background: url('corgy.gif');
+        pointer-events: none; /* This makes sure the custom cursor doesn't interfere with clickable elements */
+    }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <img id="custom-cursor" src="corgy.gif" />
+
+    <script>
+    $(document).mousemove(function(e){
+        $('#custom-cursor').css({'top': e.pageY,'left': e.pageX});
+    });
+    </script>
+</body>
+</html>
