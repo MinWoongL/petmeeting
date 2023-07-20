@@ -5,10 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,4 +18,16 @@ public class Reply {
     @GeneratedValue
     @Column(name = "reply_no")
     private Integer replyNo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_no")
+    private Users user;
+
+    @OneToMany(mappedBy = "reply", fetch = FetchType.LAZY)
+    private List<LikeReply> likeReplyList;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_no")
+    private Board board;
+
 }
