@@ -21,6 +21,6 @@ public class Inquiry {
     @Column(name = "inquiry_no")
     private Integer inquiryNo;
 
- 
+
 
 }
