@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -25,4 +26,10 @@ public class Chat {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shelter_no")
     private Shelter shelter;
+
+    @Column(name = "content", columnDefinition = "text", nullable = false)
+    private String content;
+
+    @Column(name = "created_time", nullable = false)
+    private LocalDate createdTime;
 }

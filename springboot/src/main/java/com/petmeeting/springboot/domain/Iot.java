@@ -22,4 +22,12 @@ public class Iot {
     @JoinColumn(name = "shelter_no")
     private Shelter shelter;
 
+    // ERD에 Type 비어있음
+    @Column(name = "iot_group")
+    private String iotGroup; // 기기종류
+
+    @Column(name = "command")
+    private String command; // 실행중인 명령
+
+
 }

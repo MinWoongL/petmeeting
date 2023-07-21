@@ -1,11 +1,9 @@
 package com.petmeeting.springboot.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -23,11 +21,27 @@ public class Reply {
     @JoinColumn(name = "user_no")
     private Users user;
 
-    @OneToMany(mappedBy = "reply", fetch = FetchType.LAZY)
-    private List<LikeReply> likeReplyList;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_no")
     private Board board;
+
+    @Column(name = "content", columnDefinition = "text", nullable = false)
+    private String content;
+
+    @Column(name = "created_time", nullable = false)
+    private LocalDate createdTime;
+
+    @Column(name = "modified_time")
+    private LocalDate modifiedTime;
+
+    @Column(name = "deleted_time")
+    private LocalDate deletedTime;
+
+
+    @OneToMany(mappedBy = "reply", fetch = FetchType.LAZY)
+    private List<LikeReply> likeReplyList;
+
+
+
 
 }

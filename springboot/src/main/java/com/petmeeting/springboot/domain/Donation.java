@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -29,5 +30,13 @@ public class Donation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dog_no")
     private Dog dog;
+
+
+    @Column(name = "danate_value")
+    private Integer donateValue;
+
+    @Column(name = "donate_time")
+    private LocalDate donateTime;
+
 
 }
