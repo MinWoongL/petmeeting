@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -30,6 +29,6 @@ public class Charge {
     private Integer chargeValue;
 
     @Column(name = "charge_time", nullable = false)
-    private LocalDate chargeTime;
+    private Integer chargeTime;
 
 }
