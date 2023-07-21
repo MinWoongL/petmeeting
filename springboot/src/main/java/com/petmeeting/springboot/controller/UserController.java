@@ -6,9 +6,13 @@ import com.petmeeting.springboot.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +36,8 @@ public class UserController {
             description = "성공 시 “Signup Success” 메시지를 반환합니다."
     )
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody SignUpReqDto requestDto){
-        userService.signUp(requestDto.toEntity());
+    public ResponseEntity<String> signUp(SignUpReqDto signUpReqDto){
+        userService.signUp(signUpReqDto.toEntity());
         return ResponseEntity.status(HttpStatus.CREATED).body("Signup Success");
     }
 
@@ -42,7 +46,7 @@ public class UserController {
             description = "성공 시 회원의 정보를 반환합니다."
     )
     @PostMapping("/signin")
-    public ResponseEntity<String> signIn(@RequestBody SignInReqDto requestDto) {
+    public ResponseEntity<String> signIn(SignInReqDto requestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.signIn(requestDto.toEntity()));
     }
 
@@ -68,14 +72,42 @@ public class UserController {
     }
 
     @Operation(
-            summary = "회원목록 가져오기 / 작업필요",
-            description = "(관리자) 성공 시 회원의 목록을 반환합니다."
+            summary = "(관리자) 회원목록 가져오기 / 작업필요",
+            description = "성공 시 option에 따라 회원의 목록을 반환합니다."
     )
-    @GetMapping("/admin/list")
-    public ResponseEntity<?> allUserlist (String option) {
-        System.out.println(option);
+    @GetMapping("/admin/userlist")
+    public ResponseEntity<Map<String, List<AdminUserResDto>>> getAllUserlist (String option) {
+
         return null;
     }
 
+    @Operation(
+            summary = "(관리자) 비활성상태 보호소 조회 / 작업필요",
+            description = "성공 시 비활성상태의 보호소 목록을 반환합니다."
+    )
+    @GetMapping("/admin/disabled-shelter")
+    public ResponseEntity<Map<String, List<AdminUserResDto>>> getAllDisabledShelter() {
 
+        return null;
+    }
+
+    @Operation(
+            summary = "(관리자) 회원정보 가져오기 / 작업필요",
+            description = "성공 시 회원의 정보를 가져옵니다. 보호소의 경우 가입신청서 imageNo도 가져옵니다."
+    )
+    @GetMapping("/admin/{userNo}")
+    public ResponseEntity<AdminUserResDto> getOneUser(@PathVariable Integer userNo) {
+
+        return null;
+    }
+
+    @Operation(
+            summary = "(관리자) 회원 활성화 상태 변경 / 작업필요",
+            description = "성공 시 회원의 변경된 정보를 반환합니다."
+    )
+    @PutMapping("/admin")
+    public ResponseEntity<AdminUserResDto> updateStatus(AdminUpdateReqDto adminUpdateReqDto) {
+
+        return null;
+    }
 }
