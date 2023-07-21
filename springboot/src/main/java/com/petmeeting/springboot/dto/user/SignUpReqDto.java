@@ -2,6 +2,7 @@ package com.petmeeting.springboot.dto.user;
 
 import com.petmeeting.springboot.domain.Member;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -11,6 +12,7 @@ import lombok.*;
 public class SignUpReqDto {
     String userId;
     String password;
+    MultipartFile ImageFile;
 
     public Member toEntity() {
         return Member.builder()

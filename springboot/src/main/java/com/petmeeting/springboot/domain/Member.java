@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @SuperBuilder
 @NoArgsConstructor
-@DiscriminatorColumn(name = "ROLE_MEMBER", length = 10)
+@DiscriminatorColumn(name = "MEMBER", length = 10)
 public class Member extends Users {
     @Transient
     private Role userGroup = Role.ROLE_MEMBER;

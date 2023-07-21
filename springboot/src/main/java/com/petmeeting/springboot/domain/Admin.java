@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 @Getter
 @SuperBuilder
 @NoArgsConstructor
-@DiscriminatorColumn(name = "ROLE_ADMIN", length = 10)
+@DiscriminatorColumn(name = "ADMIN", length = 10)
 public class Admin extends Users {
     @Transient
     private Role userGroup = Role.ROLE_ADMIN;
