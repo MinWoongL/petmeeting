@@ -53,11 +53,16 @@ public class Member extends Users {
 
 
     /**
-     * holdingPoint(충전금액 합계와 후원금액 합계의 차이)를 반환합니다.
-     * @return holdingPoint
+     * holdingPoint(충전금액 합계와 후원금액 합계의 차이)를 설정합니다.
      */
-    public Integer getHoldingPoint() {
+    @PostLoad
+    public void setHoldingPoint() {
 
-        return 0;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.holdingToken = this.holdingToken == null ? 0 : holdingToken;
+        this.adopted = this.adopted == null ? false : adopted;
     }
 }

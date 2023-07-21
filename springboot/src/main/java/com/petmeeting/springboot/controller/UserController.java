@@ -3,6 +3,7 @@ package com.petmeeting.springboot.controller;
 import com.petmeeting.springboot.dto.user.*;
 import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.service.UserService;
+import com.petmeeting.springboot.util.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/user")
 public class UserController {
     private final UserService userService;
-    private final UserRepository userRepository;
+    private final JwtUtils jwtUtils;
 
     @Operation(
             summary = "아이디 중복체크",
@@ -55,9 +56,10 @@ public class UserController {
             description = "성공 시 “Delete Success”메시지를 반환합니다."
     )
     @DeleteMapping
-    public ResponseEntity<String> withdraw(WithdrawReqDto withdrawReqDto) {
+    public ResponseEntity<String> withdraw(WithdrawReqDto withdrawReqDto, @RequestHeader("Authorization") String token) {
+        System.out.println(jwtUtils.getUserNoFromJwtToken(token));
 
-        userService.withdraw(withdrawReqDto);
+//        userService.withdraw(withdrawReqDto);
 
         return ResponseEntity.ok("Delete Success");
     }
