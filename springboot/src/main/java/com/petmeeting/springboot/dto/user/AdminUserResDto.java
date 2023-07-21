@@ -1,6 +1,6 @@
 package com.petmeeting.springboot.dto.user;
 
-import com.petmeeting.springboot.domain.Role;
+import com.petmeeting.springboot.enums.Role;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -17,6 +17,8 @@ public class AdminUserResDto {
     private LocalDate joinDate;
     private Boolean isDeleted;
     private Boolean isActivated;
-    private Role userGroup;
+    private  Role userGroup;
     private Integer imageNo;
+
+    
 }
