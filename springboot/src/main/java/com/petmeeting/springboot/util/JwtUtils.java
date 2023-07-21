@@ -30,12 +30,16 @@ public class JwtUtils {
                 .setIssuer(issuer)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .claim("id", userPrincipal.getId())
                 .claim("role", userPrincipal.getAuthority())
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+    }
+    public Integer getUserNoFromJwtToken(String token) {
+        return (Integer) Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("id");
     }
     public boolean validateJwtToken(String authToken) {
         try {
@@ -46,7 +50,6 @@ public class JwtUtils {
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT token: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
-            // 이 때 리프레쉬토큰 발급 필요
             logger.error("JWT token is expired: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
             logger.error("JWT token is unsupported: {}", e.getMessage());
