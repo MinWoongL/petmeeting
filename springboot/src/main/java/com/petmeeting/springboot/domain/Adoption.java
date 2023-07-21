@@ -37,7 +37,7 @@ public class Adoption {
     private String name;
 
     // 이렇게하는거 맞나???
-    @Column(name = "gender", columnDefinition = "String", nullable = false)
+    @Column(name = "gender", columnDefinition = "char(1)", nullable = false)
     private Gender gender;
 
     @Column(name = "age", nullable = false)
@@ -59,8 +59,8 @@ public class Adoption {
     private String additional;
 
     // 이렇게하는거 맞나???
-    @Column(name = "adoption_status", columnDefinition = "String", nullable = false)
-    @ColumnDefault("waiting")
+    @Column(name = "adoption_status", columnDefinition = "varchar(20)", nullable = false)
+    @ColumnDefault("'waiting'")
     private AdoptionStatus adoptionStatus;
 
 }
