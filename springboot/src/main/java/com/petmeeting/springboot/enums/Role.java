@@ -1,4 +1,4 @@
-package com.petmeeting.springboot.domain;
+package com.petmeeting.springboot.enums;
 
 public enum Role {
     ROLE_MEMBER,

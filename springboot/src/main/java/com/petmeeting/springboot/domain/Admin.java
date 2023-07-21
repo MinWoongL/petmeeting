@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.enums.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

@@ -43,5 +43,9 @@ public class Inquiry {
     @ColumnDefault("false")
     private Boolean status; // 답변이 있을경우 True
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "answer_no")
+    private Answer answer;
+
 
 }

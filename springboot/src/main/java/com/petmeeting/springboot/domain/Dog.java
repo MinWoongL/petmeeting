@@ -1,5 +1,8 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.enums.AdoptionAvailability;
+import com.petmeeting.springboot.enums.DogSize;
+import com.petmeeting.springboot.enums.Gender;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -25,10 +28,12 @@ public class Dog {
     @Column(name = "name", length = 20, nullable = false)
     private String name;
 
-    @Column(name = "dog_size", length = 10, nullable = false)
+    // 이렇게하는거 맞나???
+    @Column(name = "dog_size", columnDefinition = "String", nullable = false)
     private DogSize dogSize;
 
-    @Column(name = "gender", length = 1, nullable = false)
+    // 이렇게하는거 맞나???
+    @Column(name = "gender", columnDefinition = "String", nullable = false)
     private Gender gender;
 
     @Column(name = "weight", nullable = false)
@@ -46,7 +51,8 @@ public class Dog {
     @Column(name = "protection_end_date")
     private LocalDate protectionEndDate;
 
-    @Column(name = "adoption_availability", length = 20, nullable = false)
+    // 이렇게하는거 맞나???
+    @Column(name = "adoption_availability", columnDefinition = "String", nullable = false)
     private AdoptionAvailability adoptionAvailability;
 
     @Column(name = "current_status", columnDefinition = "text")

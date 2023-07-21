@@ -1,6 +1,6 @@
-package com.petmeeting.springboot.domain;
+package com.petmeeting.springboot.enums;
 
-public enum AdobtionStatus {
+public enum AdoptionStatus {
 
     WAITING,
 

@@ -1,5 +1,7 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.enums.AdoptionStatus;
+import com.petmeeting.springboot.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +28,6 @@ public class Adoption {
     @JoinColumn(name = "dog_no")
     private Dog dog;
 
-    // 보호소 고유번호 연결
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shelter_no")
     private Shelter shelter;
@@ -35,12 +36,10 @@ public class Adoption {
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    // char(1) 확인해보기
-    // check in (F, M)
-    @Column(name = "gender", length = 1, nullable = false)
+    // 이렇게하는거 맞나???
+    @Column(name = "gender", columnDefinition = "String", nullable = false)
     private Gender gender;
 
-    // 얘 왜 TINYINT?
     @Column(name = "age", nullable = false)
     private Integer age;
 
@@ -59,8 +58,9 @@ public class Adoption {
     @Column(name = "additional", columnDefinition = "text")
     private String additional;
 
-    @Column(name = "adoption_status", length = 20, nullable = false)
+    // 이렇게하는거 맞나???
+    @Column(name = "adoption_status", columnDefinition = "String", nullable = false)
     @ColumnDefault("waiting")
-    private String adoptionStatus;
+    private AdoptionStatus adoptionStatus;
 
 }

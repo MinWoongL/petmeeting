@@ -20,7 +20,7 @@ public class Charge {
     private Integer chargeNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no") // NOT NULL 넣어야되는데
+    @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
     @Column(name = "tid", length = 100, nullable = false)
