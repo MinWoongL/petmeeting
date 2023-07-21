@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -24,9 +23,8 @@ public class Board {
     @JoinColumn(name = "member_no")
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_no")
-    private Image image;
+    @Column(name = "image_path")
+    private String imagePath;
 
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<Reply> replyList;
@@ -42,13 +40,13 @@ public class Board {
     private String content;
 
     @Column(name = "created_time", nullable = false)
-    private LocalDate createdTime;
+    private Integer createdTime;
 
     @Column(name = "modified_time")
-    private LocalDate modifiedTime;
+    private Integer modifiedTime;
 
     @Column(name = "deleted_time")
-    private LocalDate deletedTime;
+    private Integer deletedTime;
 
     @Column(name = "view_cnt", nullable = false)
     @ColumnDefault("0")

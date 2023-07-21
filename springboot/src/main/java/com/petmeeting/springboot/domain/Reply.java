@@ -3,7 +3,6 @@ package com.petmeeting.springboot.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -29,13 +28,13 @@ public class Reply {
     private String content;
 
     @Column(name = "created_time", nullable = false)
-    private LocalDate createdTime;
+    private Integer createdTime;
 
     @Column(name = "modified_time")
-    private LocalDate modifiedTime;
+    private Integer modifiedTime;
 
     @Column(name = "deleted_time")
-    private LocalDate deletedTime;
+    private Integer deletedTime;
 
 
     @OneToMany(mappedBy = "reply", fetch = FetchType.LAZY)

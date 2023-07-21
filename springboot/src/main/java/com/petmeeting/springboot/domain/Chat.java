@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -31,5 +30,5 @@ public class Chat {
     private String content;
 
     @Column(name = "created_time", nullable = false)
-    private LocalDate createdTime;
+    private Integer createdTime;
 }

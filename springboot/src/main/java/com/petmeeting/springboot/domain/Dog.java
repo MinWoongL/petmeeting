@@ -7,7 +7,6 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -28,11 +27,9 @@ public class Dog {
     @Column(name = "name", length = 20, nullable = false)
     private String name;
 
-    // 이렇게하는거 맞나???
     @Column(name = "dog_size", columnDefinition = "varchar(10)", nullable = false)
     private DogSize dogSize;
 
-    // 이렇게하는거 맞나???
     @Column(name = "gender", columnDefinition = "char(1)", nullable = false)
     private Gender gender;
 
@@ -46,12 +43,11 @@ public class Dog {
     private String personality;
 
     @Column(name = "protection_start_date", nullable = false)
-    private LocalDate protectionStartDate;
+    private Integer protectionStartDate;
 
     @Column(name = "protection_end_date")
-    private LocalDate protectionEndDate;
+    private Integer protectionEndDate;
 
-    // 이렇게하는거 맞나???
     @Column(name = "adoption_availability", columnDefinition = "varchar(20)", nullable = false)
     private AdoptionAvailability adoptionAvailability;
 
@@ -75,9 +71,8 @@ public class Dog {
 
 
     // Dog |---|| a
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_no")
-    private Image image;
+    @Column(name = "image_path")
+    private String imagePath;
 
     @OneToMany(mappedBy = "dog", fetch = FetchType.LAZY)
     private List<LikeDog> likeDogList;
