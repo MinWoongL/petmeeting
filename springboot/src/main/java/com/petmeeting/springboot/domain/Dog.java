@@ -67,6 +67,10 @@ public class Dog {
     @ColumnDefault("false")
     private Boolean isDeleted;
 
+    @PrePersist
+    private void prePersist(){
+        this.isDeleted = isDeleted == null ? false : isDeleted;
+    }
 
 
 
