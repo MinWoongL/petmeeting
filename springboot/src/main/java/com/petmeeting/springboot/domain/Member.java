@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @DiscriminatorColumn(name = "MEMBER", length = 10)
 public class Member extends Users {
+
     @Transient
     private Role userGroup = Role.ROLE_MEMBER;
 
@@ -25,6 +26,12 @@ public class Member extends Users {
     @Column(name = "adopted", nullable = false)
     @ColumnDefault("false")
     private Boolean adopted;
+
+    @PrePersist
+    private void prePersist(){
+        this.adopted = adopted == null ? false : adopted;
+        this.holdingToken = holdingToken == null ? 0 : holdingToken;
+    }
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Board> boardList;

@@ -52,4 +52,10 @@ public class Board {
     @ColumnDefault("0")
     private Integer viewCnt;
 
+    // null일때 0으로 default처리 되야하는데 nullable = false라서 에러나니까 이렇게 적용!
+    @PrePersist
+    private void prePersist(){
+        this.viewCnt = viewCnt == null ? 0 : viewCnt;
+    }
+
 }

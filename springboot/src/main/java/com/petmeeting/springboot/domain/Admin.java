@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -15,6 +13,7 @@ import javax.persistence.Transient;
 @NoArgsConstructor
 @DiscriminatorColumn(name = "ADMIN", length = 10)
 public class Admin extends Users {
+
     @Transient
     private Role userGroup = Role.ROLE_ADMIN;
 }

@@ -1,8 +1,17 @@
 package com.petmeeting.springboot.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Gender {
 
-    F,
+    FEMALE("F"),
+    MALE("M");
 
-    M
+    private String value;
+
+    Gender(String value){
+        this.value = value;
+    }
+
 }

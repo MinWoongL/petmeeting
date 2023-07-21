@@ -61,4 +61,9 @@ public class Adoption {
     @ColumnDefault("'waiting'")
     private AdoptionStatus adoptionStatus;
 
+    @PrePersist
+    private void prePersist(){
+        this.adoptionStatus = adoptionStatus == null ? AdoptionStatus.WAITING : adoptionStatus;
+    }
+
 }
