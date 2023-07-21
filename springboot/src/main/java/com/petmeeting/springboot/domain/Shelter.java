@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @DiscriminatorColumn(name = "SHELTER", length = 10)
 public class Shelter extends Users {
+
     @Transient
     private Role userGroup = Role.ROLE_SHELTER;
 
@@ -25,6 +26,13 @@ public class Shelter extends Users {
 
     @Column(name = "on_broadcast_title", length = 60)
     private String onBroadCastTitle;
+
+    @Column(name = "control_user_name", length = 50)
+    private String controlUserName;
+
+    @Column(name = "control_end_time")
+    private Integer controlEndTime;
+
 
     @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY)
     private Regist regist;

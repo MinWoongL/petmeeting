@@ -42,13 +42,22 @@ public abstract class Users {
     @ColumnDefault("false")
     private Boolean isDeleted;
 
-    // userGroup에 따라 default값이 다름
     @Column(name = "is_activated", nullable = false)
     @ColumnDefault("true")
     private Boolean isActivated;
 
+    // userGroup에 따라 default값이 다름
+    @PrePersist
+    private void prePersist(){
+        this.isActivated = isActivated == null ?
+                (this.userGroup.equals(Role.ROLE_SHELTER) ? false : true) : isActivated;
+    }
+
     @Column(name = "image_path")
     private String imagePath;
+
+    @Column(name = "refresh_token", length = 255)
+    private String refreshToken;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<LikeBoard> likeBoardList;
