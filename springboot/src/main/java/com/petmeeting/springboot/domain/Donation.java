@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -36,7 +35,7 @@ public class Donation {
     private Integer donateValue;
 
     @Column(name = "donate_time")
-    private LocalDate donateTime;
+    private Integer donateTime;
 
 
 }

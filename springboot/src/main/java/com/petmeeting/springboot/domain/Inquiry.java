@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -31,13 +30,13 @@ public class Inquiry {
     private String content;
 
     @Column(name = "created_time", nullable = false)
-    private LocalDate createdTime;
+    private Integer createdTime;
 
     @Column(name = "modified_time")
-    private LocalDate modifiedTime;
+    private Integer modifiedTime;
 
     @Column(name = "deleted_time")
-    private LocalDate deletedTime;
+    private Integer deletedTime;
 
     @Column(name = "status")
     @ColumnDefault("false")

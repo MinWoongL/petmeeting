@@ -21,8 +21,7 @@ public class Regist {
     @JoinColumn(name = "shelter_no")
     private Shelter shelter;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_no")
-    private Image image;
+    @Column(name = "image_path")
+    private String imagePath;
 
 }
