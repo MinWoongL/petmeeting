@@ -29,11 +29,11 @@ public class Dog {
     private String name;
 
     // 이렇게하는거 맞나???
-    @Column(name = "dog_size", columnDefinition = "String", nullable = false)
+    @Column(name = "dog_size", columnDefinition = "varchar(10)", nullable = false)
     private DogSize dogSize;
 
     // 이렇게하는거 맞나???
-    @Column(name = "gender", columnDefinition = "String", nullable = false)
+    @Column(name = "gender", columnDefinition = "char(1)", nullable = false)
     private Gender gender;
 
     @Column(name = "weight", nullable = false)
@@ -52,7 +52,7 @@ public class Dog {
     private LocalDate protectionEndDate;
 
     // 이렇게하는거 맞나???
-    @Column(name = "adoption_availability", columnDefinition = "String", nullable = false)
+    @Column(name = "adoption_availability", columnDefinition = "varchar(20)", nullable = false)
     private AdoptionAvailability adoptionAvailability;
 
     @Column(name = "current_status", columnDefinition = "text")

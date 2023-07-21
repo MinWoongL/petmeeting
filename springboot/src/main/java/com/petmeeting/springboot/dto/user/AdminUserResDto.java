@@ -20,5 +20,5 @@ public class AdminUserResDto {
     private  Role userGroup;
     private Integer imageNo;
 
-    
+
 }
