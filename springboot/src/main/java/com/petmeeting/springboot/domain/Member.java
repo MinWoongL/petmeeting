@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.enums.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,11 +18,11 @@ public class Member extends Users {
     @Transient
     private Role userGroup = Role.ROLE_MEMBER;
 
-    @Column(name = "holding_token")
+    @Column(name = "holding_token", nullable = false)
     @ColumnDefault("0")
     private Integer holdingToken;
 
-    @Column(name = "adopted")
+    @Column(name = "adopted", nullable = false)
     @ColumnDefault("false")
     private Boolean adopted;
 

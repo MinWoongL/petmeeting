@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.enums.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -25,9 +26,6 @@ public class Shelter extends Users {
     @Column(name = "on_broadcast_title", length = 60)
     private String onBroadCastTitle;
 
-
-    // List<Dog> dogs 해야함
-    // 넹 하겠습니다 대장님
     @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY)
     private Regist regist;
 
@@ -42,4 +40,7 @@ public class Shelter extends Users {
 
     @OneToMany(mappedBy = "shelter", fetch = FetchType.LAZY)
     private List<Donation> donationList;
+
+    @OneToMany(mappedBy = "shelter", fetch = FetchType.LAZY)
+    private List<Adoption> adoptionList;
 }

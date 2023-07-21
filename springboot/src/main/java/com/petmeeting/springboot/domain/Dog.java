@@ -1,11 +1,13 @@
 package com.petmeeting.springboot.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.petmeeting.springboot.enums.AdoptionAvailability;
+import com.petmeeting.springboot.enums.DogSize;
+import com.petmeeting.springboot.enums.Gender;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -22,6 +24,55 @@ public class Dog {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shelter_no")
     private Shelter shelter;
+
+    @Column(name = "name", length = 20, nullable = false)
+    private String name;
+
+    // 이렇게하는거 맞나???
+    @Column(name = "dog_size", columnDefinition = "String", nullable = false)
+    private DogSize dogSize;
+
+    // 이렇게하는거 맞나???
+    @Column(name = "gender", columnDefinition = "String", nullable = false)
+    private Gender gender;
+
+    @Column(name = "weight", nullable = false)
+    private Integer weight;
+
+    @Column(name = "age", nullable = false)
+    private Integer age;
+
+    @Column(name = "personality", length = 100)
+    private String personality;
+
+    @Column(name = "protection_start_date", nullable = false)
+    private LocalDate protectionStartDate;
+
+    @Column(name = "protection_end_date")
+    private LocalDate protectionEndDate;
+
+    // 이렇게하는거 맞나???
+    @Column(name = "adoption_availability", columnDefinition = "String", nullable = false)
+    private AdoptionAvailability adoptionAvailability;
+
+    @Column(name = "current_status", columnDefinition = "text")
+    private String currentStatus;
+
+    @Column(name = "dog_species", length = 40)
+    private String dogSpecies;
+
+    @Column(name = "reason_abandonment", length = 255)
+    private String reasonAbandonment;
+
+    @Column(name = "is_inoculated")
+    private Boolean isInoculated;
+
+    @Column(name = "is_deleted", nullable = false)
+    @ColumnDefault("false")
+    private Boolean isDeleted;
+
+
+
 
     // Dog |---|| a
     @OneToOne(fetch = FetchType.LAZY)
