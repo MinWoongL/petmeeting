@@ -5,6 +5,7 @@ import com.petmeeting.springboot.enums.DogSize;
 import com.petmeeting.springboot.enums.Gender;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 public class Dog {
@@ -66,12 +68,6 @@ public class Dog {
     @Column(name = "is_deleted", nullable = false)
     @ColumnDefault("false")
     private Boolean isDeleted;
-
-    @PrePersist
-    private void prePersist(){
-        this.isDeleted = isDeleted == null ? false : isDeleted;
-    }
-
 
 
     // Dog |---|| a

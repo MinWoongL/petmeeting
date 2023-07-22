@@ -4,6 +4,7 @@ import com.petmeeting.springboot.enums.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @SuperBuilder
+@DynamicInsert
 @NoArgsConstructor
 @DiscriminatorColumn(name = "SHELTER", length = 10)
 public class Shelter extends Users {
@@ -33,9 +35,8 @@ public class Shelter extends Users {
     @Column(name = "control_end_time")
     private Integer controlEndTime;
 
-
-    @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY)
-    private Regist regist;
+    @Column(name = "regist_image_path", nullable = false)
+    private String registImagePath;
 
     @OneToMany(mappedBy = "shelter", fetch = FetchType.LAZY)
     private List<Dog> dogList;

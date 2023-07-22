@@ -4,12 +4,14 @@ import com.petmeeting.springboot.enums.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @SuperBuilder
+@DynamicInsert
 @NoArgsConstructor
 @DiscriminatorColumn(name = "ADMIN", length = 10)
 public class Admin extends Users {

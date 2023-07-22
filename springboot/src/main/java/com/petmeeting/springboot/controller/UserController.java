@@ -1,13 +1,10 @@
 package com.petmeeting.springboot.controller;
 
 import com.petmeeting.springboot.dto.user.*;
-import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.service.UserService;
-import com.petmeeting.springboot.util.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Required;
+import nonapi.io.github.classgraph.json.JSONSerializer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +17,8 @@ import java.util.Map;
 @RequestMapping("/api/v1/user")
 public class UserController {
     private final UserService userService;
-    private final JwtUtils jwtUtils;
+    private final String ACCESS_TOKEN = "AccessToken";
+    private final String REFRESH_TOKEN = "RefreshToken";
 
     @Operation(
             summary = "아이디 중복체크",
@@ -31,35 +29,59 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.check(userId));
     }
 
+    @Operation(
+            summary = "AccessToken 재발급",
+            description = "Access Token 만료 시 Refresh Token으로 Access Token을 재발급 받습니다."
+    )
+    @GetMapping("/reissue")
+    ResponseEntity<String> reIssue(@RequestHeader(REFRESH_TOKEN) String token) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("AccessToken", userService.reissueToken(token))
+                .body("Reissue Success");
+    }
 
     @Operation(
-            summary = "회원가입 / 작업필요",
-            description = "성공 시 “Signup Success” 메시지를 반환합니다."
+            summary = "회원가입",
+            description = "성공 시 “SignUp Success” 메시지를 반환합니다."
     )
-    @PostMapping("/signup")
+    @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(SignUpReqDto signUpReqDto){
-        userService.signUp(signUpReqDto.toEntity());
-        return ResponseEntity.status(HttpStatus.CREATED).body("Signup Success");
+
+        userService.signUp(signUpReqDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("SignUp Success");
     }
 
     @Operation(
-            summary = "로그인 / 작업필요",
-            description = "성공 시 회원의 정보를 반환합니다."
+            summary = "로그인",
+            description = "성공 시 JWT와 회원의 정보를 반환합니다."
     )
-    @PostMapping("/signin")
-    public ResponseEntity<String> signIn(SignInReqDto requestDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.signIn(requestDto.toEntity()));
+    @PostMapping("/sign-in")
+    public ResponseEntity<SignInResDto> signIn(SignInReqDto requestDto) {
+        Map<String, Object> result = userService.signIn(requestDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("Token", JSONSerializer.serializeObject(result.get("token")))
+                .body((SignInResDto) result.get("user"));
     }
 
     @Operation(
-            summary = "회원탈퇴 / 작업필요",
+            summary = "로그아웃",
+            description = "성공 시 “SignOut Success”메시지를 반환합니다."
+    )
+    @DeleteMapping("/sign-out")
+    public ResponseEntity<String> signOut(@RequestHeader(ACCESS_TOKEN) String token) {
+        userService.signOut(token);
+
+        return ResponseEntity.ok("SignOut Success");
+    }
+
+    @Operation(
+            summary = "회원탈퇴",
             description = "성공 시 “Delete Success”메시지를 반환합니다."
     )
     @DeleteMapping
-    public ResponseEntity<String> withdraw(WithdrawReqDto withdrawReqDto, @RequestHeader("Authorization") String token) {
-        System.out.println(jwtUtils.getUserNoFromJwtToken(token));
-
-//        userService.withdraw(withdrawReqDto);
+    public ResponseEntity<String> withdraw(@RequestHeader(ACCESS_TOKEN) String token) {
+        userService.withdraw(token);
 
         return ResponseEntity.ok("Delete Success");
     }
@@ -77,7 +99,7 @@ public class UserController {
             summary = "(관리자) 회원목록 가져오기 / 작업필요",
             description = "성공 시 option에 따라 회원의 목록을 반환합니다."
     )
-    @GetMapping("/admin/userlist")
+    @GetMapping("/admin/user-list")
     public ResponseEntity<Map<String, List<AdminUserResDto>>> getAllUserlist (String option) {
 
         return null;
