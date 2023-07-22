@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,11 +14,15 @@ import java.util.List;
 @Getter
 @SuperBuilder
 @NoArgsConstructor
+@DynamicInsert
 @DiscriminatorColumn(name = "MEMBER", length = 10)
 public class Member extends Users {
 
     @Transient
     private Role userGroup = Role.ROLE_MEMBER;
+
+    @Transient
+    private Integer holdingPoint;
 
     @Column(name = "holding_token", nullable = false)
     @ColumnDefault("0")
@@ -25,13 +30,7 @@ public class Member extends Users {
 
     @Column(name = "adopted", nullable = false)
     @ColumnDefault("false")
-    private Boolean adopted;
-
-    @PrePersist
-    private void prePersist(){
-        this.adopted = adopted == null ? false : adopted;
-        this.holdingToken = holdingToken == null ? 0 : holdingToken;
-    }
+    private Boolean adopted = false;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Board> boardList;
@@ -61,15 +60,10 @@ public class Member extends Users {
 
     /**
      * holdingPoint(충전금액 합계와 후원금액 합계의 차이)를 설정합니다.
+     * 작업 필요
      */
     @PostLoad
     public void setHoldingPoint() {
-
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.holdingToken = this.holdingToken == null ? 0 : holdingToken;
-        this.adopted = this.adopted == null ? false : adopted;
+        this.holdingPoint = 0;
     }
 }

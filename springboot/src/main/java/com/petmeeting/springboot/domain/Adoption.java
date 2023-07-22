@@ -7,12 +7,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Builder
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 public class Adoption {
@@ -58,12 +60,7 @@ public class Adoption {
     private String additional;
 
     @Column(name = "adoption_status", columnDefinition = "varchar(20)", nullable = false)
-    @ColumnDefault("'waiting'")
+    @ColumnDefault("waiting")
     private AdoptionStatus adoptionStatus;
-
-    @PrePersist
-    private void prePersist(){
-        this.adoptionStatus = adoptionStatus == null ? AdoptionStatus.WAITING : adoptionStatus;
-    }
 
 }
