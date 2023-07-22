@@ -21,9 +21,18 @@ spring:
     password:
 
 logging.level:
-    org.hibernate.sql: debug
+    org.hibernate:
+      sql: debug
+#      type.descriptor.sql: trace # sql의 데이터까지 보이게
+
+server:
+  error:
+    include-exception: false      # Response 에 Exception 을 표시할지
+    include-message: always       # Response 에 Exception Message 를 표시할지 (never | always | on_param)
+    include-stacktrace: on_param  # Response 에 Stack Trace 를 표시할지 (never | always | on_param) on_trace_params 은 deprecated
 
 jwt:
   issuer: petmeetingservice
   secret_key: afd3ad5jf6i23FA89S9DCZ0Xa12sd3qbzxf56Sadvjoupiuy7D5A4F32Zcv14xxvbZ34X32v67QA234d38HG56FbxfDJvcxZFADFzxCV1321
-  expiration_ms: 864000000
+  access_expiration_ms: 3600000
+  refresh_expiration_ms: 2592000000

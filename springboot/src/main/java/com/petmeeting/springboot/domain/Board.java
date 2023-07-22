@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 public class Board {
@@ -51,11 +53,5 @@ public class Board {
     @Column(name = "view_cnt", nullable = false)
     @ColumnDefault("0")
     private Integer viewCnt;
-
-    // null일때 0으로 default처리 되야하는데 nullable = false라서 에러나니까 이렇게 적용!
-    @PrePersist
-    private void prePersist(){
-        this.viewCnt = viewCnt == null ? 0 : viewCnt;
-    }
 
 }

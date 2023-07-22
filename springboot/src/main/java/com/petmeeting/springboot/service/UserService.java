@@ -1,78 +1,160 @@
 package com.petmeeting.springboot.service;
 
 import com.petmeeting.springboot.domain.Users;
-import com.petmeeting.springboot.dto.user.WithdrawReqDto;
-import com.petmeeting.springboot.exception.BadRequestException;
-import com.petmeeting.springboot.exception.ForbiddenException;
-import com.petmeeting.springboot.exception.NotFoundException;
-import com.petmeeting.springboot.util.JwtUtils;
-import com.petmeeting.springboot.domain.Member;
+import com.petmeeting.springboot.dto.auth.Token;
+import com.petmeeting.springboot.dto.user.SignInReqDto;
+import com.petmeeting.springboot.dto.user.SignInResDto;
+import com.petmeeting.springboot.dto.user.SignUpReqDto;
 import com.petmeeting.springboot.repository.UserRepository;
+import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
-
     private final AuthenticationManager authenticationManager;
-
     private final JwtUtils jwtUtils;
-
     private final PasswordEncoder passwordEncoder;
 
-    public Integer signUp(Member member) {
-        if (check(member.getUserId())) {
-            member.setPassword(encodingPass(member.getPassword()));
-            return userRepository.save(member).getId();
-        } else {
-            throw new BadRequestException(String.format("%s와 중복된 ID가 존재합니다", member.getUserId()));
-        }
-    }
 
-    public String signIn(Member member) {
-        // 삭제되었거나 활성화되지 않은 아이디인지 체크하는거 필요
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(member.getUserId(), member.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
-        return jwt;
-    }
-
+    /**
+     * ID 중복체크
+     * userId가 null이거나 공백일 경우 BAD_REQUEST 발생
+     * @param userId
+     * @return true || false
+     */
     public Boolean check(String userId) {
+        if (userId == null || userId.trim().equals(""))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디를 입력해야합니다.");
+
+        log.info("[아이디 중복체크] userId : {}", userId);
         return !userRepository.existsByUserId(userId);
     }
 
-    public void withdraw(WithdrawReqDto withdrawReqDto) {
-        Optional<Users> users = userRepository.findById(withdrawReqDto.getUserNo());
+    /**
+     * 회원가입
+     * 중복된 아이디가 있을 시 BAD_REQUEST 발생
+     * @param signUpReqDto
+     * @return userNo
+     */
+    public Integer signUp(SignUpReqDto signUpReqDto) {
+        if (!check(signUpReqDto.getUserId()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("%s와 중복된 ID가 존재합니다", signUpReqDto.getUserId()));
 
-        Users user = users.orElseThrow(()
-                -> new NotFoundException(String.format("%d번 유저가 존재하지 않습니다.", withdrawReqDto.getUserNo())));
+        signUpReqDto.setPassword(encodingPass(signUpReqDto.getPassword()));
+        Users user = signUpReqDto.toEntity();
 
-        String inputPassword = withdrawReqDto.getPassword();
-
-        if (verifyingPass(inputPassword, user.getPassword())) {
-//            회원 삭제 필요
-
-        } else {
-            throw new ForbiddenException("비밀번호가 일치하지 않습니다.");
-        }
+        log.info("[유저 등록] userId : {}", user.getUserId());
+        return userRepository.save(user).getId();
     }
 
-    public boolean verifyingPass(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
+    /**
+     * 로그인
+     * 비활성이거나 삭제된 계정일 경우 NOT_FOUND 발생
+     * @param signInReqDto
+     * @return Token, User Inform
+     */
+    public Map<String, Object> signIn(SignInReqDto signInReqDto) {
+        Users user = userRepository.findUsersByUserId(signInReqDto.getUserId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "가입되지 않은 사용자입니다."));
+
+        if (!user.getIsActivated()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "비활성 상태의 계정입니다.");
+        } else if (user.getIsDeleted()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제된 계정입니다");
+        }
+
+        Token token = jwtUtils.generateAccessAndRefreshTokens(authenticationManager, user.getUserId(), user.getName());
+
+        user.updateRefreshToken(token.getRefreshToken());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("token", token);
+        result.put("user", SignInResDto.usersToDto(user));
+
+        log.info("[로그인] userId : {}", user.getUserId());
+        return result;
+    }
+
+    /**
+     * 로그아웃
+     * AccessToken을 검증하여 해당 유저의 Refresh Token을 만료시킵니다.
+     * @param token
+     */
+    public void signOut(String token) {
+        Users user = getUserByToken(token);
+
+        user.updateRefreshToken(null);
+
+        log.info("[로그아웃] userId : {}", user.getUserId());
+    }
+
+    /**
+     * 회원탈퇴
+     * AccessToken을 검증하여 해당 유저의 isDeleted를 true로 변경합니다.
+     * @param token
+     */
+    public void withdraw(String token) {
+        Users user = getUserByToken(token);
+
+        user.withdraw();
+
+        log.info("[회원탈퇴] userId : {}", user.getUserId());
+    }
+
+    /**
+     * RefreshToken을 검증하여 AccessToken을 재발행합니다.
+     * @param refreshToken
+     * @return
+     */
+    public String reissueToken(String refreshToken) {
+
+        if (!refreshToken.startsWith("Bearer ")) {
+            log.error("[토큰 검증] Prefix Error");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+        }
+        refreshToken = refreshToken.substring(7);
+
+        Integer userNo = jwtUtils.getUserNoFromJwtToken(refreshToken);
+        Users user = userRepository.findById(userNo).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."));
+
+        if (user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) {
+            log.error("[토큰 재발행] 요청받은 RefreshToken과 저장된 RefreshToken 불일치");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+        }
+
+        log.info("[토큰 재발행] AccessToken 재발행 : {}", user.getUserId());
+        return jwtUtils.generateAccessToken(authenticationManager, user.getUserId(), user.getName());
+    }
+
+    private Users getUserByToken(String token) {
+        if (!token.startsWith("Bearer ")) {
+            log.error("[토큰 검증] Prefix Error");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+        }
+
+        token = token.substring(7);
+
+        if (jwtUtils.validateJwtToken(token)) {
+            Integer userNo = jwtUtils.getUserNoFromJwtToken(token);
+            return userRepository.findById(userNo).orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다"));
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
     }
 
     public String encodingPass(String password) {

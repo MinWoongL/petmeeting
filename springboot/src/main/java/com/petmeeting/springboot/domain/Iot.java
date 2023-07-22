@@ -22,7 +22,6 @@ public class Iot {
     @JoinColumn(name = "shelter_no")
     private Shelter shelter;
 
-    // ERD에 Type 비어있음
     @Column(name = "iot_group")
     private String iotGroup; // 기기종류
 

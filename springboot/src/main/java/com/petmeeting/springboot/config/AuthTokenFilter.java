@@ -2,8 +2,7 @@ package com.petmeeting.springboot.config;
 
 import com.petmeeting.springboot.service.UserDetailServiceImpl;
 import com.petmeeting.springboot.util.JwtUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,13 +18,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
+@Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
     @Autowired
     private UserDetailServiceImpl userDetailService;
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -34,15 +33,15 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String jwt = parseJwt(request);
         try{
             if(jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String email = jwtUtils.getUserNameFromJwtToken(jwt);
-                UserDetails userDetails = userDetailService.loadUserByUsername(email);
+                String userId = jwtUtils.getUserNameFromJwtToken(jwt);
+                UserDetails userDetails = userDetailService.loadUserByUsername(userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e.getMessage());
+            log.error("Cannot set user authentication: {}", e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
