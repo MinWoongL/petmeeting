@@ -1,22 +1,20 @@
+// src/components/About.js
 import React from 'react';
 import { Typography, Box } from '@mui/material';
-// import { useSelector } from 'react-redux';
 
-function Board() {
-  // const message = useSelector(state => state.message)
-
+function About() {
   return (
     <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Typography component="h1" variant="h5">
-        Home
+        About
       </Typography>
       <Box component="div" noValidate sx={{ mt: 1 }}>
         <Typography component="p">
-          Welcome to the Board page!
+          This is the about page!
         </Typography>
       </Box>
     </Box>
   );
 }
 
-export default Board;
+export default About;
