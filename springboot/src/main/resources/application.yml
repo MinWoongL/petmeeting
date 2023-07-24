@@ -20,6 +20,24 @@ spring:
     username: sa
     password:
 
+
+########################################################################################
+# 파일 업로드 설정
+  servlet:
+    multipart:
+      max-file-size: 10MB           # 파일의 최대 사이즈(default:1MB)
+      max-request-size: 10MB        # 요청의 최대 사이즈(default:10MB)
+      file-size-threshold: 1MB      # 파일이 메모리에 기록되는 임계값(default:0MB)
+      location: C:\Temp\upload      # 업로드된 파일의 임시 저장 공간
+  output:
+    ansi:
+      enabled: DETECT             # 멀티파일 업로드 지원 여부(default: true)
+
+# 파일업로드 경로
+comm:
+  uploadPath: C:\Temp\upload
+########################################################################################
+
 logging.level:
     org.hibernate:
       sql: debug
