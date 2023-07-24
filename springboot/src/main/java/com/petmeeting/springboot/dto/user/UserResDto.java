@@ -19,7 +19,7 @@ public class UserResDto {
     private String name;
     private String userGroup;
     private LocalDate joinDate;
-    private Integer imageNo;
+    private String imagePath;
     private String phoneNumber;
     private String location;
     private String siteUrl;
