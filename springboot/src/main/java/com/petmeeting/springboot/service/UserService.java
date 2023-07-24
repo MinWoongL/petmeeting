@@ -9,7 +9,6 @@ import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +22,6 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
@@ -51,6 +49,7 @@ public class UserService {
      * @param signUpReqDto
      * @return userNo
      */
+    @Transactional
     public Integer signUp(SignUpReqDto signUpReqDto) {
         if (!check(signUpReqDto.getUserId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("%s와 중복된 ID가 존재합니다", signUpReqDto.getUserId()));
@@ -108,6 +107,7 @@ public class UserService {
      * AccessToken을 검증하여 해당 유저의 isDeleted를 true로 변경합니다.
      * @param token
      */
+    @Transactional
     public void withdraw(String token) {
         Users user = getUserByToken(token);
 
@@ -144,17 +144,16 @@ public class UserService {
     private Users getUserByToken(String token) {
         if (!token.startsWith("Bearer ")) {
             log.error("[토큰 검증] Prefix Error");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prefix가 올바르지 않습니다.");
         }
-
         token = token.substring(7);
 
-        if (jwtUtils.validateJwtToken(token)) {
-            Integer userNo = jwtUtils.getUserNoFromJwtToken(token);
-            return userRepository.findById(userNo).orElseThrow(() ->
-                    new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다"));
-        }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+        if (!jwtUtils.validateJwtToken(token))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 토큰입니다.");
+
+        Integer userNo = jwtUtils.getUserNoFromJwtToken(token);
+        return userRepository.findById(userNo).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다"));
     }
 
     public String encodingPass(String password) {
