@@ -66,4 +66,12 @@ public class Member extends Users {
     public void setHoldingPoint() {
         this.holdingPoint = 0;
     }
+
+    public void chargeTokens(int chargeToken) {
+        this.holdingToken += chargeToken;
+    }
+
+    public void spendToken(int spendToken) {
+        this.holdingToken -= spendToken;
+    }
 }
