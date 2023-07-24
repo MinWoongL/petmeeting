@@ -18,7 +18,7 @@ public class AdminUserResDto {
     private Boolean isDeleted;
     private Boolean isActivated;
     private  Role userGroup;
-    private Integer imageNo;
+    private String imagePath;
 
 
 }
