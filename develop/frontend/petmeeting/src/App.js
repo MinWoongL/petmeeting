@@ -29,11 +29,17 @@ function NavBar({ isLoggedIn }) {
   return (
     <AppBar position="static" className='theme-blueberry' style={{ backgroundColor : 'var(--dark)'}}>
       <Toolbar>
+<<<<<<< HEAD
         <Link to="/" style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}>
           <Typography variant="h6" component="div">
             HappyDog!
           </Typography>
         </Link>
+=======
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          HappyDog! Test
+        </Typography>
+>>>>>>> 6cae4396fdb320977443bfdc0588da211803af19
         <Button color="inherit" component={Link} to="/">Home</Button>
         <Button color="inherit" component={Link} to="/shelter">보호소</Button>
         <Button color="inherit" component={Link} to="/adoption">입양하기</Button>
