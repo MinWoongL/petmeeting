@@ -27,6 +27,4 @@ public class Iot {
 
     @Column(name = "command")
     private String command; // 실행중인 명령
-
-
 }

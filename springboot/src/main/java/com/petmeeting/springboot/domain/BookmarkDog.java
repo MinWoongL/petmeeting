@@ -24,6 +24,4 @@ public class BookmarkDog {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dog_no")
     private Dog dog;
-
-
 }

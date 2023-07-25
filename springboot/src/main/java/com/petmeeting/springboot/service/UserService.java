@@ -153,8 +153,10 @@ public class UserService {
         }
         token = token.substring(7);
 
-        if (!jwtUtils.validateJwtToken(token))
+        if (!jwtUtils.validateJwtToken(token)) {
+            log.error("[토큰 검증] Validation Error");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 토큰입니다.");
+        }
 
         Integer userNo = jwtUtils.getUserNoFromJwtToken(token);
         return userRepository.findById(userNo).orElseThrow(() ->

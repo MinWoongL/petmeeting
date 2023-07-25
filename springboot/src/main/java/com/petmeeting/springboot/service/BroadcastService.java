@@ -1,5 +1,7 @@
 package com.petmeeting.springboot.service;
 
+import com.petmeeting.springboot.domain.Member;
+import com.petmeeting.springboot.domain.Shelter;
 import com.petmeeting.springboot.repository.ShelterRepository;
 import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
@@ -7,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
@@ -20,10 +23,35 @@ public class BroadcastService {
     private final UserRepository userRepository;
     private final ShelterRepository shelterRepository;
 
-    public Map<String, String> control(Integer shelterNo, Integer userNo, long endTime) {
+    @Transactional
+    public Map<String, String> control(String token, long endTime) {
+        int userNo = getUserNo(token);
+
+        log.info("[기기제어 요청] 방송 중인 보호소 불러오기");
+        Shelter shelter = shelterRepository.findShelterByOnBroadCastTitleNotNull()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "방송 중인 보호소가 없습니다."));
+
+        if (shelter.getControlEndTime() != null && shelter.getControlEndTime() > System.currentTimeMillis() / 1000L) {
+            log.error("[기기제어 요청] Already Controlled");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이미 조작 중인 사람이 있습니다");
+        }
+
+        log.info("[기기제어 요청] 멤버 불러오기");
+        Member member = (Member) userRepository.findById(userNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "올바르지 않은 유저입니다."));
+
+        if(member.getHoldingToken() < 1) {
+            log.error("[기기제어 요청] Require More than One Token");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "토큰이 부족합니다.");
+        }
+        member.spendToken(1);
+
+        log.info("[기기제어 요청] 기기조작 저장");
+        shelter.setControlUser(member.getName(), endTime);
+
         Map<String, String> map = new HashMap<>();
-        map.put("userId", "testId");
-        map.put("remainTime", "500");
+        map.put("userId", member.getName());
+        map.put("remainTime", String.valueOf(endTime - System.currentTimeMillis() / 1000L));
 
         return map;
     }

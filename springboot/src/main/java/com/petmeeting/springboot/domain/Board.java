@@ -42,16 +42,15 @@ public class Board {
     private String content;
 
     @Column(name = "created_time", nullable = false)
-    private Integer createdTime;
+    private Long createdTime;
 
     @Column(name = "modified_time")
-    private Integer modifiedTime;
+    private Long modifiedTime;
 
     @Column(name = "deleted_time")
-    private Integer deletedTime;
+    private Long deletedTime;
 
     @Column(name = "view_cnt", nullable = false)
     @ColumnDefault("0")
     private Integer viewCnt;
-
 }

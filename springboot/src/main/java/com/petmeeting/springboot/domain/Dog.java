@@ -45,10 +45,10 @@ public class Dog {
     private String personality;
 
     @Column(name = "protection_start_date", nullable = false)
-    private Integer protectionStartDate;
+    private Long protectionStartDate;
 
     @Column(name = "protection_end_date")
-    private Integer protectionEndDate;
+    private Long protectionEndDate;
 
     @Column(name = "adoption_availability", columnDefinition = "varchar(20)", nullable = false)
     private AdoptionAvailability adoptionAvailability;

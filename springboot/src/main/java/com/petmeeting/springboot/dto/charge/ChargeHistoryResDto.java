@@ -8,5 +8,5 @@ import lombok.Data;
 public class ChargeHistoryResDto {
     Integer chargeNo;
     Integer chargeValue;
-    Integer chargeTime;
+    Long chargeTime;
 }
