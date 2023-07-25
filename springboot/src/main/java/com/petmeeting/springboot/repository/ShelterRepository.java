@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ShelterRepository extends JpaRepository<Shelter, Integer> {
-    Optional<Shelter> findShelterByOnBroadCastTitleNotEmpty();
+    Optional<Shelter> findShelterByOnBroadCastTitleNotNull();
 }

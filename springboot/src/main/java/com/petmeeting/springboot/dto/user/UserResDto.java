@@ -6,15 +6,13 @@ import com.petmeeting.springboot.domain.Users;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 public class UserResDto {
     private Integer userNo;
     private String name;
     private String userGroup;
-    private LocalDate joinDate;
+    private Long joinDate;
     private String imagePath;
     private String phoneNumber;
     private String location;

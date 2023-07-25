@@ -14,12 +14,12 @@ values
 insert into member
 (user_no, holding_token, adopted)
 values
-('100001', '0', 'false');
+('100001', '2', 'false');
 
 insert into shelter
-(user_no, regist_image_path)
+(user_no, regist_image_path, on_broadcast_title, control_end_time)
 values
-('100002', '/image/path.jpg');
+('100002', '/image/path.jpg', 'testTitle', '1690167170');
 
 insert into charge
 (charge_no, member_no, tid, charge_value, charge_time)

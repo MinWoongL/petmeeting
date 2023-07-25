@@ -13,15 +13,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Answer {
-
     @Id
     @GeneratedValue
     @Column(name = "answer_no")
     private Integer answerNo;
 
-
     @Column(name = "content", columnDefinition = "text", nullable = false)
     private String content;
-
-
 }
