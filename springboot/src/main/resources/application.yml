@@ -10,6 +10,8 @@ spring:
       ddl-auto: create
     defer-datasource-initialization: true
 
+    open-in-view: false # SSE 통신 간 HTTP Connection 열려있는 것 방지
+
   h2:
     console:
       enabled: true

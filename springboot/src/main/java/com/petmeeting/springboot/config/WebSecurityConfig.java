@@ -57,4 +57,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().ignoringAntMatchers("/h2-console/**") .disable();
         http.addFilterBefore(authenticationJwtFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
 }

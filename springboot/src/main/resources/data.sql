@@ -21,3 +21,7 @@ insert into shelter
 values
 ('100002', '/image/path.jpg');
 
+insert into charge
+(charge_no, member_no, tid, charge_value, charge_time)
+values
+('100000', '100001', 't1231231234', '10000', '16849213');
