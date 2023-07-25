@@ -3,17 +3,13 @@ package com.petmeeting.springboot.dto.user;
 import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Shelter;
 import com.petmeeting.springboot.domain.Users;
-import lombok.*;
-import org.springframework.security.core.parameters.P;
+import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
-@Getter
-@Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserResDto {
     private Integer userNo;
     private String name;

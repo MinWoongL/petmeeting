@@ -60,7 +60,6 @@ public class Adoption {
     private String additional;
 
     @Column(name = "adoption_status", columnDefinition = "varchar(20)", nullable = false)
-    @ColumnDefault("waiting")
+    @ColumnDefault("'WAITING'")
     private AdoptionStatus adoptionStatus;
-
 }

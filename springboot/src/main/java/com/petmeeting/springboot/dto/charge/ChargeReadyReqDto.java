@@ -3,10 +3,6 @@ package com.petmeeting.springboot.dto.charge;
 import lombok.*;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class ChargeReadyReqDto {
     private String selectPoint;
     private String selectToken;

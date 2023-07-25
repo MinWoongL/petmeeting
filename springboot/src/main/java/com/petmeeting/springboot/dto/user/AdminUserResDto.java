@@ -1,15 +1,11 @@
 package com.petmeeting.springboot.dto.user;
 
 import com.petmeeting.springboot.enums.Role;
-import lombok.*;
+import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
-@Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class AdminUserResDto {
     private Integer userNo;
     private String userId;

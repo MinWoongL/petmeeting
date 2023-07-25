@@ -71,9 +71,14 @@ public class UserService {
         Users user = userRepository.findUsersByUserId(signInReqDto.getUserId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "가입되지 않은 사용자입니다."));
 
-        if (!user.getIsActivated()) {
+        if (!passwordEncoder.matches(signInReqDto.getPassword(), user.getPassword())) {
+            log.error("[로그인] Password Error");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 일치하지 않습니다.");
+        } else if (!user.getIsActivated()) {
+            log.error("[로그인] Deactivate Account");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "비활성 상태의 계정입니다.");
         } else if (user.getIsDeleted()) {
+            log.error("[로그인] Deleted Account");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제된 계정입니다");
         }
 

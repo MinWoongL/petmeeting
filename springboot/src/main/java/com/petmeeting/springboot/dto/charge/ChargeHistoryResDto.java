@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class KakaoReadyResDto {
-    private String tid;
-    private String next_redirect_pc_url;
+public class ChargeHistoryResDto {
+    Integer chargeNo;
+    Integer chargeValue;
+    Integer chargeTime;
 }

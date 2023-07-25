@@ -20,6 +20,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -126,6 +129,27 @@ public class ChargeService {
                 .build();
     }
 
+    /**
+     * 결제 내역 불러오기
+     * token에서 userNo를 불러와서 해당 유저의 history 가져오기
+     * @param token
+     * @return List<ChargeHistoryResDto>
+     */
+    public List<ChargeHistoryResDto> getHistory(String token) {
+        Member member = (Member) userRepository.findById(getUserNo(token))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "사용자를 찾을 수 없습니다."));
+
+        log.info("[결제내역 확인] userId : {}", member.getUserId());
+
+        return member.getChargeList().stream()
+                .map(m -> ChargeHistoryResDto.builder()
+                        .chargeNo(m.getChargeNo())
+                        .chargeValue(m.getChargeValue())
+                        .chargeTime(m.getChargeTime())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
     private HttpHeaders getHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -143,8 +167,10 @@ public class ChargeService {
         }
         token = token.substring(7);
 
-        if (!jwtUtils.validateJwtToken(token))
+        if (!jwtUtils.validateJwtToken(token)) {
+            log.error("[토큰 검증] Validation Error");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 토큰입니다.");
+        }
 
         return jwtUtils.getUserNoFromJwtToken(token);
     }
