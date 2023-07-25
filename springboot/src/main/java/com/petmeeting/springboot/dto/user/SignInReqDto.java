@@ -1,13 +1,9 @@
 package com.petmeeting.springboot.dto.user;
 
 import com.petmeeting.springboot.domain.Member;
-import lombok.*;
+import lombok.Data;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class SignInReqDto {
     String userId;
     String password;

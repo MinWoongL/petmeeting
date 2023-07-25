@@ -4,13 +4,11 @@ import com.petmeeting.springboot.domain.Admin;
 import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Shelter;
 import com.petmeeting.springboot.domain.Users;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Builder
-@Getter
-@Setter
 public class SignInResDto {
     private Integer userNo;
     private String name;

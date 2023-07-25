@@ -1,12 +1,8 @@
 package com.petmeeting.springboot.dto.user;
 
-import lombok.*;
+import lombok.Data;
 
 @Data
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class AdminUpdateReqDto {
     private Integer userNo;
     private Boolean isActivated;

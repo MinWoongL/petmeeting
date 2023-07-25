@@ -4,13 +4,9 @@ import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Shelter;
 import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.enums.Role;
-import lombok.*;
+import lombok.Data;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class SignUpReqDto {
     private String userId;
     private String password;
