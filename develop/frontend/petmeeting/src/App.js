@@ -18,7 +18,7 @@ function NavBar() {
     <AppBar position="static" className='theme-blueberry' style={{ backgroundColor : 'var(--dark)'}}>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          HappyDog!
+          HappyDog! Test
         </Typography>
         <Button color="inherit" component={Link} to="/">Home</Button>
         <Button color="inherit" component={Link} to="/shelter">보호소</Button>
