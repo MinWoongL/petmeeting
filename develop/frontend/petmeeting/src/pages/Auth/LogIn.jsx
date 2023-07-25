@@ -1,5 +1,5 @@
-import * as React from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+// import axios from 'axios';
 import { useNavigate } from 'react-router';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -14,6 +14,9 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import {useDispatch, useSelector } from 'react-redux'
+import {login, setPassword} from '../../stores/Slices/UserSlice'
 
 function Copyright(props) {
 	return (
@@ -36,25 +39,45 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-	const history = useNavigate();
+	const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.user)
+    useEffect(() => {
+        console.log(user);
+    }, [user]);
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 		const email = data.get('email');
 		const password = data.get('password');
+        
+        // Authentication
+        if (password === '123123') {
+            dispatch(setPassword(password)); // password 설정
+            dispatch(login({
+            //   avatarUrl: 'https://www.urbanbrush.net/web/wp-content/uploads/edd/2019/01/urbanbrush-20190108131811238895.png',
+              nickname: email,
+              points: 0
+            })); // 로그인 상태로 설정
+            // history.push 는 react router v6 에서 더이상 사용하지 않는 문법
+            navigate('/'); // Home으로 이동
+            console.log(user)
+          } else {
+            console.log('Login failed');
+          }
 
-		try {
-			const response = await axios.post('/api/login', { email, password });
+		// try {
+		// 	const response = await axios.post('/api/login', { email, password });
 
-			if (response.status === 200) {
-				history.push('/dashboard');
-			} else {
-				console.log('Login failed');
-			}
-		} catch (error) {
-			console.error('Error occurred during login:', error);
-		}
+		// 	if (response.status === 200) {
+		// 		history.push('/dashboard');
+		// 	} else {
+		// 		console.log('Login failed');
+		// 	}
+		// } catch (error) {
+		// 	console.error('Error occurred during login:', error);
+		// }
 	};
 
 	return (
