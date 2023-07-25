@@ -35,7 +35,5 @@ public class Donation {
     private Integer donateValue;
 
     @Column(name = "donate_time")
-    private Integer donateTime;
-
-
+    private Long donateTime;
 }

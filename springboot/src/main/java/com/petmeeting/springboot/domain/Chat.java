@@ -30,5 +30,5 @@ public class Chat {
     private String content;
 
     @Column(name = "created_time", nullable = false)
-    private Integer createdTime;
+    private Long createdTime;
 }

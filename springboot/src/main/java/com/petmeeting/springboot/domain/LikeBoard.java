@@ -24,5 +24,4 @@ public class LikeBoard {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_no")
     private Board board;
-
 }

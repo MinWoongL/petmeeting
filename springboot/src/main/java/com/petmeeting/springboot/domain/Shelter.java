@@ -33,7 +33,7 @@ public class Shelter extends Users {
     private String controlUserName;
 
     @Column(name = "control_end_time")
-    private Integer controlEndTime;
+    private Long controlEndTime;
 
     @Column(name = "regist_image_path", nullable = false)
     private String registImagePath;
@@ -52,4 +52,14 @@ public class Shelter extends Users {
 
     @OneToMany(mappedBy = "shelter", fetch = FetchType.LAZY)
     private List<Adoption> adoptionList;
+
+    /**
+     * 기기 조작하는 인원 등록
+     * @param controlUserName
+     * @param controlEndTime
+     */
+    public void setControlUser(String controlUserName, Long controlEndTime) {
+        this.controlUserName = controlUserName;
+        this.controlEndTime = controlEndTime;
+    }
 }

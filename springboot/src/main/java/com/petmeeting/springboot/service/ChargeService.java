@@ -111,7 +111,7 @@ public class ChargeService {
                 .member(member)
                 .tid(kakaoApproveResDto.getTid())
                 .chargeValue(chargePrice)
-                .chargeTime((int) ((long) System.currentTimeMillis() / 1000L))
+                .chargeTime(System.currentTimeMillis() / 1000L)
                 .build();
 
         chargeRepository.save(charge);
@@ -135,6 +135,7 @@ public class ChargeService {
      * @param token
      * @return List<ChargeHistoryResDto>
      */
+    @Transactional
     public List<ChargeHistoryResDto> getHistory(String token) {
         Member member = (Member) userRepository.findById(getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "사용자를 찾을 수 없습니다."));
