@@ -87,4 +87,9 @@ public class Dog {
     private List<Adoption> adoptionList;
 
 
+    public void delete(){
+        this.isDeleted = true;
+    }
+
+
 }
