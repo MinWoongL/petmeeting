@@ -32,13 +32,13 @@ public class Inquiry {
     private String content;
 
     @Column(name = "created_time", nullable = false)
-    private Integer createdTime;
+    private Long createdTime;
 
     @Column(name = "modified_time")
-    private Integer modifiedTime;
+    private Long modifiedTime;
 
     @Column(name = "deleted_time")
-    private Integer deletedTime;
+    private Long deletedTime;
 
     @Column(name = "status")
     @ColumnDefault("false")
@@ -47,6 +47,4 @@ public class Inquiry {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_no")
     private Answer answer;
-
-
 }

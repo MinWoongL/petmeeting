@@ -31,7 +31,7 @@ public abstract class Users {
     private String name;
 
     @Column(name = "join_date", nullable = false)
-    private Integer joinDate;
+    private Long joinDate;
 
     @Column(name = "phone_number", length = 50)
     private String phoneNumber;

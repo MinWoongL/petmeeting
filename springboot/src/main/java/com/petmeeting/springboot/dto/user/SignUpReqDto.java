@@ -27,7 +27,7 @@ public class SignUpReqDto {
                     .phoneNumber(phoneNumber)
                     .userGroup(Role.ROLE_MEMBER)
                     .imagePath(imagePath)
-                    .joinDate((int) System.currentTimeMillis() / 1000)
+                    .joinDate(System.currentTimeMillis() / 1000)
                     .build();
 
         } else {
@@ -38,7 +38,7 @@ public class SignUpReqDto {
                     .phoneNumber(phoneNumber)
                     .userGroup(Role.ROLE_SHELTER)
                     .imagePath(imagePath)
-                    .joinDate((int) System.currentTimeMillis() / 1000)
+                    .joinDate(System.currentTimeMillis() / 1000)
                     .location(location)
                     .siteUrl(siteUrl)
                     .isActivated(false)

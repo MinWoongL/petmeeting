@@ -29,6 +29,5 @@ public class Charge {
     private Integer chargeValue;
 
     @Column(name = "charge_time", nullable = false)
-    private Integer chargeTime;
-
+    private Long chargeTime;
 }

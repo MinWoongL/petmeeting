@@ -28,19 +28,15 @@ public class Reply {
     private String content;
 
     @Column(name = "created_time", nullable = false)
-    private Integer createdTime;
+    private Long createdTime;
 
     @Column(name = "modified_time")
-    private Integer modifiedTime;
+    private Long modifiedTime;
 
     @Column(name = "deleted_time")
-    private Integer deletedTime;
+    private Long deletedTime;
 
 
     @OneToMany(mappedBy = "reply", fetch = FetchType.LAZY)
     private List<LikeReply> likeReplyList;
-
-
-
-
 }

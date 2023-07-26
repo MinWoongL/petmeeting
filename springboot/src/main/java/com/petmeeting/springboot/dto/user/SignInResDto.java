@@ -13,7 +13,7 @@ public class SignInResDto {
     private Integer userNo;
     private String name;
     private String userGroup;
-    private Integer joinDate;
+    private Long joinDate;
     private String imagePath;
     private String phoneNumber;
     private Integer holdingToken;
