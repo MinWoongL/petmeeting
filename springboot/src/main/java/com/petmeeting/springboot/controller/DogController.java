@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.controller;
 
+import com.petmeeting.springboot.dto.dog.DogResDto;
 import com.petmeeting.springboot.dto.dog.RegisterDogReqDto;
 import com.petmeeting.springboot.dto.dog.RegisterDogResDto;
 import com.petmeeting.springboot.service.DogService;
@@ -24,13 +25,34 @@ public class DogController {
             description = "새로운 유기견을 등록합니다."
     )
     @PostMapping
-    public ResponseEntity<RegisterDogResDto> registerDog(RegisterDogReqDto requestDto) {
-        // 등록해주고
-        Map<String, Object> result = dogService.registerDog(requestDto);
+    public ResponseEntity<RegisterDogResDto> registerDog(RegisterDogReqDto requestDto, @RequestHeader(ACCESS_TOKEN) String token) {
+        Map<String, Object> result = dogService.registerDog(requestDto, token);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body((RegisterDogResDto) result.get("dog"));
     }
+
+    @GetMapping("/{dogNo}")
+    public ResponseEntity<DogResDto> findDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        Map<String, Object> result = dogService.findDog(dogNo, token);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body((DogResDto) result.get("dog"));
+    }
+
+    @Operation(
+            summary = "유기견 삭제",
+            description = "해당 넘버의 유기견을 삭제합니다. 성공시 Delete Succuess 메세지를 반환합니다."
+    )
+    @DeleteMapping("/{dogNo}")
+    public ResponseEntity<String> deleteDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        dogService.deleteDog(dogNo, token);
+
+        return ResponseEntity.ok("Delete Success");
+    }
+
+
+
 
 
 
