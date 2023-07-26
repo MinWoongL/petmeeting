@@ -37,3 +37,8 @@ insert into charge
 (charge_no, member_no, tid, charge_value, charge_time)
 values
 ('100000', '100001', 't1231231234', '10000', '16849213');
+
+insert into chat
+(chat_no, content, shelter_no, user_no, created_time)
+values
+('100000', '강아지가 정말 이뻐요', '100002', '100001', '16849213');

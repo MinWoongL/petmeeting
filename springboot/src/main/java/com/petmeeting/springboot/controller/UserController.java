@@ -91,8 +91,8 @@ public class UserController {
             description = "성공 시 변경된 회원의 데이터를 반환합니다."
     )
     @PutMapping
-    public ResponseEntity<UserResDto> updateInfo() {
-        return ResponseEntity.ok(UserResDto.builder().build());
+    public ResponseEntity<UserResDto> updateInfo(UserUpdateReqDto updateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(userService.updateUser(updateReqDto, token));
     }
 
     @Operation(

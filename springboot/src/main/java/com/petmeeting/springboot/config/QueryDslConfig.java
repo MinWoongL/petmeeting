@@ -8,7 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Configuration
-public class QuerydslConfig {
+public class QueryDslConfig {
+    // QueryDSL 설정
     @PersistenceContext
     private EntityManager entityManager;
 

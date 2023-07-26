@@ -2,9 +2,7 @@ package com.petmeeting.springboot.service;
 
 import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.dto.auth.Token;
-import com.petmeeting.springboot.dto.user.SignInReqDto;
-import com.petmeeting.springboot.dto.user.SignInResDto;
-import com.petmeeting.springboot.dto.user.SignUpReqDto;
+import com.petmeeting.springboot.dto.user.*;
 import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -85,6 +83,7 @@ public class UserService {
         Token token = jwtUtils.generateAccessAndRefreshTokens(authenticationManager, user.getUserId(), user.getName());
 
         user.updateRefreshToken(token.getRefreshToken());
+        userRepository.save(user);
 
         Map<String, Object> result = new HashMap<>();
         result.put("token", token);
@@ -103,6 +102,7 @@ public class UserService {
         Users user = getUserByToken(token);
 
         user.updateRefreshToken(null);
+        userRepository.save(user);
 
         log.info("[로그아웃] userId : {}", user.getUserId());
     }
@@ -144,6 +144,27 @@ public class UserService {
 
         log.info("[토큰 재발행] AccessToken 재발행 : {}", user.getUserId());
         return jwtUtils.generateAccessToken(authenticationManager, user.getUserId(), user.getName());
+    }
+
+
+    /**
+     * 유저 정보 업데이트
+     * password를 인증하여 정상일 시 User의 정보를 업데이트합니다.
+     * @param updateReqDto
+     * @param token
+     * @return
+     */
+    public UserResDto updateUser(UserUpdateReqDto updateReqDto, String token) {
+        Users user = getUserByToken(token);
+
+        if (!passwordEncoder.matches(updateReqDto.getPassword(), user.getPassword())) {
+            log.error("[유저 정보 수정] 비밀번호가 잘못되었습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 틀렸습니다");
+        }
+
+        // update 로직 필요
+
+        return null;
     }
 
     private Users getUserByToken(String token) {
