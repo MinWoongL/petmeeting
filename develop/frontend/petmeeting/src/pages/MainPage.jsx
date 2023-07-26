@@ -1,10 +1,10 @@
-// src/components/Home.js
+// src/components/MainPage.js
 import React from 'react';
 import BroadCastingMain from '../components/Main/BroadCastingMain';
 import BroadCastingSub from '../components/Main/BroadCastingSub';
 import { Typography, Box } from '@mui/material';
 
-function Home() {
+function MainPage() {
 
   return (
     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -25,4 +25,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default MainPage;
