@@ -68,17 +68,17 @@ function App() {
   const authPage = ['/signup', '/login']
   const pageCheck = authPage.includes(location.pathname)
 
-  const backgroundColor = pageCheck ? 'var(--yellow1)' : 'var(--yellow3)'
+  const backgroundColor = pageCheck ? 'var(--yellow1)' : 'var(--yellow2)'
 
   return (
     <>
-      <div className="theme-yellow" style={{ height: '100vh', backgroundColor: 'var(--yellow4)', overflowYL: 'auto' }}>
+      <div className="theme-yellow" style={{ minHeight: '100vh', height: '100%', backgroundColor: 'var(--yellow3)', overflowYL: 'auto' }}>
       <NavBar isLoggedIn={isLoggedIn}/>
 
         <Grid container spacing={3} style={{ height: 'calc(100% - 64px)' }}>
           {/* Hidden : 반응형으로 창 크기 줄어들 때 해당영역 안보이도록 설정 */}
           <Hidden smDown>
-            <Grid item xs={3} style={{ maxHeight: 'calc(100% - 64px)' }}> {/* 왼쪽 3칸 */}
+            <Grid item xs={3} style={{ maxHeight: 'calc(100vh - 64px)' }}> {/* 왼쪽 3칸 */}
               <Box border={1} borderColor="grey.900" height="100%">
                 <Grid container direction="column" style={{ height: '100%' }}>
                   <Grid item style={{ flex: 2 }}>
@@ -86,7 +86,7 @@ function App() {
                       <InfoSidebar />
                     </Box>
                   </Grid>
-                  <Grid item style={{ flex: 3 }}>
+                  <Grid item style={{ flex: 3 }} sx={{mt:2}}>
                     <Box border={1} borderColor="grey.900" height="100%" style={{ backgroundColor: 'var(--yellow6)'}}>
                       <RankSystemSidebar />
                     </Box>
@@ -99,7 +99,7 @@ function App() {
           
 
           <Grid item xs={9}> {/* 오른쪽 9칸 */}
-            <Box border={1} borderColor="grey.900" height="100%" style={{ backgroundColor }}>
+            <Box border={1} borderColor="grey.900" minHeight="85vh" height="100%" style={{ backgroundColor }}>
               <Routes>
                 <Route path="/" exact element={<MainPage />} />
                 <Route path="/shelter" element={<ShelterPage />} />
