@@ -2,6 +2,7 @@ package com.petmeeting.springboot.service;
 
 import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Shelter;
+import com.petmeeting.springboot.dto.broadcast.BroadcastShelterResDto;
 import com.petmeeting.springboot.repository.ShelterRepository;
 import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
@@ -23,6 +24,12 @@ public class BroadcastService {
     private final UserRepository userRepository;
     private final ShelterRepository shelterRepository;
 
+    /**
+     * 기기 제어 요청을 전달합니다.
+     * @param token
+     * @param endTime
+     * @return
+     */
     @Transactional
     public Map<String, String> control(String token, long endTime) {
         int userNo = getUserNo(token);
@@ -54,6 +61,28 @@ public class BroadcastService {
         map.put("remainTime", String.valueOf(endTime - System.currentTimeMillis() / 1000L));
 
         return map;
+    }
+
+    /**
+     * 방송 중인 보호소 정보를 가져옵니다
+     * @return BroadcastShelterResDto
+     */
+    public BroadcastShelterResDto getBroadcastShelter() {
+        Shelter shelter = shelterRepository.findShelterByOnBroadCastTitleNotNull()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "방송 중인 보호소가 없습니다."));
+
+        if (shelter == null)
+            return null;
+
+        log.info("[방송 중 보호소] shelterId : {}", shelter.getId());
+
+        return BroadcastShelterResDto
+                .builder()
+                .shelterNo(shelter.getId())
+                .name(shelter.getName())
+                .onBroadcastTitle(shelter.getOnBroadCastTitle())
+                .dogNo(shelter.getDogNo())
+                .build();
     }
 
     private Integer getUserNo(String token) {
