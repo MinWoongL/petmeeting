@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.controller;
 
+import com.petmeeting.springboot.dto.broadcast.BroadcastShelterResDto;
 import com.petmeeting.springboot.service.BroadcastService;
 import com.petmeeting.springboot.service.SseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +34,7 @@ public class BroadcastController {
 
     @Operation(
             summary = "기기 조작 요청",
-            description = "방송 중 기기 조작을 요청합니다."
+            description = "방송 중 기기 조작을 요청합니다. 5분으로 설정"
     )
     @PostMapping("/request")
     public ResponseEntity<Map<String, String>> controlRequest(@RequestHeader(ACCESS_TOKEN) String token) {
@@ -42,5 +43,14 @@ public class BroadcastController {
         sseService.sendMessage(result.get("userId"), (System.currentTimeMillis() + CONTROL_TIME_MS) / 1000L);
 
         return ResponseEntity.ok(result);
+    }
+
+    @Operation(
+            summary = "방송 중인 보호소 가져오기",
+            description = "방송 중인 보호소 정보를 가져옵니다."
+    )
+    @GetMapping("/broadcast/shelter")
+    public ResponseEntity<BroadcastShelterResDto> getBroadcastShelter() {
+        return ResponseEntity.ok(broadcastService.getBroadcastShelter());
     }
 }
