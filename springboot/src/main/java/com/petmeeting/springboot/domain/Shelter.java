@@ -38,6 +38,9 @@ public class Shelter extends Users {
     @Column(name = "regist_image_path", nullable = false)
     private String registImagePath;
 
+    @Column(name = "dog_no")
+    private Integer dogNo;
+
     @OneToMany(mappedBy = "shelter", fetch = FetchType.LAZY)
     private List<Dog> dogList;
 
