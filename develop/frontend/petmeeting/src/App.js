@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
 import store from './stores/index';
-import { AppBar, Button, Toolbar, Typography, Grid, Box, Menu, MenuItem } from '@mui/material'
+import { AppBar, Button, Typography, Grid, Box, Menu, MenuItem, Hidden, Toolbar } from '@mui/material'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import MainPage from './pages/MainPage';
 import ShelterPage from './pages/Shelter';
@@ -29,17 +29,11 @@ function NavBar({ isLoggedIn }) {
   return (
     <AppBar position="static" className='theme-blueberry' style={{ backgroundColor : 'var(--dark)'}}>
       <Toolbar>
-<<<<<<< HEAD
         <Link to="/" style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}>
           <Typography variant="h6" component="div">
             HappyDog!
           </Typography>
         </Link>
-=======
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          HappyDog! Test
-        </Typography>
->>>>>>> 6cae4396fdb320977443bfdc0588da211803af19
         <Button color="inherit" component={Link} to="/">Home</Button>
         <Button color="inherit" component={Link} to="/shelter">보호소</Button>
         <Button color="inherit" component={Link} to="/adoption">입양하기</Button>
@@ -78,26 +72,31 @@ function App() {
 
   return (
     <>
-      <div className="theme-yellow" style={{ height: '100vh', backgroundColor: 'var(--yellow4)' }}>
+      <div className="theme-yellow" style={{ height: '100vh', backgroundColor: 'var(--yellow4)', overflowYL: 'auto' }}>
       <NavBar isLoggedIn={isLoggedIn}/>
 
         <Grid container spacing={3} style={{ height: 'calc(100% - 64px)' }}>
-          <Grid item xs={3}> {/* 왼쪽 3칸 */}
-            <Box border={1} borderColor="grey.900" height="100%">
-              <Grid container direction="column" style={{ height: '100%' }}>
-                <Grid item style={{ flex: 2 }}>
-                  <Box border={1} borderColor="grey.900" height="100%">
-                    <InfoSidebar />
-                  </Box>
+          {/* Hidden : 반응형으로 창 크기 줄어들 때 해당영역 안보이도록 설정 */}
+          <Hidden smDown>
+            <Grid item xs={3} style={{ maxHeight: 'calc(100% - 64px)' }}> {/* 왼쪽 3칸 */}
+              <Box border={1} borderColor="grey.900" height="100%">
+                <Grid container direction="column" style={{ height: '100%' }}>
+                  <Grid item style={{ flex: 2 }}>
+                    <Box border={1} borderColor="grey.900" height="100%">
+                      <InfoSidebar />
+                    </Box>
+                  </Grid>
+                  <Grid item style={{ flex: 3 }}>
+                    <Box border={1} borderColor="grey.900" height="100%" style={{ backgroundColor: 'var(--yellow6)'}}>
+                      <RankSystemSidebar />
+                    </Box>
+                  </Grid>
                 </Grid>
-                <Grid item style={{ flex: 3 }}>
-                  <Box border={1} borderColor="grey.900" height="100%" style={{ backgroundColor: 'var(--yellow6)'}}>
-                    <RankSystemSidebar />
-                  </Box>
-                </Grid>
-              </Grid>
-            </Box>
-          </Grid>
+              </Box>
+            </Grid>
+
+          </Hidden>
+          
 
           <Grid item xs={9}> {/* 오른쪽 9칸 */}
             <Box border={1} borderColor="grey.900" height="100%" style={{ backgroundColor }}>

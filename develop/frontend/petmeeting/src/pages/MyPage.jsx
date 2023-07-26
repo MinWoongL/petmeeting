@@ -7,7 +7,7 @@ function Adoption() {
   const user = useSelector(state => state.user)
 
   return (
-    <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Typography component="h1" variant="h5">
         Home
       </Typography>

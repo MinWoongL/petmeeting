@@ -12,7 +12,7 @@ function BroadCastingMain() {
           alignItems="center"
           style={{ 
             width: '100%', 
-            height: '300px', 
+            height: '200px', 
             backgroundColor: '#f0f0f0' 
           }}
         >
