@@ -14,6 +14,10 @@ import java.io.IOException;
 public class SseService {
     private final SseEmitters sseEmitters;
 
+    /**
+     * SseEmitter를 등록 후 전달합니다.
+     * @return SseEmitter
+     */
     public SseEmitter connect() {
         SseEmitter sseEmitter = new SseEmitter();
         sseEmitters.add(sseEmitter);
@@ -28,6 +32,11 @@ public class SseService {
         return sseEmitter;
     }
 
+    /**
+     * SseEmitter로 메시지를 전달합니다.
+     * @param userId
+     * @param remainTime
+     */
     public void sendMessage(String userId, long remainTime) {
         remainTime = remainTime - (System.currentTimeMillis() / 1000L);
 

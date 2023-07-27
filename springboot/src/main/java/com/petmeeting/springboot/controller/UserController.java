@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import nonapi.io.github.classgraph.json.JSONSerializer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,8 +46,8 @@ public class UserController {
             description = "성공 시 “SignUp Success” 메시지를 반환합니다."
     )
     @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(SignUpReqDto signUpReqDto){
-
+    public ResponseEntity<String> signUp(@RequestBody SignUpReqDto signUpReqDto){
+        System.out.println(signUpReqDto.toString());
         userService.signUp(signUpReqDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("SignUp Success");
     }
@@ -56,7 +57,7 @@ public class UserController {
             description = "성공 시 JWT와 회원의 정보를 반환합니다."
     )
     @PostMapping("/sign-in")
-    public ResponseEntity<SignInResDto> signIn(SignInReqDto requestDto) {
+    public ResponseEntity<SignInResDto> signIn(@RequestBody SignInReqDto requestDto) {
         Map<String, Object> result = userService.signIn(requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -87,22 +88,22 @@ public class UserController {
     }
 
     @Operation(
-            summary = "회원정보수정 / 작업필요",
+            summary = "회원정보수정",
             description = "성공 시 변경된 회원의 데이터를 반환합니다."
     )
     @PutMapping
-    public ResponseEntity<UserResDto> updateInfo() {
-        return ResponseEntity.ok(UserResDto.builder().build());
+    public ResponseEntity<UserResDto> updateInfo(@RequestBody UserUpdateReqDto updateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(userService.updateUser(updateReqDto, token));
     }
 
     @Operation(
-            summary = "(관리자) 회원목록 가져오기 / 작업필요",
-            description = "성공 시 option에 따라 회원의 목록을 반환합니다."
+            summary = "(관리자) 회원 가져오기",
+            description = "UserNo로 회원의 정보를 가져옵니다."
     )
-    @GetMapping("/admin/user-list")
-    public ResponseEntity<Map<String, List<AdminUserResDto>>> getAllUserlist (String option) {
-
-        return null;
+    @GetMapping("/admin/{userNo}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<AdminUserResDto> getUser (@PathVariable Integer userNo) {
+        return ResponseEntity.ok(userService.getUser(userNo));
     }
 
     @Operation(
@@ -116,21 +117,11 @@ public class UserController {
     }
 
     @Operation(
-            summary = "(관리자) 회원정보 가져오기 / 작업필요",
-            description = "성공 시 회원의 정보를 가져옵니다. 보호소의 경우 가입신청서 imageNo도 가져옵니다."
-    )
-    @GetMapping("/admin/{userNo}")
-    public ResponseEntity<AdminUserResDto> getOneUser(@PathVariable Integer userNo) {
-
-        return null;
-    }
-
-    @Operation(
             summary = "(관리자) 회원 활성화 상태 변경 / 작업필요",
             description = "성공 시 회원의 변경된 정보를 반환합니다."
     )
     @PutMapping("/admin")
-    public ResponseEntity<AdminUserResDto> updateStatus(AdminUpdateReqDto adminUpdateReqDto) {
+    public ResponseEntity<AdminUserResDto> updateStatus(@RequestBody AdminUpdateReqDto adminUpdateReqDto) {
 
         return null;
     }

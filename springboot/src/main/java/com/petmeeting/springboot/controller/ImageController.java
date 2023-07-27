@@ -1,6 +1,6 @@
 package com.petmeeting.springboot.controller;
 
-import com.petmeeting.springboot.service.ImageServiceImpl;
+import com.petmeeting.springboot.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ public class ImageController {
     @Value("${comm.uploadPath}")
     private String uploadPath;
 
-    private final ImageServiceImpl imageService;
+    private final ImageService imageService;
 
     @Operation(
             summary = "이미지 가져오기",

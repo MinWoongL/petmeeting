@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.dto.user.UserUpdateReqDto;
 import com.petmeeting.springboot.enums.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,6 +39,9 @@ public class Shelter extends Users {
     @Column(name = "regist_image_path", nullable = false)
     private String registImagePath;
 
+    @Column(name = "dog_no")
+    private Integer dogNo;
+
     @OneToMany(mappedBy = "shelter", fetch = FetchType.LAZY)
     private List<Dog> dogList;
 
@@ -61,5 +65,12 @@ public class Shelter extends Users {
     public void setControlUser(String controlUserName, Long controlEndTime) {
         this.controlUserName = controlUserName;
         this.controlEndTime = controlEndTime;
+    }
+
+    @Override
+    public void updateInfo(UserUpdateReqDto updateReqDto) {
+        super.updateInfo(updateReqDto);
+        this.location = updateReqDto.getLocation() == null ? this.location : updateReqDto.getLocation();
+        this.siteUrl = updateReqDto.getSiteUrl() == null ? this.siteUrl : updateReqDto.getSiteUrl();
     }
 }
