@@ -53,7 +53,7 @@ public abstract class Users {
 
     @PrePersist
     public void prePersist() {
-        this.joinDate = joinDate == null ? (int) System.currentTimeMillis() / 1000 : joinDate;
+        this.joinDate = joinDate == null ? System.currentTimeMillis() / 1000 : joinDate;
     }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

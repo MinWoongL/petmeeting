@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.dto.dog.RegisterDogReqDto;
 import com.petmeeting.springboot.enums.AdoptionAvailability;
 import com.petmeeting.springboot.enums.DogSize;
 import com.petmeeting.springboot.enums.Gender;
@@ -90,13 +91,39 @@ public class Dog {
     private List<Adoption> adoptionList;
 
 
+    @PrePersist
+    public void prePersist() {
+        this.protectionStartDate = protectionStartDate == null ? System.currentTimeMillis() / 1000 : protectionStartDate;
+    }
+
     public void delete(){
         this.isDeleted = true;
     }
 
     public void updateStatus(AdoptionAvailability adoptionAvailability){
         this.adoptionAvailability = adoptionAvailability;
+
+        if(adoptionAvailability.equals(AdoptionAvailability.ADOPT_IMPOSSIBLE)) {
+            protectionEndDate = System.currentTimeMillis() / 1000;
+        }
     }
 
+    public void updateDogInfo(RegisterDogReqDto updateDogReqDto){
+        this.name = updateDogReqDto.getName() == null? this.name : updateDogReqDto.getName();
+        this.dogSize = updateDogReqDto.getDogSize() == null? this.dogSize : updateDogReqDto.getDogSize();
+        this.gender = updateDogReqDto.getGender() == null ? gender : updateDogReqDto.getGender();
+        this.weight = updateDogReqDto.getWeight() == null ? weight : updateDogReqDto.getWeight();
+        this.age = updateDogReqDto.getAge() == null ? age : updateDogReqDto.getAge();
+        this.personality = updateDogReqDto.getPersonality() == null ? personality : updateDogReqDto.getPersonality();
+        this.protectionStartDate = updateDogReqDto.getProtectionStartDate() == null ? protectionStartDate : updateDogReqDto.getProtectionStartDate();
+        this.protectionEndDate = updateDogReqDto.getProtectionEndDate() == null ? protectionEndDate : updateDogReqDto.getProtectionEndDate();
+        this.adoptionAvailability = updateDogReqDto.getAdoptionAvailability() == null ? adoptionAvailability : updateDogReqDto.getAdoptionAvailability();
+        this.currentStatus = updateDogReqDto.getCurrentStatus() == null ? currentStatus : updateDogReqDto.getCurrentStatus();
+        this.dogSpecies = updateDogReqDto.getDogSpecies() == null ? dogSpecies : updateDogReqDto.getDogSpecies();
+        this.reasonAbandonment = updateDogReqDto.getReasonAbandonment() == null ? reasonAbandonment : updateDogReqDto.getReasonAbandonment();
+        this.isInoculated = updateDogReqDto.getIsInoculated() == null ? isInoculated : updateDogReqDto.getIsInoculated();
+        this.imagePath = updateDogReqDto.getImagePath() == null ? imagePath : updateDogReqDto.getImagePath();
+        // 삭제는 (isDeleted)는 삭제 기능으로만 가능
+    }
 
 }

@@ -105,6 +105,24 @@ public class DogService {
     }
 
     @Transactional
+    public DogResDto updateDog(Integer dogNo, RegisterDogReqDto registerDogReqDto, String token) {
+        Shelter shelter = (Shelter) userRepository.findById(getUserNo(token))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "보호소를 찾을 수 없습니다."));
+
+        Dog updateDog = dogRepository.findDogByDogNo(dogNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "강아지를 찾을 수 없습니다."));
+
+        if(shelter.getId() != updateDog.getShelter().getId()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
+        }
+
+        updateDog.updateDogInfo(registerDogReqDto);
+        dogRepository.save(updateDog);
+
+        return DogResDto.dogToDto(updateDog);
+    }
+
+    @Transactional
     public void deleteDog(Integer dogNo, String token) {
         // 유기견부터 찾기
         Dog dog = dogRepository.findDogByDogNo(dogNo)

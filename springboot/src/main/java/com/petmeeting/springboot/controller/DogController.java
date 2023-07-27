@@ -45,7 +45,8 @@ public class DogController {
 //    @PreAuthorize("hasRole('ROLE_SHELTER')")
     public ResponseEntity<DogResDto> updateDogStatus(@PathVariable Integer dogNo, @RequestBody DogStatusUpdateReqDto dogStatusUpdateReqDto, @RequestHeader(ACCESS_TOKEN) String token){
         Map<String, Object> result = dogService.updateDogStatus(dogNo, dogStatusUpdateReqDto, token);
-        return ResponseEntity.status(HttpStatus.OK).body((DogResDto) result.get("dog"));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body((DogResDto) result.get("dog"));
     }
 
     @Operation(
@@ -63,12 +64,9 @@ public class DogController {
     @Operation(
             summary = "조건에 따라 유기견 목록 조회하기",
             description = " 검색 조건에 따라 유기견의 목록을 가져옵니다. 검색 조건이 없으면 필터링되지 않은 목록을 가져옵니다.\n" +
-                    "\n" +
                     "* name은 포함, dogSize는 일치\n" +
                     "* 입양가능인 상태만 가져옵니다.\n" +
-                    "\n" +
                     "** shelterNo로 요청 시에는 입양 상태 상관없이 해당 보호소의 모든 유기견 목록을 가져옵니다.\n" +
-                    "\n" +
                     "** option으로 요청 시 \n" +
                     "random : 무작위\n" +
                     "like : 로그인한 유저가 like한 유기견\n" +
@@ -86,9 +84,8 @@ public class DogController {
             description = "shelter의 번호와 유기견의 보호소가 일치하는 경우에만 수정됩니다."
     )
     @PutMapping("/{dogNo}")
-    public ResponseEntity<DogResDto> updateDog(@PathVariable Integer dogNo, RegisterDogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
-
-        return null;
+    public ResponseEntity<DogResDto> updateDog(@PathVariable Integer dogNo, @RequestBody RegisterDogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(dogService.updateDog(dogNo, registerDogReqDto, token));
     }
 
     @Operation(
