@@ -45,6 +45,11 @@ dependencies {
 	// h2 database
 	runtimeOnly 'com.h2database:h2'
 
+	// mysql database
+	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
+	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
+
+
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
