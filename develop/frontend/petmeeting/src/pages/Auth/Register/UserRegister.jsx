@@ -75,7 +75,7 @@ export default function SignUp() {
         console.log("ㅡㄷㄹ어왔음");
         dispatch(
           login({
-            userId: response.data.userId,
+            userId: data.get("name"),
             points: response.data.points,
           })
         ); // 로그인 상태로 설정
