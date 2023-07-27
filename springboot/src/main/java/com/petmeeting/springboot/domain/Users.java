@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.dto.user.UserUpdateReqDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -70,5 +71,11 @@ public abstract class Users {
 
     public void withdraw() {
         this.isDeleted = true;
+    }
+
+    public void updateInfo(UserUpdateReqDto updateReqDto) {
+        this.name = updateReqDto.getName() == null ? this.name : updateReqDto.getName();
+        this.imagePath = updateReqDto.getImagePath() == null ? this.imagePath : updateReqDto.getImagePath();
+        this.phoneNumber = updateReqDto.getPhoneNumber() == null ? this.phoneNumber : updateReqDto.getPhoneNumber();
     }
 }

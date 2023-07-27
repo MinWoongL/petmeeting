@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 @Builder
 public class UserResDto {
-    private Integer userNo;
     private String name;
     private String userGroup;
     private Long joinDate;
@@ -19,9 +18,9 @@ public class UserResDto {
     private String siteUrl;
 
     /**
-     * 작업 필요
-     * @param user
-     * @return
+     * 유저가 Member, Shelter임에 따라 값을 넣어 반환합니다.
+     * @param Users
+     * @return UserResDto
      */
     public UserResDto usersToDto(Users user) {
         if (user instanceof Member) {
@@ -31,10 +30,24 @@ public class UserResDto {
         }
     }
     public UserResDto memberToDto(Member member) {
-        return null;
+        return UserResDto.builder()
+                .name(member.getName())
+                .userGroup(member.getUserGroup().getValue())
+                .joinDate(member.getJoinDate())
+                .imagePath(member.getImagePath())
+                .phoneNumber(member.getPhoneNumber())
+                .build();
     }
 
     public UserResDto shelterToDto(Shelter shelter) {
-        return null;
+        return UserResDto.builder()
+                .name(shelter.getName())
+                .userGroup(shelter.getUserGroup().getValue())
+                .joinDate(shelter.getJoinDate())
+                .imagePath(shelter.getImagePath())
+                .phoneNumber(shelter.getPhoneNumber())
+                .location(shelter.getLocation())
+                .siteUrl(shelter.getSiteUrl())
+                .build();
     }
 }

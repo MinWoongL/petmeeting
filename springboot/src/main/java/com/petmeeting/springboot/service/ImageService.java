@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class ImageServiceImpl {
+public class ImageService {
 
     // application.yml 에 정의된 spring.servlet.multipart.location 속성과 매핑되어 있는 값을 주입받음
     // 파일 업로드시 파일을 저장할 경로를 지정

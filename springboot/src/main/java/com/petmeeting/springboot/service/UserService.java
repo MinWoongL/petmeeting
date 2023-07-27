@@ -1,10 +1,9 @@
 package com.petmeeting.springboot.service;
 
+import com.petmeeting.springboot.domain.Shelter;
 import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.dto.auth.Token;
-import com.petmeeting.springboot.dto.user.SignInReqDto;
-import com.petmeeting.springboot.dto.user.SignInResDto;
-import com.petmeeting.springboot.dto.user.SignUpReqDto;
+import com.petmeeting.springboot.dto.user.*;
 import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -85,6 +84,7 @@ public class UserService {
         Token token = jwtUtils.generateAccessAndRefreshTokens(authenticationManager, user.getUserId(), user.getName());
 
         user.updateRefreshToken(token.getRefreshToken());
+        userRepository.save(user);
 
         Map<String, Object> result = new HashMap<>();
         result.put("token", token);
@@ -103,6 +103,7 @@ public class UserService {
         Users user = getUserByToken(token);
 
         user.updateRefreshToken(null);
+        userRepository.save(user);
 
         log.info("[로그아웃] userId : {}", user.getUserId());
     }
@@ -146,6 +147,35 @@ public class UserService {
         return jwtUtils.generateAccessToken(authenticationManager, user.getUserId(), user.getName());
     }
 
+
+    /**
+     * 유저 정보 업데이트
+     * password를 인증하여 정상일 시 User의 정보를 업데이트합니다.
+     * @param updateReqDto
+     * @param token
+     * @return
+     */
+    public UserResDto updateUser(UserUpdateReqDto updateReqDto, String token) {
+        Users user = getUserByToken(token);
+
+        if (!passwordEncoder.matches(updateReqDto.getPassword(), user.getPassword())) {
+            log.error("[유저 정보 수정] 비밀번호가 잘못되었습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 틀렸습니다");
+        }
+
+        log.info("[유저 정보 수정] userId : {}", user.getUserId());
+
+        if (user instanceof Shelter)
+            ((Shelter) user).updateInfo(updateReqDto);
+        else
+            user.updateInfo(updateReqDto);
+
+        userRepository.save(user);
+
+        return UserResDto.builder().build()
+                .usersToDto(user);
+    }
+
     private Users getUserByToken(String token) {
         if (!token.startsWith("Bearer ")) {
             log.error("[토큰 검증] Prefix Error");
@@ -165,5 +195,24 @@ public class UserService {
 
     public String encodingPass(String password) {
         return passwordEncoder.encode(password);
+    }
+
+
+    /**
+     * (관리자) 유저 정보 가져오기
+     * @param userNo
+     * @return AdminUserResDto
+     */
+    public AdminUserResDto getUser(Integer userNo) {
+        Users user = userRepository.findById(userNo)
+                .orElseThrow(() -> {
+                    log.error("[관리자 - 회원 가져오기] 회원을 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.");
+                });
+
+        log.info("[관리자 - 회원 가져오기] userId : {}", user.getUserId());
+
+        return AdminUserResDto.builder().build()
+                .userToDto(user);
     }
 }
