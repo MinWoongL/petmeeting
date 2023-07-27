@@ -1,12 +1,10 @@
 package com.petmeeting.springboot.controller;
 
-import com.petmeeting.springboot.dto.dog.DogResDto;
-import com.petmeeting.springboot.dto.dog.DogStatusUpdateReqDto;
-import com.petmeeting.springboot.dto.dog.RegisterDogReqDto;
-import com.petmeeting.springboot.dto.dog.RegisterDogResDto;
+import com.petmeeting.springboot.dto.dog.*;
 import com.petmeeting.springboot.enums.AdoptionAvailability;
 import com.petmeeting.springboot.service.DogService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,18 +61,15 @@ public class DogController {
 
     @Operation(
             summary = "조건에 따라 유기견 목록 조회하기",
-            description = " 검색 조건에 따라 유기견의 목록을 가져옵니다. 검색 조건이 없으면 필터링되지 않은 목록을 가져옵니다.\n" +
-                    "* name은 포함, dogSize는 일치\n" +
-                    "* 입양가능인 상태만 가져옵니다.\n" +
-                    "** shelterNo로 요청 시에는 입양 상태 상관없이 해당 보호소의 모든 유기견 목록을 가져옵니다.\n" +
-                    "** option으로 요청 시 \n" +
-                    "random : 무작위\n" +
-                    "like : 로그인한 유저가 like한 유기견\n" +
-                    "all : 모든 유기견\n" +
-                    "rank : 좋아요 상위 유기견"
+            description = " 검색 조건에 따라 유기견의 목록을 반환합니다."
     )
     @GetMapping
-    public ResponseEntity<List<DogResDto>> findAllDogByOption(RegisterDogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<List<RegisterDogResDto>> findAllDogByOption
+            (@Parameter(description = "option : 'all'")
+             @RequestBody DogSearchCondition condition, @RequestHeader(ACCESS_TOKEN) String token) {
+        if(condition.getOption() != null && condition.getOption().toLowerCase().equals("all")){
+            return ResponseEntity.ok(dogService.getAllDog());
+        }
 
         return null;
     }

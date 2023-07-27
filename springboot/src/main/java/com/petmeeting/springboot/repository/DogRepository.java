@@ -14,6 +14,6 @@ public interface DogRepository extends JpaRepository<Dog, Integer> {
     Optional<Dog> findDogByDogSize(DogSize dogSize);
     Optional<Dog> findDogByDogNo(Integer dogNo);
 
-
+    List<Dog> findDogByIsDeletedFalse();
 
 }

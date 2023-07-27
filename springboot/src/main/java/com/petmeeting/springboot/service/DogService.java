@@ -1,15 +1,9 @@
 package com.petmeeting.springboot.service;
 
 import com.petmeeting.springboot.domain.*;
-import com.petmeeting.springboot.dto.dog.DogResDto;
-import com.petmeeting.springboot.dto.dog.DogStatusUpdateReqDto;
-import com.petmeeting.springboot.dto.dog.RegisterDogReqDto;
-import com.petmeeting.springboot.dto.dog.RegisterDogResDto;
+import com.petmeeting.springboot.dto.dog.*;
 import com.petmeeting.springboot.enums.AdoptionAvailability;
-import com.petmeeting.springboot.repository.AdoptionRepository;
-import com.petmeeting.springboot.repository.DogRepository;
-import com.petmeeting.springboot.repository.ShelterRepository;
-import com.petmeeting.springboot.repository.UserRepository;
+import com.petmeeting.springboot.repository.*;
 import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +15,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,7 +26,7 @@ public class DogService {
     private final DogRepository dogRepository;
     private final UserRepository userRepository;
     private final AdoptionRepository adoptionRepository;
-
+    private final DogQueryDslRepository dogQueryDslRepository;
     private final JwtUtils jwtUtils;
 
     /**
@@ -141,6 +137,31 @@ public class DogService {
         dogRepository.save(dog);
     }
 
+    @Transactional
+    public List<RegisterDogResDto> findDogByCondition(DogSearchCondition condition) {
+        log.info("[강아지 검색조건으로 검색] condition : {}", condition.toString());
+
+        return dogQueryDslRepository.findByCondition(condition).stream()
+                .map(dog -> RegisterDogResDto.builder()
+                        .dogNo(dog.getDogNo())
+                        .name(dog.getName())
+                        .dogSize(dog.getDogSize())
+                        .gender(dog.getGender())
+                        .weight(dog.getWeight())
+                        .age(dog.getAge())
+                        .personality(dog.getPersonality())
+                        .protectionStartDate(dog.getProtectionStartDate())
+                        .protectionEndDate(dog.getProtectionEndDate())
+                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .currentStatus(dog.getCurrentStatus())
+                        .dogSpecies(dog.getDogSpecies())
+                        .reasonAbandonment(dog.getReasonAbandonment())
+                        .isInoculated(dog.getIsInoculated())
+                        .imagePath(dog.getImagePath())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
     private Integer getUserNo(String token){
         if(!token.startsWith("Bearer ")) {
             log.error("[토큰 검증] Prefix Error");
@@ -157,4 +178,27 @@ public class DogService {
         return jwtUtils.getUserNoFromJwtToken(token);
     }
 
+    public List<RegisterDogResDto> getAllDog() {
+        log.info("[모든 강아지 검색]");
+
+        return dogRepository.findDogByIsDeletedFalse().stream()
+                .map(dog -> RegisterDogResDto.builder()
+                        .dogNo(dog.getDogNo())
+                        .name(dog.getName())
+                        .dogSize(dog.getDogSize())
+                        .gender(dog.getGender())
+                        .weight(dog.getWeight())
+                        .age(dog.getAge())
+                        .personality(dog.getPersonality())
+                        .protectionStartDate(dog.getProtectionStartDate())
+                        .protectionEndDate(dog.getProtectionEndDate())
+                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .currentStatus(dog.getCurrentStatus())
+                        .dogSpecies(dog.getDogSpecies())
+                        .reasonAbandonment(dog.getReasonAbandonment())
+                        .isInoculated(dog.getIsInoculated())
+                        .imagePath(dog.getImagePath())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
