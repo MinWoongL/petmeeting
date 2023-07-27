@@ -65,40 +65,40 @@ function App() {
   const location = useLocation();
   const isLoggedIn = useSelector(state => state.user.isLoggedIn);
 
-  const authPage = ['/signup', '/login']
-  const pageCheck = authPage.includes(location.pathname)
+  const authPage = ['/signup', '/login'];
+  const pageCheck = authPage.includes(location.pathname);
 
-  const backgroundColor = pageCheck ? 'var(--yellow1)' : 'var(--yellow2)'
+  const backgroundColor = pageCheck ? 'var(--yellow1)' : 'var(--yellow2)';
 
   return (
     <>
       <div className="theme-yellow" style={{ minHeight: '100vh', height: '100%', backgroundColor: 'var(--yellow3)', overflowYL: 'auto' }}>
-      <NavBar isLoggedIn={isLoggedIn}/>
+        <NavBar isLoggedIn={isLoggedIn}/>
 
         <Grid container spacing={3} style={{ height: 'calc(100% - 64px)' }}>
-          {/* Hidden : 반응형으로 창 크기 줄어들 때 해당영역 안보이도록 설정 */}
           <Hidden smDown>
-            <Grid item xs={3} style={{ maxHeight: 'calc(100vh - 64px)' }}> {/* 왼쪽 3칸 */}
-              <Box border={1} borderColor="grey.900" height="100%">
-                <Grid container direction="column" style={{ height: '100%' }}>
-                  <Grid item style={{ flex: 2 }}>
-                    <Box border={1} borderColor="grey.900" height="100%">
-                      <InfoSidebar />
-                    </Box>
+            {/* 로그인 또는 회원가입 페이지가 아니면 왼쪽 영역을 표시 */}
+            {!pageCheck && (
+              <Grid item xs={3} style={{ maxHeight: 'calc(100vh - 64px)' }}> {/* 왼쪽 3칸 */}
+                <Box border={1} borderColor="grey.900" height="100%">
+                  <Grid container direction="column" style={{ height: '100%' }}>
+                    <Grid item style={{ flex: 2 }}>
+                      <Box border={1} borderColor="grey.900" height="100%">
+                        <InfoSidebar />
+                      </Box>
+                    </Grid>
+                    <Grid item style={{ flex: 3 }} sx={{mt:2}}>
+                      <Box border={1} borderColor="grey.900" height="100%" style={{ backgroundColor: 'var(--yellow6)'}}>
+                        <RankSystemSidebar />
+                      </Box>
+                    </Grid>
                   </Grid>
-                  <Grid item style={{ flex: 3 }} sx={{mt:2}}>
-                    <Box border={1} borderColor="grey.900" height="100%" style={{ backgroundColor: 'var(--yellow6)'}}>
-                      <RankSystemSidebar />
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Grid>
-
+                </Box>
+              </Grid>
+            )}
           </Hidden>
-          
 
-          <Grid item xs={9}> {/* 오른쪽 9칸 */}
+          <Grid item xs={pageCheck ? 12 : 9}> {/* 로그인 또는 회원가입 페이지이면 전체 영역, 아니면 오른쪽 9칸 */}
             <Box border={1} borderColor="grey.900" minHeight="85vh" height="100%" style={{ backgroundColor }}>
               <Routes>
                 <Route path="/" exact element={<MainPage />} />
@@ -116,6 +116,7 @@ function App() {
     </>
   );
 }
+
 
 export default function WrappedApp() {
   return (
