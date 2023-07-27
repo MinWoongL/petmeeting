@@ -7,8 +7,12 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+#   <H2 인메모리 DB>
+#   database-platform: org.hibernate.dialect.H2Dialect
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
+#     <H2 인메모리 DB>
+#     ddl-auto: create
       ddl-auto: none
     defer-datasource-initialization: true
 
@@ -19,6 +23,11 @@ spring:
       enabled: true
 
   datasource:
+#    <H2 인메모리 DB>
+#    url: jdbc:h2:mem:testdb
+#    driverClassName: org.h2.Driver
+#    username: sa
+#    password:
     url: jdbc:mariadb://i9a203.p.ssafy.io:3306/mydb
     username: backend
     password: Backend@1234
