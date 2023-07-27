@@ -77,12 +77,11 @@ public class DogService {
      * @return
      */
     @Transactional
-    public Map<String, Object> updateDogStatus(DogStatusUpdateReqDto dogStatusUpdateReqDto, String token){
+    public Map<String, Object> updateDogStatus(Integer dogNo, DogStatusUpdateReqDto dogStatusUpdateReqDto, String token){
 
         Shelter shelter = (Shelter) userRepository.findById(getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "보호소를 찾을 수 없습니다."));
 
-        int dogNo = dogStatusUpdateReqDto.getDogNo();
         Dog updateDog = dogRepository.findDogByDogNo(dogNo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "강아지를 찾을 수 없습니다."));
 
@@ -111,7 +110,7 @@ public class DogService {
         Dog dog = dogRepository.findDogByDogNo(dogNo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다."));
 
-        // 1. 로그인 유저가 보호소 유저면서
+        // 1. 로그인 유저가 보호소 유저면서 (X) controller에서할거야
         // 2. 해당 유기견을 등록한 보호소와 동일한지
         Shelter shelter = (Shelter) userRepository.findById(getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "보호소를 찾을 수 없습니다."));

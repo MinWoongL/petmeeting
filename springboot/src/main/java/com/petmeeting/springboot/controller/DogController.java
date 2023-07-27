@@ -43,10 +43,8 @@ public class DogController {
     )
     @PutMapping("/status/{dogNo}") // 이거 파라미터 어케해야대징
 //    @PreAuthorize("hasRole('ROLE_SHELTER')")
-    public ResponseEntity<DogResDto> updateDogStatus(@PathVariable Integer dogNo, AdoptionAvailability adoptionAvailability, @RequestHeader(ACCESS_TOKEN) String token){
-        DogStatusUpdateReqDto dogStatusUpdateReqDto = new DogStatusUpdateReqDto(dogNo, adoptionAvailability);
-
-        Map<String, Object> result = dogService.updateDogStatus(dogStatusUpdateReqDto, token);
+    public ResponseEntity<DogResDto> updateDogStatus(@PathVariable Integer dogNo, @RequestBody DogStatusUpdateReqDto dogStatusUpdateReqDto, @RequestHeader(ACCESS_TOKEN) String token){
+        Map<String, Object> result = dogService.updateDogStatus(dogNo, dogStatusUpdateReqDto, token);
         return ResponseEntity.status(HttpStatus.OK).body((DogResDto) result.get("dog"));
     }
 
@@ -124,50 +122,4 @@ public class DogController {
 
 
 
-//    // READ
-//    @Operation(
-//            summary = "강아지 정보 가져오기",
-//            description = "유기견 정보를 가져옵니다."
-//    )
-//    @GetMapping("/{dogNo}")
-//    public ResponseEntity<Dog> getOneDog(@PathVariable Integer dogNo) {
-//
-//        return null;
-//    }
-//
-//    // UPDATE
-//    @Operation(
-//            summary = "",
-//            description = ""
-//    )
-//    @PutMapping("/{dogNo}")
-//    public ResponseEntity<?> updateDog(@PathVariable Integer dogNo) {
-//
-//        return null;
-//    }
-//
-//    // DELETE
-//    @Operation(
-//            summary = "",
-//            description = ""
-//    )
-//    @DeleteMapping("/{dogNo}")
-//    public ResponseEntity<?> deleteDog(@PathVariable Integer dogNo) {
-//
-//        return null;
-//    }
-//
-//    // 유기견 상태 변경
-//    @Operation(
-//            summary = "(보호소) 유기견 상태 변경",
-//            description = "유기견의 상태를 변경합니다." +
-//                    "* userNo는 현재 로그인한 유저의 고유번호를 입력합니다." +
-//                    "* 보호종료 상태로 변경될 시 해당 유기견에게 할당된 모든 입양신청서의 adoptionStatus가 “미채택”으로 변경됩니다."
-//    )
-//    @PutMapping("/status/{dogNo}")
-//    public ResponseEntity<?> updateDogStatus(@PathVariable Integer dogNo, DogStatusUpdateReqDto dogStatusUpdateReqDto){
-//
-//
-//        return null;
-//    }
 }
