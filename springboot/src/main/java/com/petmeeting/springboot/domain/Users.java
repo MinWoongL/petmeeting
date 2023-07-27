@@ -78,4 +78,8 @@ public abstract class Users {
         this.imagePath = updateReqDto.getImagePath() == null ? this.imagePath : updateReqDto.getImagePath();
         this.phoneNumber = updateReqDto.getPhoneNumber() == null ? this.phoneNumber : updateReqDto.getPhoneNumber();
     }
+
+    public void updateStatus(Boolean isActivated) {
+        this.isActivated = isActivated;
+    }
 }

@@ -53,4 +53,8 @@ public class Board {
     @Column(name = "view_cnt", nullable = false)
     @ColumnDefault("0")
     private Integer viewCnt;
+
+    public void increaseViewCnt() {
+        this.viewCnt++;
+    }
 }

@@ -32,7 +32,7 @@ public class BroadcastService {
      */
     @Transactional
     public Map<String, String> control(String token, long endTime) {
-        int userNo = getUserNo(token);
+        int userNo = jwtUtils.getUserNo(token);
 
         log.info("[기기제어 요청] 방송 중인 보호소 불러오기");
         Shelter shelter = shelterRepository.findShelterByOnBroadCastTitleNotNull()
@@ -85,20 +85,5 @@ public class BroadcastService {
                 .onBroadcastTitle(shelter.getOnBroadCastTitle())
                 .dogNo(shelter.getDogNo())
                 .build();
-    }
-
-    private Integer getUserNo(String token) {
-        if (!token.startsWith("Bearer ")) {
-            log.error("[토큰 검증] Prefix Error");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prefix가 올바르지 않습니다.");
-        }
-        token = token.substring(7);
-
-        if (!jwtUtils.validateJwtToken(token)) {
-            log.error("[토큰 검증] Validation Error");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 토큰입니다.");
-        }
-
-        return jwtUtils.getUserNoFromJwtToken(token);
     }
 }

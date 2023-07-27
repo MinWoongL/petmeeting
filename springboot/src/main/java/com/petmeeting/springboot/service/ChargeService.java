@@ -47,7 +47,7 @@ public class ChargeService {
      * @return tid, redirect url
      */
     public ChargeReadyResDto ready(ChargeReadyReqDto chargeReadyReqDto, String token) {
-        int userNo = getUserNo(token);
+        int userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
 
         log.info("[결제요청] userId : {} / price : {}", user.getUserId(), chargeReadyReqDto.getSelectPoint());
@@ -87,7 +87,7 @@ public class ChargeService {
      */
     @Transactional
     public ChargeCheckResDto check(ChargeCheckReqDto chargeCheckReqDto, String token) {
-        int userNo = getUserNo(token);
+        int userNo = jwtUtils.getUserNo(token);
         Member member = (Member) userRepository.findById(userNo).get();
 
         MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
@@ -138,7 +138,7 @@ public class ChargeService {
      */
     @Transactional
     public List<ChargeHistoryResDto> getHistory(String token) {
-        Member member = (Member) userRepository.findById(getUserNo(token))
+        Member member = (Member) userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "사용자를 찾을 수 없습니다."));
 
         log.info("[결제내역 확인] userId : {}", member.getUserId());
@@ -160,20 +160,5 @@ public class ChargeService {
         httpHeaders.set("Content-Type", CONTENT_TYPE);
 
         return httpHeaders;
-    }
-
-    private Integer getUserNo(String token) {
-        if (!token.startsWith("Bearer ")) {
-            log.error("[토큰 검증] Prefix Error");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prefix가 올바르지 않습니다.");
-        }
-        token = token.substring(7);
-
-        if (!jwtUtils.validateJwtToken(token)) {
-            log.error("[토큰 검증] Validation Error");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 토큰입니다.");
-        }
-
-        return jwtUtils.getUserNoFromJwtToken(token);
     }
 }
