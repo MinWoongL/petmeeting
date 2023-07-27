@@ -20,54 +20,6 @@ import {
 
 import axios from "axios";
 
-// 일반 회원, 보호소 회원 선택용 import
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-// export default function SignInSide() {
-//     const [id, setId] = useState(""); // ID 상태
-//     const [password, setPassword] = useState(""); // 비밀번호 상태
-
-//     const navigate = useNavigate();
-//     const dispatch = useDispatch();
-//     const user = useSelector((state) => state.user);
-
-//     const [memberType, setMemberType] = useState("general");
-
-//     useEffect(() => {
-//       console.log(user);
-//     }, [user]);
-
-//     const handleSubmit = async (event) => {
-//       event.preventDefault();
-//       const data = new FormData(event.currentTarget);
-//       const userId = data.get("email");
-//       const password = data.get("password");
-
-//       try {
-//         const response = await axios({
-//           method: "post",
-//           url: "http://i9a203.p.ssafy.io:5000/api/v1/user/sign-in",
-//           headers: { "Content-Type": "application/json" },
-//           data: JSON.stringify({ userId, password }),
-//         });
-
-//         if (response.status === 200) {
-//           dispatch(setPassword(password)); // password 설정
-//           dispatch(
-//             login({
-//               nickname: response.data.nickname,
-//               points: response.data.points,
-//             })
-//           ); // 로그인 상태로 설정
-//           navigate("/"); // Home으로 이동
-//         } else {
-//           console.log("Login failed");
-//         }
-//       } catch (error) {
-//         console.error("Error occurred during login:", error);
-//       }
 
 export default function Login() {
   const [id, setId] = useState(""); // ID 상태
