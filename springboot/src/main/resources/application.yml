@@ -1,5 +1,3 @@
-
-
 # sql 보기
 spring:
   jpa:
@@ -8,11 +6,11 @@ spring:
         format_sql: true
         show_sql: true
 #   <H2 인메모리 DB>
-#   database-platform: org.hibernate.dialect.H2Dialect
+#    database-platform: org.hibernate.dialect.H2Dialect
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
 #     <H2 인메모리 DB>
-#     ddl-auto: create
+#      ddl-auto: create
       ddl-auto: none
     defer-datasource-initialization: true
 
@@ -51,10 +49,10 @@ comm:
   uploadPath: C:\Temp\upload
 ########################################################################################
 
-#logging.level:
-#    org.hibernate:
-#      sql: debug
-#      type.descriptor.sql: trace # sql의 데이터까지 보이게
+logging.level:
+    org.hibernate:
+      sql: debug
+      type.descriptor.sql: trace # sql의 데이터까지 보이게
 
 server:
   error:
