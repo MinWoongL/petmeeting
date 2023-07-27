@@ -11,7 +11,6 @@ import lombok.Data;
 
 @Data
 public class RegisterDogReqDto {
-    Integer shelterNo;
     String name;
     DogSize dogSize;
     Gender gender;

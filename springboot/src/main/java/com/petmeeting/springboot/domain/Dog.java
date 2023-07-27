@@ -30,9 +30,11 @@ public class Dog {
     private String name;
 
     @Column(name = "dog_size", columnDefinition = "varchar(10)", nullable = false)
+    @Enumerated(EnumType.STRING)
     private DogSize dogSize;
 
     @Column(name = "gender", columnDefinition = "char(1)", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(name = "weight", nullable = false)
@@ -51,6 +53,7 @@ public class Dog {
     private Long protectionEndDate;
 
     @Column(name = "adoption_availability", columnDefinition = "varchar(20)", nullable = false)
+    @Enumerated(EnumType.STRING)
     private AdoptionAvailability adoptionAvailability;
 
     @Column(name = "current_status", columnDefinition = "text")
@@ -89,6 +92,10 @@ public class Dog {
 
     public void delete(){
         this.isDeleted = true;
+    }
+
+    public void updateStatus(AdoptionAvailability adoptionAvailability){
+        this.adoptionAvailability = adoptionAvailability;
     }
 
 
