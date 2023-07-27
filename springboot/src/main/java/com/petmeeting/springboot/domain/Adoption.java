@@ -61,5 +61,11 @@ public class Adoption {
 
     @Column(name = "adoption_status", columnDefinition = "varchar(20)", nullable = false)
     @ColumnDefault("'WAITING'")
+    @Enumerated(EnumType.STRING)
     private AdoptionStatus adoptionStatus;
+
+    // 해당 유기견의 보호가 종료되면 입양신청이 모두 미채택으로 변경되어야 함
+    public void updateAdoptionStatusToFail(){
+        this.adoptionStatus = AdoptionStatus.ADOPT_FAIL;
+    }
 }

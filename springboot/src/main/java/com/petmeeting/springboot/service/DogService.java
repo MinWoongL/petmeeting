@@ -1,12 +1,12 @@
 package com.petmeeting.springboot.service;
 
-import com.petmeeting.springboot.domain.Dog;
-import com.petmeeting.springboot.domain.Member;
-import com.petmeeting.springboot.domain.Shelter;
-import com.petmeeting.springboot.domain.Users;
+import com.petmeeting.springboot.domain.*;
 import com.petmeeting.springboot.dto.dog.DogResDto;
+import com.petmeeting.springboot.dto.dog.DogStatusUpdateReqDto;
 import com.petmeeting.springboot.dto.dog.RegisterDogReqDto;
 import com.petmeeting.springboot.dto.dog.RegisterDogResDto;
+import com.petmeeting.springboot.enums.AdoptionAvailability;
+import com.petmeeting.springboot.repository.AdoptionRepository;
 import com.petmeeting.springboot.repository.DogRepository;
 import com.petmeeting.springboot.repository.ShelterRepository;
 import com.petmeeting.springboot.repository.UserRepository;
@@ -14,6 +14,8 @@ import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,6 +29,7 @@ import java.util.Map;
 public class DogService {
     private final DogRepository dogRepository;
     private final UserRepository userRepository;
+    private final AdoptionRepository adoptionRepository;
 
     private final JwtUtils jwtUtils;
 
@@ -50,15 +53,11 @@ public class DogService {
         return result;
     }
 
+    @Transactional
     public Map<String, Object> findDog(Integer dogNo, String token) {
-//        Users user = userRepository.findById(getUserNo(token))
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한이 없습니다."));
-//
-//        if(user instanceof Member) {
-//            user = (Member) user;
-//        } else if(user instanceof Shelter) {
-//            user = (Shelter) user;
-//        }
+        // 로그인한 사람만 상세볼수있으니까 User인지 확인
+        Users user = userRepository.findById(getUserNo(token))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한이 없습니다."));
 
         Dog dog = dogRepository.findDogByDogNo(dogNo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다."));
@@ -69,23 +68,57 @@ public class DogService {
         return result;
     }
 
+    /**
+     * 유기견의 상태를 변경합니다.
+     * userNo는 현재 로그인한 유저의 고유번호를 입력합니다.
+     * 보호종료 상태로 변경될 시 해당 유기견에게 할당된 모든 입양신청서의 adoptionStatus가 “미채택”으로 변경됩니다.
+     * @param dogStatusUpdateReqDto
+     * @param token
+     * @return
+     */
+    @Transactional
+    public Map<String, Object> updateDogStatus(DogStatusUpdateReqDto dogStatusUpdateReqDto, String token){
 
+        Shelter shelter = (Shelter) userRepository.findById(getUserNo(token))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "보호소를 찾을 수 없습니다."));
 
+        int dogNo = dogStatusUpdateReqDto.getDogNo();
+        Dog updateDog = dogRepository.findDogByDogNo(dogNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "강아지를 찾을 수 없습니다."));
+
+        if(shelter.getId() != updateDog.getShelter().getId()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
+        }
+
+        updateDog.updateStatus(dogStatusUpdateReqDto.getAdoptionAvailability());
+        dogRepository.save(updateDog);
+
+//        // 만약 보호종료 상태가 된다면, 해당 유기견에게 할당된 모든 입양신청서 "미채택"
+//        if(dogStatusUpdateReqDto.getAdoptionAvailability().equals(AdoptionAvailability.ADOPT_IMPOSSIBLE)){
+//            Adoption adoption = adoptionRepository.updateAdoptionStatus(updateDog.getDogNo());
+//            adoptionRepository.save(adoption);
+//        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("dog", DogResDto.dogToDto(updateDog));
+
+        return result;
+    }
 
     @Transactional
-    // getDogList 부터 해야함...
     public void deleteDog(Integer dogNo, String token) {
-        Shelter shelter = (Shelter) userRepository.findById(getUserNo(token))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "보호소를 찾을 수 없습니다 삭제 권한이 없습니다."));
-
-//        for(Dog dog : shelter.getDogList()){
-//            if(dog.getDogNo() == dogNo) {
-//                dog.delete();
-//            }
-//        }
-    //같은보호손지 확인
+        // 유기견부터 찾기
         Dog dog = dogRepository.findDogByDogNo(dogNo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다."));
+
+        // 1. 로그인 유저가 보호소 유저면서
+        // 2. 해당 유기견을 등록한 보호소와 동일한지
+        Shelter shelter = (Shelter) userRepository.findById(getUserNo(token))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "보호소를 찾을 수 없습니다."));
+
+        if(dog.getShelter().getId() != shelter.getId()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한 없음(해당 보호소의 갱얼쥐가 아님)");
+        }
 
         dog.delete();
         dogRepository.save(dog);
@@ -94,7 +127,7 @@ public class DogService {
     private Integer getUserNo(String token){
         if(!token.startsWith("Bearer ")) {
             log.error("[토큰 검증] Prefix Error");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prefix가 올바르지 않아유");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prefix가 올바르지 않습니다.");
         }
 
         token = token.substring(7);
