@@ -52,9 +52,11 @@ public class BroadcastService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "토큰이 부족합니다.");
         }
         member.spendToken(1);
+        userRepository.save(member);
 
         log.info("[기기제어 요청] 기기조작 저장");
         shelter.setControlUser(member.getName(), endTime);
+        shelterRepository.save(shelter);
 
         Map<String, String> map = new HashMap<>();
         map.put("userId", member.getName());

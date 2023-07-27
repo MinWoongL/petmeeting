@@ -74,4 +74,5 @@ public class Member extends Users {
     public void spendToken(int spendToken) {
         this.holdingToken -= spendToken;
     }
+
 }

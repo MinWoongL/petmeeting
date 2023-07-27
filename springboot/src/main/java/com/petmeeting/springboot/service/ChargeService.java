@@ -105,7 +105,7 @@ public class ChargeService {
                 .postForObject("https://kapi.kakao.com/v1/payment/approve", requestEntity, KakaoApproveResDto.class);
 
         int chargePrice = kakaoApproveResDto.getAmount().getTotal();
-        int chargeToken = chargePrice < 10000 ? 1 : (chargePrice < 50000 ? 2 : 3); // 토큰 개수를 직접 입력받거나 표를 정해야 함.
+        int chargeToken = chargePrice <= 10000 ? 1 : (chargePrice <= 50000 ? 2 : 3); // 토큰 개수를 직접 입력받거나 표를 정해야 함.
 
         Charge charge = Charge.builder()
                 .member(member)
@@ -119,6 +119,7 @@ public class ChargeService {
         log.info("[결제검증] userId : {}, chargePrice : {}, chargeToken : {}", member.getUserId(), chargePrice, chargeToken);
 
         member.chargeTokens(chargeToken);
+        userRepository.save(member);
 
         return ChargeCheckResDto.builder()
                 .price(chargePrice)
