@@ -106,8 +106,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(userNo));
     }
 
-
-
     @Operation(
             summary = "(관리자) 비활성상태 보호소 조회 / 작업필요",
             description = "성공 시 비활성상태의 보호소 목록을 반환합니다."
