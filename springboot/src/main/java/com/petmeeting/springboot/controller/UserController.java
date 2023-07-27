@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import nonapi.io.github.classgraph.json.JSONSerializer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -87,7 +88,7 @@ public class UserController {
     }
 
     @Operation(
-            summary = "회원정보수정 / 작업필요",
+            summary = "회원정보수정",
             description = "성공 시 변경된 회원의 데이터를 반환합니다."
     )
     @PutMapping
@@ -96,14 +97,16 @@ public class UserController {
     }
 
     @Operation(
-            summary = "(관리자) 회원목록 가져오기 / 작업필요",
-            description = "성공 시 option에 따라 회원의 목록을 반환합니다."
+            summary = "(관리자) 회원 가져오기",
+            description = "UserNo로 회원의 정보를 가져옵니다."
     )
-    @GetMapping("/admin/user-list")
-    public ResponseEntity<Map<String, List<AdminUserResDto>>> getAllUserlist (String option) {
-
-        return null;
+    @GetMapping("/admin/{userNo}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<AdminUserResDto> getUser (@PathVariable Integer userNo) {
+        return ResponseEntity.ok(userService.getUser(userNo));
     }
+
+
 
     @Operation(
             summary = "(관리자) 비활성상태 보호소 조회 / 작업필요",
@@ -111,16 +114,6 @@ public class UserController {
     )
     @GetMapping("/admin/disabled-shelter")
     public ResponseEntity<Map<String, List<AdminUserResDto>>> getAllDisabledShelter() {
-
-        return null;
-    }
-
-    @Operation(
-            summary = "(관리자) 회원정보 가져오기 / 작업필요",
-            description = "성공 시 회원의 정보를 가져옵니다. 보호소의 경우 가입신청서 imageNo도 가져옵니다."
-    )
-    @GetMapping("/admin/{userNo}")
-    public ResponseEntity<AdminUserResDto> getOneUser(@PathVariable Integer userNo) {
 
         return null;
     }

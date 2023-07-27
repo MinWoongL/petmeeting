@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.service;
 
+import com.petmeeting.springboot.domain.Shelter;
 import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.dto.auth.Token;
 import com.petmeeting.springboot.dto.user.*;
@@ -162,9 +163,17 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 틀렸습니다");
         }
 
-        // update 로직 필요
+        log.info("[유저 정보 수정] userId : {}", user.getUserId());
 
-        return null;
+        if (user instanceof Shelter)
+            ((Shelter) user).updateInfo(updateReqDto);
+        else
+            user.updateInfo(updateReqDto);
+
+        userRepository.save(user);
+
+        return UserResDto.builder().build()
+                .usersToDto(user);
     }
 
     private Users getUserByToken(String token) {
@@ -186,5 +195,24 @@ public class UserService {
 
     public String encodingPass(String password) {
         return passwordEncoder.encode(password);
+    }
+
+
+    /**
+     * (관리자) 유저 정보 가져오기
+     * @param userNo
+     * @return AdminUserResDto
+     */
+    public AdminUserResDto getUser(Integer userNo) {
+        Users user = userRepository.findById(userNo)
+                .orElseThrow(() -> {
+                    log.error("[관리자 - 회원 가져오기] 회원을 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.");
+                });
+
+        log.info("[관리자 - 회원 가져오기] userId : {}", user.getUserId());
+
+        return AdminUserResDto.builder().build()
+                .userToDto(user);
     }
 }
