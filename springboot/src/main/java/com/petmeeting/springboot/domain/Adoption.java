@@ -39,6 +39,7 @@ public class Adoption {
     private String name;
 
     @Column(name = "gender", columnDefinition = "char(1)", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(name = "age", nullable = false)
