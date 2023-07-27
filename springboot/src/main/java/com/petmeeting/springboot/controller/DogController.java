@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class DogController {
             description = "새로운 유기견을 등록합니다."
     )
     @PostMapping
-    public ResponseEntity<RegisterDogResDto> registerDog(RegisterDogReqDto requestDto, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<RegisterDogResDto> registerDog(@RequestBody RegisterDogReqDto requestDto, @RequestHeader(ACCESS_TOKEN) String token) {
         Map<String, Object> result = dogService.registerDog(requestDto, token);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -41,6 +42,7 @@ public class DogController {
                     "만약 '보호종료'가 되면 해당 유기견의 입양신청서가 모두 '미채택'으로 변경됩니다."
     )
     @PutMapping("/status/{dogNo}") // 이거 파라미터 어케해야대징
+//    @PreAuthorize("hasRole('ROLE_SHELTER')")
     public ResponseEntity<DogResDto> updateDogStatus(@PathVariable Integer dogNo, AdoptionAvailability adoptionAvailability, @RequestHeader(ACCESS_TOKEN) String token){
         DogStatusUpdateReqDto dogStatusUpdateReqDto = new DogStatusUpdateReqDto(dogNo, adoptionAvailability);
 
@@ -78,6 +80,7 @@ public class DogController {
     @GetMapping
     public ResponseEntity<List<DogResDto>> findAllDogByOption(RegisterDogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
 
+        return null;
     }
 
     @Operation(
@@ -87,6 +90,7 @@ public class DogController {
     @PutMapping("/{dogNo}")
     public ResponseEntity<DogResDto> updateDog(@PathVariable Integer dogNo, RegisterDogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
 
+        return null;
     }
 
     @Operation(
