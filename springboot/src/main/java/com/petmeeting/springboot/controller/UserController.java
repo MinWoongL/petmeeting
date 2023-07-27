@@ -46,8 +46,8 @@ public class UserController {
             description = "성공 시 “SignUp Success” 메시지를 반환합니다."
     )
     @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(SignUpReqDto signUpReqDto){
-
+    public ResponseEntity<String> signUp(@RequestBody SignUpReqDto signUpReqDto){
+        System.out.println(signUpReqDto.toString());
         userService.signUp(signUpReqDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("SignUp Success");
     }
@@ -57,7 +57,7 @@ public class UserController {
             description = "성공 시 JWT와 회원의 정보를 반환합니다."
     )
     @PostMapping("/sign-in")
-    public ResponseEntity<SignInResDto> signIn(SignInReqDto requestDto) {
+    public ResponseEntity<SignInResDto> signIn(@RequestBody SignInReqDto requestDto) {
         Map<String, Object> result = userService.signIn(requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -92,7 +92,7 @@ public class UserController {
             description = "성공 시 변경된 회원의 데이터를 반환합니다."
     )
     @PutMapping
-    public ResponseEntity<UserResDto> updateInfo(UserUpdateReqDto updateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<UserResDto> updateInfo(@RequestBody UserUpdateReqDto updateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(userService.updateUser(updateReqDto, token));
     }
 
@@ -121,7 +121,7 @@ public class UserController {
             description = "성공 시 회원의 변경된 정보를 반환합니다."
     )
     @PutMapping("/admin")
-    public ResponseEntity<AdminUserResDto> updateStatus(AdminUpdateReqDto adminUpdateReqDto) {
+    public ResponseEntity<AdminUserResDto> updateStatus(@RequestBody AdminUpdateReqDto adminUpdateReqDto) {
 
         return null;
     }
