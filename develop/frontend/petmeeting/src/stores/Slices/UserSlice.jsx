@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   avatarUrl: 'https://www.urbanbrush.net/web/wp-content/uploads/edd/2019/01/urbanbrush-20190108131811238895.png',
-  nickname: 'Duhee',
+  userId: 'Duhee',
   password: '',
   points: 0,
   isLoggedIn: false
@@ -18,8 +18,8 @@ const userSlice = createSlice({
   reducers: {
     login: (state, action) => {
       // state.avatarUrl = action.payload.avatarUrl;
-      state.nickname = action.payload.nickname;
-      state.password = action.payload.password;
+      state.userId = action.payload.userId;
+      // state.password = action.payload.password;
       // state.points = action.payload.points;
       state.isLoggedIn = true;
     },
@@ -30,7 +30,7 @@ const userSlice = createSlice({
       state.points += action.payload;
     },
     updateNickName: (state, action) => {
-      state.nickname = action.payload;
+      state.userId = action.payload;
     },
     setPassword: (state, action) => {
       state.password = action.payload;

@@ -58,9 +58,10 @@ export default function Login() {
       if (response.status === 200) {
         dispatch(
           login({
-            userId: response.data.userId,
+            userId: response.data.name,
             points: response.data.points,
           })
+          
         ); // 로그인 상태로 설정
         navigate("/"); // Home으로 이동
       } else {

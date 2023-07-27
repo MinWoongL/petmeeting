@@ -50,7 +50,7 @@ function InfoSidebar() {
 
           <Box>
             <Stack direction="row" alignItems="center" spacing={1}>
-              <Typography variant="h6">{user.nickname}</Typography>
+              <Typography variant="h6">{user.userId}</Typography>
               <IconButton size="small" onClick={() => setIsEditing(!isEditing)}>
                 <EditIcon fontSize="small" />
               </IconButton>
