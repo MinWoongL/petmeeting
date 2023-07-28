@@ -71,7 +71,7 @@ public class DogController {
             return ResponseEntity.ok(dogService.getAllDog());
         }
 
-        return null;
+        return ResponseEntity.ok(dogService.findDogByCondition(condition));
     }
 
     @Operation(
