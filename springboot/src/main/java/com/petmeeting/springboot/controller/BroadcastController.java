@@ -2,6 +2,7 @@ package com.petmeeting.springboot.controller;
 
 import com.petmeeting.springboot.dto.broadcast.BroadcastReqDto;
 import com.petmeeting.springboot.dto.broadcast.BroadcastShelterResDto;
+import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.service.BroadcastService;
 import com.petmeeting.springboot.service.SseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,8 +65,8 @@ public class BroadcastController {
             description = "보호소가 방송을 시작합니다."
     )
     @PostMapping("/broadcast")
-    public ResponseEntity<String> startBroadcast(@RequestBody BroadcastReqDto broadcastReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<MessageDto> startBroadcast(@RequestBody BroadcastReqDto broadcastReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         broadcastService.startBroadcast(broadcastReqDto, token);
-        return ResponseEntity.ok("Start Broadcast");
+        return ResponseEntity.ok(MessageDto.builder().msg("Start Broadcast").build());
     }
 }
