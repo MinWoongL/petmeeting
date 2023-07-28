@@ -7,11 +7,13 @@ import io.jsonwebtoken.security.SignatureException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 
@@ -97,5 +99,20 @@ public class JwtUtils {
             log.error("JWT claims string is empty: {}", e.getMessage());
         }
         return false;
+    }
+
+    public Integer getUserNo(String token) {
+        if (!token.startsWith("Bearer ")) {
+            log.error("[토큰 검증] Prefix Error");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prefix가 올바르지 않습니다.");
+        }
+        token = token.substring(7);
+
+        if (!validateJwtToken(token)) {
+            log.error("[토큰 검증] Validation Error");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 토큰입니다.");
+        }
+
+        return getUserNoFromJwtToken(token);
     }
 }

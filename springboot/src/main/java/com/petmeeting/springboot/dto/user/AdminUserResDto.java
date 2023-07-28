@@ -21,9 +21,10 @@ public class AdminUserResDto {
     public AdminUserResDto userToDto(Users user) {
         if (user instanceof Member) {
             return memberToDto((Member) user);
-        } else {
+        } else if (user instanceof Shelter){
             return shelterToDto((Shelter) user);
         }
+        return null;
     }
 
     private AdminUserResDto shelterToDto(Shelter shelter) {

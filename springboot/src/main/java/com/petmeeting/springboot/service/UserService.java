@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -214,5 +216,53 @@ public class UserService {
 
         return AdminUserResDto.builder().build()
                 .userToDto(user);
+    }
+
+    /**
+     * (관리자) 유저 목록 가져오기
+     * option에 따라 유저 목록을 불러옵니다.
+     * null이거나 all : 모든 유저
+     * member : 사용자
+     * shelter : 보호소
+     * disabled-shelter : 비활성 보호소
+     * @param option
+     * @return List<AdminUserResDto>
+     */
+    public List<AdminUserResDto> getUserList(String option) {
+        System.out.println(option);
+        if (option == null || option.equals("all")) {
+            return userRepository.findAll().stream()
+                    .map(users -> AdminUserResDto.builder().build().userToDto(users))
+                    .collect(Collectors.toList());
+        } else if (option.equals("disabled-shelter")) {
+            return userRepository.findShelterUserWithDisabled().stream()
+                    .map(users -> AdminUserResDto.builder().build().userToDto(users))
+                    .collect(Collectors.toList());
+        } else if (option.equals("shelter")) {
+            return userRepository.findShelterUser().stream()
+                    .map(users -> AdminUserResDto.builder().build().userToDto(users))
+                    .collect(Collectors.toList());
+        } else {
+            return userRepository.findMemberUser().stream()
+                    .map(users -> AdminUserResDto.builder().build().userToDto(users))
+                    .collect(Collectors.toList());
+        }
+    }
+
+
+    /**
+     * 관리자 권한으로 사용자 상태 변경
+     * @param userNo
+     * @param isActivated
+     * @return AdminUserResDto
+     */
+    public AdminUserResDto updateStatus(Integer userNo, Boolean isActivated) {
+        Users user = userRepository.findById(userNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."));
+
+        user.updateStatus(isActivated);
+        userRepository.save(user);
+
+        return AdminUserResDto.builder().build().userToDto(user);
     }
 }

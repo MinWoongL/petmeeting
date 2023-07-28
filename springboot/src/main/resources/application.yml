@@ -11,7 +11,7 @@ spring:
     hibernate:
 #     <H2 인메모리 DB>
 #      ddl-auto: create
-      ddl-auto: none
+      ddl-auto: update
     defer-datasource-initialization: true
 
     open-in-view: false # SSE 통신 간 HTTP Connection 열려있는 것 방지
@@ -52,7 +52,7 @@ comm:
 logging.level:
     org.hibernate:
       sql: debug
-      type.descriptor.sql: trace # sql의 데이터까지 보이게
+#      type.descriptor.sql: trace # sql의 데이터까지 보이게
 
 server:
   error:

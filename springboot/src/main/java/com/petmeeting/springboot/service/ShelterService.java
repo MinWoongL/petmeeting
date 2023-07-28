@@ -127,7 +127,7 @@ public class ShelterService {
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "보호소를 찾을 수 없습니다.");
                 });
 
-        Users user = userRepository.findById(getUserNo(token)).get();
+        Users user = userRepository.findById(jwtUtils.getUserNo(token)).get();
 
         Chat chat = Chat.builder()
                 .shelter(shelter)
@@ -139,20 +139,5 @@ public class ShelterService {
         chatRepository.save(chat);
 
         log.info("[보호소 채팅 등록] 등록 완료");
-    }
-
-    private Integer getUserNo(String token) {
-        if (!token.startsWith("Bearer ")) {
-            log.error("[토큰 검증] Prefix Error");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prefix가 올바르지 않습니다.");
-        }
-        token = token.substring(7);
-
-        if (!jwtUtils.validateJwtToken(token)) {
-            log.error("[토큰 검증] Validation Error");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 토큰입니다.");
-        }
-
-        return jwtUtils.getUserNoFromJwtToken(token);
     }
 }

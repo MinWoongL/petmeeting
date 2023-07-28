@@ -1,10 +1,13 @@
 package com.petmeeting.springboot.controller;
 
+import com.petmeeting.springboot.dto.broadcast.BroadcastReqDto;
 import com.petmeeting.springboot.dto.broadcast.BroadcastShelterResDto;
 import com.petmeeting.springboot.service.BroadcastService;
 import com.petmeeting.springboot.service.SseService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +32,9 @@ public class BroadcastController {
     )
     @GetMapping(value = "/connection", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connect() {
-        return ResponseEntity.ok(sseService.connect());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("X-Accel-Buffering", "no");
+        return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(sseService.connect());
     }
 
     @Operation(
@@ -52,5 +57,15 @@ public class BroadcastController {
     @GetMapping("/broadcast/shelter")
     public ResponseEntity<BroadcastShelterResDto> getBroadcastShelter() {
         return ResponseEntity.ok(broadcastService.getBroadcastShelter());
+    }
+
+    @Operation(
+            summary = "방송 시작하기",
+            description = "보호소가 방송을 시작합니다."
+    )
+    @PostMapping("/broadcast")
+    public ResponseEntity<String> startBroadcast(@RequestBody BroadcastReqDto broadcastReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+        broadcastService.startBroadcast(broadcastReqDto, token);
+        return ResponseEntity.ok("Start Broadcast");
     }
 }

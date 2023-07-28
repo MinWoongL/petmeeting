@@ -73,4 +73,9 @@ public class Shelter extends Users {
         this.location = updateReqDto.getLocation() == null ? this.location : updateReqDto.getLocation();
         this.siteUrl = updateReqDto.getSiteUrl() == null ? this.siteUrl : updateReqDto.getSiteUrl();
     }
+
+    public void startBroadCast(String onBroadcastTitle, Integer dogNo) {
+        this.onBroadCastTitle = onBroadcastTitle;
+        this.dogNo = dogNo;
+    }
 }
