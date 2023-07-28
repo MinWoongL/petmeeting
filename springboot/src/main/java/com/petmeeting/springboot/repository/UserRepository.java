@@ -11,12 +11,12 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
     Optional<Users> findUsersByUserId(String userId);
     boolean existsByUserId(String userId);
 
-    @Query(value = "select * from Users u inner join Shelter s on u.user_no = s.user_no where u.user_group = 'Shelter'", nativeQuery = true)
+    @Query(value = "select * from users u inner join shelter s on u.user_no = s.user_no where u.user_group = 'Shelter'", nativeQuery = true)
     List<Users> findShelterUser();
 
-    @Query(value = "select * from Users u inner join Shelter s on u.user_no = s.user_no where u.user_group = 'Shelter' and u.is_activated = false", nativeQuery = true)
+    @Query(value = "select * from users u inner join shelter s on u.user_no = s.user_no where u.user_group = 'Shelter' and u.is_activated = false", nativeQuery = true)
     List<Users> findShelterUserWithDisabled();
 
-    @Query(value = "select * from Users u inner join Member m on u.user_no = m.user_no where u.user_group = 'Member'", nativeQuery = true)
+    @Query(value = "select * from users u inner join member m on u.user_no = m.user_no where u.user_group = 'Member'", nativeQuery = true)
     List<Users> findMemberUser();
 }

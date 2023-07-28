@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.dto.board.BoardUpdateReqDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,5 +57,16 @@ public class Board {
 
     public void increaseViewCnt() {
         this.viewCnt++;
+    }
+
+    public void updateBoard(BoardUpdateReqDto boardUpdateReqDto) {
+        this.title = boardUpdateReqDto.getTitle() == null ? this.title : boardUpdateReqDto.getTitle();
+        this.content = boardUpdateReqDto.getContent() == null ? this.content : boardUpdateReqDto.getContent();
+        this.imagePath = boardUpdateReqDto.getImagePath() == null ? this.imagePath : boardUpdateReqDto.getImagePath();
+        this.modifiedTime = System.currentTimeMillis() / 1000L;
+    }
+
+    public void deleteBoard() {
+        this.deletedTime = System.currentTimeMillis() / 1000L;
     }
 }

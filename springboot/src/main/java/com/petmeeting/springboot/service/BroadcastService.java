@@ -1,8 +1,11 @@
 package com.petmeeting.springboot.service;
 
+import com.petmeeting.springboot.domain.Dog;
 import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Shelter;
+import com.petmeeting.springboot.dto.broadcast.BroadcastReqDto;
 import com.petmeeting.springboot.dto.broadcast.BroadcastShelterResDto;
+import com.petmeeting.springboot.repository.DogRepository;
 import com.petmeeting.springboot.repository.ShelterRepository;
 import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
@@ -23,6 +26,7 @@ public class BroadcastService {
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final ShelterRepository shelterRepository;
+    private final DogRepository dogRepository;
 
     /**
      * 기기 제어 요청을 전달합니다.
@@ -85,5 +89,36 @@ public class BroadcastService {
                 .onBroadcastTitle(shelter.getOnBroadCastTitle())
                 .dogNo(shelter.getDogNo())
                 .build();
+    }
+
+    /**
+     * 방송 시작하기
+     *
+     * @param broadcastReqDto
+     */
+    @Transactional
+    public void startBroadcast(BroadcastReqDto broadcastReqDto, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        Shelter shelter = shelterRepository.findById(userNo)
+                .orElseThrow(() -> {
+                    log.error("[방송 시작하기] 해당 보호소를 찾을 수 없습니다. shelterNo : {}", userNo);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "보호소를 찾을 수 없습니다.");
+                });
+
+        Dog dog = dogRepository.findDogByDogNo(broadcastReqDto.getDogNo())
+                .orElseThrow(() -> {
+                    log.error("[방송 시작하기] 해당 유기견을 찾을 수 없습니다. dogNo : {}", broadcastReqDto.getDogNo());
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다.");
+                });
+
+        if (!shelter.getId().equals(dog.getShelter().getId())) {
+            log.error("[방송 시작하기] 보호소가 등록한 유기견이 아닙니다. DogShelterId : {}, shelterId : {}", dog.getShelter().getId(), shelter.getId());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 보호소가 관리하는 유기견이 아닙니다.");
+        }
+
+        log.info("[방송 시작하기] 방송 시작. 방송제목 : {}, 방송유기견 이름 : {}", broadcastReqDto.getOnBroadcastTitle(), dog.getName());
+        shelter.startBroadCast(broadcastReqDto.getOnBroadcastTitle(), dog.getDogNo());
+        shelterRepository.save(shelter);
     }
 }

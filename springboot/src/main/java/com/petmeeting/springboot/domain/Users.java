@@ -48,12 +48,12 @@ public abstract class Users {
     @Column(name = "image_path")
     private String imagePath;
 
-    @Column(name = "refresh_token")
+    @Column(name = "refresh_token", columnDefinition = "text")
     private String refreshToken;
 
     @PrePersist
     public void prePersist() {
-        this.joinDate = joinDate == null ? (int) System.currentTimeMillis() / 1000 : joinDate;
+        this.joinDate = joinDate == null ? System.currentTimeMillis() / 1000 : joinDate;
     }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
