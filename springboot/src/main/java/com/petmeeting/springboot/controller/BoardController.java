@@ -2,6 +2,7 @@ package com.petmeeting.springboot.controller;
 
 import com.petmeeting.springboot.dto.board.*;
 import com.petmeeting.springboot.dto.common.MessageDto;
+import com.petmeeting.springboot.dto.common.ResultDto;
 import com.petmeeting.springboot.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -60,9 +61,9 @@ public class BoardController {
             description = "입양후기를 삭제합니다. 본인 게시글이 아닐 경우 삭제 불가"
     )
     @DeleteMapping("/{boardNo}")
-    public ResponseEntity<String> deleteBoard(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<MessageDto> deleteBoard(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
         boardService.deleteBoard(boardNo, token);
-        return ResponseEntity.ok("Delete Success");
+        return ResponseEntity.ok(MessageDto.builder().msg("Delete Success").build());
     }
 
     @Operation(
@@ -70,9 +71,9 @@ public class BoardController {
             description = "입양후기 좋아요를 설정합니다."
     )
     @PostMapping("/like/{boardNo}")
-    public ResponseEntity<String> likeBoard(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<MessageDto> likeBoard(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
         boardService.likeBoard(boardNo, token);
-        return ResponseEntity.ok("Like Success");
+        return ResponseEntity.ok(MessageDto.builder().msg("Like Success").build());
     }
 
     @Operation(
@@ -90,7 +91,7 @@ public class BoardController {
             description = "입양후기가 있는지 체크합니다."
     )
     @GetMapping("/like/{boardNo}")
-    public ResponseEntity<Boolean> checkLiked(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
-        return ResponseEntity.ok(boardService.checkLiked(boardNo, token));
+    public ResponseEntity<ResultDto> checkLiked(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(ResultDto.builder().result(boardService.checkLiked(boardNo, token)).build());
     }
 }
