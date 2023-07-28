@@ -6,12 +6,12 @@ spring:
         format_sql: true
         show_sql: true
 #   <H2 인메모리 DB>
-#    database-platform: org.hibernate.dialect.H2Dialect
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database-platform: org.hibernate.dialect.H2Dialect
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
 #     <H2 인메모리 DB>
-#      ddl-auto: create
-      ddl-auto: update
+      ddl-auto: create
+#      ddl-auto: none
     defer-datasource-initialization: true
 
     open-in-view: false # SSE 통신 간 HTTP Connection 열려있는 것 방지
@@ -22,14 +22,14 @@ spring:
 
   datasource:
 #    <H2 인메모리 DB>
-#    url: jdbc:h2:mem:testdb
-#    driverClassName: org.h2.Driver
-#    username: sa
-#    password:
-    url: jdbc:mariadb://i9a203.p.ssafy.io:3306/mydb
-    username: backend
-    password: Backend@1234
-    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+#    url: jdbc:mariadb://i9a203.p.ssafy.io:3306/mydb
+#    username: backend
+#    password: Backend@1234
+#    driver-class-name: org.mariadb.jdbc.Driver
 
 
   ########################################################################################
@@ -42,7 +42,7 @@ spring:
       location: C:\Temp\upload      # 업로드된 파일의 임시 저장 공간
   output:
     ansi:
-      enabled: DETECT             # 멀티파일 업로드 지원 여부(default: true)
+      enabled: DETECT               # 멀티파일 업로드 지원 여부(default: true)
 
 # 파일업로드 경로
 comm:
