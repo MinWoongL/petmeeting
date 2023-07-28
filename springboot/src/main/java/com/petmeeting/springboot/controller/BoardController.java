@@ -1,6 +1,7 @@
 package com.petmeeting.springboot.controller;
 
 import com.petmeeting.springboot.dto.board.*;
+import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -79,9 +80,9 @@ public class BoardController {
             description = "입양후기 좋아요를 취소합니다."
     )
     @DeleteMapping("/like/{boardNo}")
-    public ResponseEntity<String> dislikeBoard(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<MessageDto> dislikeBoard(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
         boardService.dislikeBoard(boardNo, token);
-        return ResponseEntity.ok("Dislike Success");
+        return ResponseEntity.ok(MessageDto.builder().msg("Dislike Success").build());
     }
 
     @Operation(
