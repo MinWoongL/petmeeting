@@ -51,6 +51,6 @@ insert into dog
 (dog_no, shelter_no, name, dog_size, gender, weight, age, protection_start_date, adoption_availability, is_deleted)
 values
 ('100000', '100002', '댕댕이1', 'SMALL_SIZE', 'FEMALE', '13', '3', '16849213', 'ADOPT_POSSIBLE', false),
-('100000', '100004', '댕댕이2', 'SMALL_SIZE', 'MALE', '17', '5', '16849213', 'ADOPT_POSSIBLE', false),
-('100000', '100002', '댕댕이3', 'LARGE_SIZE', 'FEMALE', '30', '1', '16849213', 'ADOPT_POSSIBLE', false),
-('100000', '100003', '댕댕이4', 'SMALL_SIZE', 'FEMALE', '30', '1', '16849213', 'ADOPT_POSSIBLE', true);
+('100001', '100004', '댕댕이2', 'SMALL_SIZE', 'MALE', '17', '5', '16849213', 'ADOPT_POSSIBLE', false),
+('100002', '100002', '댕댕이3', 'LARGE_SIZE', 'FEMALE', '30', '1', '16849213', 'ADOPT_POSSIBLE', false),
+('100003', '100003', '댕댕이4', 'SMALL_SIZE', 'FEMALE', '30', '1', '16849213', 'ADOPT_POSSIBLE', true);
