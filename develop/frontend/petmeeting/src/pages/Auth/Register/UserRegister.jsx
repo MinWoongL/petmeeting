@@ -58,7 +58,7 @@ export default function SignUp() {
       console.log(data.get("userId"));
       const response = await axios({
         method: "post",
-        url: "http://i9a203.p.ssafy.io:5000/api/v1/user/sign-up",
+        url: "http://i9a203.p.ssafy.io/backapi/api/v1/user/sign-up",
         data: {
           userId: data.get("userId"),
           password: data.get("password"),

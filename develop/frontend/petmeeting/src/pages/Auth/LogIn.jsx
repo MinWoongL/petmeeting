@@ -50,7 +50,7 @@ export default function Login() {
     try {
       const response = await axios({
         method: "post",
-        url: "http://i9a203.p.ssafy.io:5000/api/v1/user/sign-in",
+        url: "http://i9a203.p.ssafy.io/backapi/api/v1/user/sign-in",
         headers: { "Content-Type": "application/json" },
         data: JSON.stringify({ userId, password }),
       });
