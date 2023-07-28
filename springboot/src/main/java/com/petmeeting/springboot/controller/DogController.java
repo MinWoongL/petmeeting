@@ -65,7 +65,7 @@ public class DogController {
     )
     @GetMapping
     public ResponseEntity<List<RegisterDogResDto>> findAllDogByOption
-            (@Parameter(description = "option : 'all'")
+            (@Parameter(description = "option : 'all' / 'random' / 'like' 등등")
              DogSearchCondition condition, @RequestHeader(ACCESS_TOKEN) String token) {
         if(condition.getOption() != null && condition.getOption().toLowerCase().equals("all")){
             return ResponseEntity.ok(dogService.getAllDog());
