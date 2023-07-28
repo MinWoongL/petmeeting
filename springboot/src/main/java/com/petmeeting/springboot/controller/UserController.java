@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import nonapi.io.github.classgraph.json.JSONSerializer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class UserController {
     )
     @GetMapping("/check/{userId}")
     ResponseEntity<Boolean> duplicateCheck(@PathVariable String userId) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.check(userId));
+        return ResponseEntity.ok(userService.check(userId));
     }
 
     @Operation(
@@ -47,7 +46,6 @@ public class UserController {
     )
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpReqDto signUpReqDto){
-        System.out.println(signUpReqDto.toString());
         userService.signUp(signUpReqDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("SignUp Success");
     }
@@ -101,28 +99,27 @@ public class UserController {
             description = "UserNo로 회원의 정보를 가져옵니다."
     )
     @GetMapping("/admin/{userNo}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AdminUserResDto> getUser (@PathVariable Integer userNo) {
         return ResponseEntity.ok(userService.getUser(userNo));
     }
 
     @Operation(
-            summary = "(관리자) 비활성상태 보호소 조회 / 작업필요",
-            description = "성공 시 비활성상태의 보호소 목록을 반환합니다."
+            summary = "(관리자) 회원 목록 가져오기",
+            description = "option에 따라 회원의 목록을 가져옵니다.\n" +
+                    "default : all / disabled-shelter : 비활성 보호소 / shelter : 보호소 / member : 사용자"
     )
-    @GetMapping("/admin/disabled-shelter")
-    public ResponseEntity<Map<String, List<AdminUserResDto>>> getAllDisabledShelter() {
-
-        return null;
+    @GetMapping("/admin")
+    public ResponseEntity<List<AdminUserResDto>> getUserList(@RequestParam String option) {
+        return ResponseEntity.ok(userService.getUserList(option));
     }
 
     @Operation(
             summary = "(관리자) 회원 활성화 상태 변경 / 작업필요",
             description = "성공 시 회원의 변경된 정보를 반환합니다."
     )
-    @PutMapping("/admin")
-    public ResponseEntity<AdminUserResDto> updateStatus(@RequestBody AdminUpdateReqDto adminUpdateReqDto) {
-
-        return null;
+    @PutMapping("/admin/{userNo}")
+    public ResponseEntity<AdminUserResDto> updateStatus(@PathVariable Integer userNo,@RequestBody AdminUpdateReqDto adminUpdateReqDto) {
+        return ResponseEntity.ok(userService.updateStatus(userNo, adminUpdateReqDto.getIsActivated()));
     }
 }
