@@ -34,7 +34,7 @@ public class Dog {
     @Enumerated(EnumType.STRING)
     private DogSize dogSize;
 
-    @Column(name = "gender", columnDefinition = "char(1)", nullable = false)
+    @Column(name = "gender", columnDefinition = "char(6)", nullable = false)
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
@@ -103,9 +103,8 @@ public class Dog {
     public void updateStatus(AdoptionAvailability adoptionAvailability){
         this.adoptionAvailability = adoptionAvailability;
 
-        if(adoptionAvailability.equals(AdoptionAvailability.ADOPT_IMPOSSIBLE)) {
+        if(adoptionAvailability.equals(AdoptionAvailability.ADOPT_IMPOSSIBLE))
             protectionEndDate = System.currentTimeMillis() / 1000;
-        }
     }
 
     public void updateDogInfo(RegisterDogReqDto updateDogReqDto){

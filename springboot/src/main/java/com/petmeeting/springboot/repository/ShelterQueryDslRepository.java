@@ -38,7 +38,7 @@ public class ShelterQueryDslRepository {
 
     private BooleanExpression containsName(String name) {
         if (name == null)
-            return null; // 두희오빠에게 : 자바컨벤션에서 {} 생략하지 않기로했어요.
+            return null;
 
         return shelter.name.contains(name)
                 .or(shelter.name.startsWith(name))

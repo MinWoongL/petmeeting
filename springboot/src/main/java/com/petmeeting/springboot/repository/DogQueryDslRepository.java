@@ -31,9 +31,8 @@ public class DogQueryDslRepository {
     }
 
     private BooleanExpression containsName(String name) {
-        if(name == null) {
+        if(name == null)
             return null;
-        }
 
         return dog.name.contains(name)
                 .or(dog.name.startsWith(name))
@@ -41,9 +40,8 @@ public class DogQueryDslRepository {
     }
 
     private BooleanExpression sameDogSize(DogSize size) {
-        if(size == null) {
+        if(size == null)
             return null;
-        }
 
         return dog.dogSize.eq(size);
     }
@@ -51,10 +49,9 @@ public class DogQueryDslRepository {
     // 검색조건에 보호소번호가 있는지에 따라 검색 결과가 달라짐
     private BooleanExpression containsShelterNo(Integer shelterNo) {
         // 보호소 번호가 있으면
-        if(shelterNo != null) {
+        if(shelterNo != null)
             // 같은 보호소번호를 가진 모든 강아지 검색
             return dog.shelter.id.eq(shelterNo);
-        }
 
         // 보호소 번호가 없으면
         // 입양 가능한 강아지만 나온다.
