@@ -52,7 +52,7 @@ comm:
 logging.level:
     org.hibernate:
       sql: debug
-      type.descriptor.sql: trace # sql의 데이터까지 보이게
+#      type.descriptor.sql: trace # sql의 데이터까지 보이게
 
 server:
   error:
