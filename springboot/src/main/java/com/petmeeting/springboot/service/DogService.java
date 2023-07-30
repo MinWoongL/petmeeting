@@ -23,11 +23,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DogService {
+
+    private final JwtUtils jwtUtils;
     private final DogRepository dogRepository;
     private final UserRepository userRepository;
     private final AdoptionRepository adoptionRepository;
     private final DogQueryDslRepository dogQueryDslRepository;
-    private final JwtUtils jwtUtils;
+    private final LikeDogRepository likeDogRepository;
+    private final BookmarkDogRepository bookmarkDogRepository;
 
     /**
      * 유기견 등록
@@ -36,7 +39,7 @@ public class DogService {
      */
     @Transactional
     public Map<String, Object> registerDog(RegisterDogReqDto registerDogReqDto, String token){
-        Shelter shelter = (Shelter) userRepository.findById(getUserNo(token))
+        Shelter shelter = (Shelter) userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "보호소를 찾을 수 없습니다."));
 
         Dog dog = registerDogReqDto.toEntity(shelter);
@@ -52,7 +55,7 @@ public class DogService {
     @Transactional
     public Map<String, Object> findDog(Integer dogNo, String token) {
         // 로그인한 사람만 상세볼수있으니까 User인지 확인
-        Users user = userRepository.findById(getUserNo(token))
+        Users user = userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한이 없습니다."));
 
         Dog dog = dogRepository.findDogByDogNo(dogNo)
@@ -75,7 +78,7 @@ public class DogService {
     @Transactional
     public Map<String, Object> updateDogStatus(Integer dogNo, DogStatusUpdateReqDto dogStatusUpdateReqDto, String token){
 
-        Shelter shelter = (Shelter) userRepository.findById(getUserNo(token))
+        Shelter shelter = (Shelter) userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "보호소를 찾을 수 없습니다."));
 
         Dog updateDog = dogRepository.findDogByDogNo(dogNo)
@@ -102,7 +105,7 @@ public class DogService {
 
     @Transactional
     public DogResDto updateDog(Integer dogNo, RegisterDogReqDto registerDogReqDto, String token) {
-        Shelter shelter = (Shelter) userRepository.findById(getUserNo(token))
+        Shelter shelter = (Shelter) userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "보호소를 찾을 수 없습니다."));
 
         Dog updateDog = dogRepository.findDogByDogNo(dogNo)
@@ -126,7 +129,7 @@ public class DogService {
 
         // 1. 로그인 유저가 보호소 유저면서 (X) controller에서할거야
         // 2. 해당 유기견을 등록한 보호소와 동일한지
-        Shelter shelter = (Shelter) userRepository.findById(getUserNo(token))
+        Shelter shelter = (Shelter) userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "보호소를 찾을 수 없습니다."));
 
         if(dog.getShelter().getId() != shelter.getId()){
@@ -162,26 +165,155 @@ public class DogService {
                 .collect(Collectors.toList());
     }
 
-    private Integer getUserNo(String token){
-        if(!token.startsWith("Bearer ")) {
-            log.error("[토큰 검증] Prefix Error");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prefix가 올바르지 않습니다.");
-        }
-
-        token = token.substring(7);
-
-        if(!jwtUtils.validateJwtToken(token)){
-            log.error("[토큰 검증] Validation Error");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 토큰입니다.");
-        }
-
-        return jwtUtils.getUserNoFromJwtToken(token);
-    }
-
+    @Transactional
     public List<RegisterDogResDto> getAllDog() {
         log.info("[모든 강아지 검색]");
 
         return dogRepository.findDogByIsDeletedFalse().stream()
+                .map(dog -> RegisterDogResDto.builder()
+                        .dogNo(dog.getDogNo())
+                        .name(dog.getName())
+                        .dogSize(dog.getDogSize())
+                        .gender(dog.getGender())
+                        .weight(dog.getWeight())
+                        .age(dog.getAge())
+                        .personality(dog.getPersonality())
+                        .protectionStartDate(dog.getProtectionStartDate())
+                        .protectionEndDate(dog.getProtectionEndDate())
+                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .currentStatus(dog.getCurrentStatus())
+                        .dogSpecies(dog.getDogSpecies())
+                        .reasonAbandonment(dog.getReasonAbandonment())
+                        .isInoculated(dog.getIsInoculated())
+                        .imagePath(dog.getImagePath())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 유기견 좋아요 설정
+     * 이미 좋아요 체크가 되어있을 경우 불가능
+     * @param dogNo
+     * @param token
+     */
+    @Transactional
+    public void likeDog(Integer dogNo, String token) {
+        if(checkLiked(dogNo, token)) {
+            log.error("[유기견 좋아요] 이미 좋아요를 누른 사용자입니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이미 좋아요를 눌렀습니다.");
+        }
+
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        LikeDog likeDog = LikeDog.builder()
+                .dog(dogRepository.findDogByDogNo(dogNo).orElseThrow(() -> {
+                    log.error("[유기견 좋아요] 유기견을 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다.");
+                }))
+                .member((Member) userRepository.findById(userNo).get())
+                .build();
+
+        log.info("[유기견 좋아요] 유기견 좋아요 설정. dogNo : {}, userNo : {}", dogNo, userNo);
+        likeDogRepository.save(likeDog);
+    }
+
+    /**
+     * 유기견 좋아요 취소
+     * 아직 좋아요 체크가 되어있지 않을 경우 불가능
+     * @param dogNo
+     * @param token
+     */
+    @Transactional
+    public void dislikeDog(Integer dogNo, String token) {
+        if(!checkLiked(dogNo, token)) {
+            log.error("[유기견 좋아요] 아직 좋아요를 누르지 않은 사용자입니다. ");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "아직 좋아요를 누르지 않았습니다.");
+        }
+
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        Integer dislikeCnt = likeDogRepository.deleteLikeDogByMemberNoAndDogNo(userNo, dogNo);
+        log.info("[유기견 좋아요 취소] 유기견 좋아요 취소 완료. {}개", dislikeCnt);
+    }
+
+    /**
+     * 유기견 좋아요 체크
+     * 좋아요가 이미 눌려있는지 체크
+     * @param dogNo
+     * @param token
+     */
+    public Boolean checkLiked(Integer dogNo, String token){
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        log.info("[유기견 좋아요 체크] dogNo : {}, userNo : {}", dogNo, userNo);
+        return likeDogRepository.existsLikeDogByMemberNoAndDogNo(userNo, dogNo);
+    }
+
+    /**
+     * 유기견 찜 설정
+     * 이미 찜 체크가 되어있을 경우 불가능
+     * @param dogNo
+     * @param token
+     */
+    @Transactional
+    public void bookmarkDog(Integer dogNo, String token) {
+        if(checkBookmark(dogNo, token)) {
+            log.error("[유기견 찜] 이미 찜을 누른 사용자입니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이미 찜을 눌렀습니다.");
+        }
+
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        BookmarkDog bookmarkDog = BookmarkDog.builder()
+                .dog(dogRepository.findDogByDogNo(dogNo).orElseThrow(() -> {
+                    log.error("[유기견 찜] 유기견을 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다.");
+                }))
+                .member((Member) userRepository.findById(userNo).get())
+                .build();
+
+        log.info("[유기견 찜] 유기견 찜 설정 완료. dogNo : {} , userNo : {}", dogNo, userNo);
+        bookmarkDogRepository.save(bookmarkDog);
+    }
+
+    /**
+     * 유기견 찜 취소
+     * 아직 찜 체크가 되어있지 않을 경우 불가능
+     * @param dogNo
+     * @param token
+     */
+    @Transactional
+    public void unbookmarkDog(Integer dogNo, String token) {
+        if(!checkBookmark(dogNo, token)) {
+            log.error("[유기견 찜 취소] 아직 찜을 누르지 않은 사용자입니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "아직 찜을 누르지 않았습니다.");
+        }
+
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        Integer unbookmarkCnt = bookmarkDogRepository.deleteBookmarkDogByMemberNoAndDogNo(userNo, dogNo);
+        log.info("[유기견 찜 취소] 유기견 찜 취소 완료. {}개", unbookmarkCnt);
+    }
+
+    /**
+     * 유기견 찜 체크
+     * 찜이 이미 눌려있는지 체크
+     * @param dogNo
+     * @param token
+     * @return
+     */
+    public Boolean checkBookmark(Integer dogNo, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        log.info("[유기견 찜 체크] dogNo : {}, userNo : {}", dogNo, userNo);
+        return bookmarkDogRepository.existsBookmarkDogByMemberNoAndDogNo(userNo, dogNo);
+    }
+
+    public List<RegisterDogResDto> getBookmarkDogList(String token) {
+        log.info("[유기견 찜 리스트 조회] 로그인한 사용자의 유기견 찜 리스트 전체조회");
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        return dogRepository.selectAllJoinOnBookmarkDog(userNo).stream()
                 .map(dog -> RegisterDogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
