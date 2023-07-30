@@ -14,6 +14,7 @@ import static com.petmeeting.springboot.domain.QBoard.board;
 @Repository
 @RequiredArgsConstructor
 public class BoardQueryDslRepository {
+
     private final JPAQueryFactory jpaQueryFactory;
 
     public List<Board> findByCondition(BoardSearchCondition condition) {

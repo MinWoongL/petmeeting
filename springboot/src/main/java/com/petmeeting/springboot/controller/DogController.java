@@ -67,9 +67,17 @@ public class DogController {
     public ResponseEntity<List<RegisterDogResDto>> findAllDogByOption
             (@Parameter(description = "option : 'all' / 'random' / 'like' 등등")
              DogSearchCondition condition, @RequestHeader(ACCESS_TOKEN) String token) {
+        // 1. Option : all
         if(condition.getOption() != null && condition.getOption().toLowerCase().equals("all")){
             return ResponseEntity.ok(dogService.getAllDog());
         }
+
+        // 2. Option : Like
+
+        // 3. Option : random
+
+        // 4. Option : Rank(좋아요 상위)
+
 
         return ResponseEntity.ok(dogService.findDogByCondition(condition));
     }
