@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.controller;
 
+import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.dto.dog.*;
 import com.petmeeting.springboot.enums.AdoptionAvailability;
 import com.petmeeting.springboot.service.DogService;
@@ -60,6 +61,28 @@ public class DogController {
     }
 
     @Operation(
+            summary = "유기견 정보를 수정합니다.",
+            description = "shelter의 번호와 유기견의 보호소가 일치하는 경우에만 수정됩니다."
+    )
+    @PutMapping("/{dogNo}")
+    public ResponseEntity<DogResDto> updateDog(@PathVariable Integer dogNo, @RequestBody RegisterDogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(dogService.updateDog(dogNo, registerDogReqDto, token));
+    }
+
+    @Operation(
+            summary = "유기견 삭제",
+            description = "해당 넘버의 유기견을 삭제합니다. 성공시 Delete Succuess 메세지를 반환합니다."
+    )
+    @DeleteMapping("/{dogNo}")
+    public ResponseEntity<MessageDto> deleteDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        dogService.deleteDog(dogNo, token);
+
+        return ResponseEntity.ok(MessageDto.builder().msg("Delete Success").build());
+    }
+
+
+
+    @Operation(
             summary = "조건에 따라 유기견 목록 조회하기",
             description = " 검색 조건에 따라 유기견의 목록을 반환합니다."
     )
@@ -74,7 +97,7 @@ public class DogController {
 
         // 2. Option : Like
 
-        // 3. Option : random 
+        // 3. Option : random
 
         // 4. Option : Rank(좋아요 상위)
 
@@ -82,26 +105,76 @@ public class DogController {
         return ResponseEntity.ok(dogService.findDogByCondition(condition));
     }
 
+    // 여기부터 좋아요
     @Operation(
-            summary = "유기견 정보를 수정합니다.",
-            description = "shelter의 번호와 유기견의 보호소가 일치하는 경우에만 수정됩니다."
+            summary = "유기견 좋아요",
+            description = "유기견 좋아요를 설정합니다."
     )
-    @PutMapping("/{dogNo}")
-    public ResponseEntity<DogResDto> updateDog(@PathVariable Integer dogNo, @RequestBody RegisterDogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
-        return ResponseEntity.ok(dogService.updateDog(dogNo, registerDogReqDto, token));
+    @PostMapping("/like/{dogNo}")
+    public ResponseEntity<MessageDto> likeDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        dogService.likeDog(dogNo, token);
+        return ResponseEntity.ok(MessageDto.builder().msg("Like Success").build());
     }
 
     @Operation(
-            summary = "유기견 삭제",
-            description = "해당 넘버의 유기견을 삭제합니다. 성공시 Delete Succuess 메세지를 반환합니다."
+            summary = "유기견 좋아요 취소",
+            description = "유기견 좋아요를 취소합니다."
     )
-    @DeleteMapping("/{dogNo}")
-    public ResponseEntity<String> deleteDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
-        dogService.deleteDog(dogNo, token);
-
-        return ResponseEntity.ok("Delete Success");
+    @DeleteMapping("like/{dogNo}")
+    public ResponseEntity<MessageDto> dislikeDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        dogService.dislikeDog(dogNo, token);
+        return ResponseEntity.ok(MessageDto.builder().msg("Dislike Success").build());
     }
 
+    @Operation(
+            summary = "유기견 좋아요 상태확인(체크)",
+            description = "유기견 좋아요가 눌려있는지 체크합니다."
+    )
+    @GetMapping("/like/{dogNo}")
+    public ResponseEntity<Boolean> checkLiked(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token){
+        return ResponseEntity.ok(dogService.checkLiked(dogNo, token));
+    }
+
+
+    // 여기부터 찜
+    // 찜리스트 조회
+    @Operation(
+            summary = "유기견 찜 목록 조회",
+            description = "로그인한 유저의 찜 목록을 조회합니다."
+    )
+    @GetMapping("/bookmark")
+    public ResponseEntity<List<DogResDto>> getBookmarkDogList(@RequestHeader(ACCESS_TOKEN) String token) {
+        return null;
+    }
+
+    @Operation(
+            summary = "유기견 찜",
+            description = "해당 유기견에게 찜을 누릅니다."
+    )
+    @PostMapping("/bookmark/{dogNo}")
+    public ResponseEntity<MessageDto> bookmarkDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        dogService.bookmarkDog(dogNo, token);
+        return ResponseEntity.ok(MessageDto.builder().msg("Bookmark Success").build());
+    }
+
+    @Operation(
+            summary = "유기견 찜 취소",
+            description = "해당 유기견의 찜을 취소합니다."
+    )
+    @DeleteMapping("/bookmark/{dogNo}")
+    public ResponseEntity<MessageDto> unbookmarkDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        dogService.unbookmarkDog(dogNo, token);
+        return ResponseEntity.ok(MessageDto.builder().msg("Unbookmark Success").build());
+    }
+
+    @Operation(
+            summary = "유기견 찜 상태확인(체크)",
+            description = "해당 유기견의 찜 유무를 체크합니다."
+    )
+    @GetMapping("/bookmark/{dogNo}")
+    public ResponseEntity<Boolean> checkBookmarkDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(dogService.checkBookmark(dogNo, token));
+    }
 
 
 

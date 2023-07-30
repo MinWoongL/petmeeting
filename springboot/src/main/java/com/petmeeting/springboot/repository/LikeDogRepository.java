@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface LikeDogRepository extends JpaRepository<LikeDog, Integer> {
 
     @Query(value = "select exists(select * from like_dog where dog_no = :dogNo and member_no = :memberNo)", nativeQuery = true)
-    Boolean existsLikeDogByMemberNo(Integer memberNo, Integer dogNo);
+    Boolean existsLikeDogByMemberNoAndDogNo(Integer memberNo, Integer dogNo);
 
     @Modifying
     @Query(value = "delete from like_dog where dog_no = :dogNo and member_no = :memberNo", nativeQuery = true)
