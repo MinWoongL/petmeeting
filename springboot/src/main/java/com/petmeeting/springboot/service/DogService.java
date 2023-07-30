@@ -190,6 +190,56 @@ public class DogService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public List<RegisterDogResDto> getAllDogOrderByRank() {
+        log.info("[랭크 옵션에 따른 모든 강아지 검색]");
+
+        return dogRepository.selectAllOrderByLikeCnt().stream()
+                .map(dog -> RegisterDogResDto.builder()
+                        .dogNo(dog.getDogNo())
+                        .name(dog.getName())
+                        .dogSize(dog.getDogSize())
+                        .gender(dog.getGender())
+                        .weight(dog.getWeight())
+                        .age(dog.getAge())
+                        .personality(dog.getPersonality())
+                        .protectionStartDate(dog.getProtectionStartDate())
+                        .protectionEndDate(dog.getProtectionEndDate())
+                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .currentStatus(dog.getCurrentStatus())
+                        .dogSpecies(dog.getDogSpecies())
+                        .reasonAbandonment(dog.getReasonAbandonment())
+                        .isInoculated(dog.getIsInoculated())
+                        .imagePath(dog.getImagePath())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<RegisterDogResDto> getAllDogByRandom() {
+        log.info("[랜덤 옵션에 따른 모든 강아지 검색]");
+
+        return dogRepository.selectAllByRandom().stream()
+                .map(dog -> RegisterDogResDto.builder()
+                        .dogNo(dog.getDogNo())
+                        .name(dog.getName())
+                        .dogSize(dog.getDogSize())
+                        .gender(dog.getGender())
+                        .weight(dog.getWeight())
+                        .age(dog.getAge())
+                        .personality(dog.getPersonality())
+                        .protectionStartDate(dog.getProtectionStartDate())
+                        .protectionEndDate(dog.getProtectionEndDate())
+                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .currentStatus(dog.getCurrentStatus())
+                        .dogSpecies(dog.getDogSpecies())
+                        .reasonAbandonment(dog.getReasonAbandonment())
+                        .isInoculated(dog.getIsInoculated())
+                        .imagePath(dog.getImagePath())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
     /**
      * 유기견 좋아요 설정
      * 이미 좋아요 체크가 되어있을 경우 불가능

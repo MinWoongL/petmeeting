@@ -26,8 +26,11 @@ public interface DogRepository extends JpaRepository<Dog, Integer> {
     List<Dog> selectAllFromLikeDog(Integer memberNo);
 
     // 좋아요 상위권 강아지 순
+    @Query(value = "select * from dog order by like_cnt desc", nativeQuery = true)
+    List<Dog> selectAllOrderByLikeCnt();
 
-//    List<Dog> selectAllFromLikeDogRank();
-
+    // 랜덤 목록 조회
+    @Query(value = "select * from dog order by rand()", nativeQuery = true)
+    List<Dog> selectAllByRandom();
 
 }

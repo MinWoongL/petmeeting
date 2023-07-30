@@ -94,16 +94,20 @@ public class DogController {
             return ResponseEntity.ok(dogService.getAllDog());
         }
 
-        // 2. Option : Like
-        // 로그인한 유저가 좋아요한 유기견
+        // 2. Option : Like(로그인한 유저가 좋아요한 목록)
         if(condition.getOption() != null && condition.getOption().toLowerCase().equals("like")) {
             return ResponseEntity.ok(dogService.getLikeDogList(token));
         }
 
-        // 3. Option : random
+        // 3. Option : random(랜덤 정렬)
+        if(condition.getOption() != null && condition.getOption().toLowerCase().equals("random")) {
+            return ResponseEntity.ok(dogService.getAllDogByRandom());
+        }
 
         // 4. Option : Rank(좋아요 상위)
-
+        if(condition.getOption() != null && condition.getOption().toLowerCase().equals("rank")) {
+            return ResponseEntity.ok(dogService.getAllDogOrderByRank());
+        }
 
         return ResponseEntity.ok(dogService.findDogByCondition(condition));
     }
