@@ -18,8 +18,6 @@ public interface BookmarkDogRepository extends JpaRepository<BookmarkDog, Intege
     @Query(value = "delete from bookmark_dog where member_no = :memberNo and dog_no = :dogNo", nativeQuery = true)
     Integer deleteBookmarkDogByMemberNoAndDogNo(Integer memberNo, Integer dogNo);
 
-//    List<BookmarkDog> DogRepo에
-
-
+//    List<BookmarkDog> DogRepo 에 작성
 
 }

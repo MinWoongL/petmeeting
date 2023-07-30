@@ -105,7 +105,6 @@ public class DogController {
         return ResponseEntity.ok(dogService.findDogByCondition(condition));
     }
 
-    // 여기부터 좋아요
     @Operation(
             summary = "유기견 좋아요",
             description = "유기견 좋아요를 설정합니다."
@@ -135,16 +134,13 @@ public class DogController {
         return ResponseEntity.ok(dogService.checkLiked(dogNo, token));
     }
 
-
-    // 여기부터 찜
-    // 찜리스트 조회
     @Operation(
             summary = "유기견 찜 목록 조회",
             description = "로그인한 유저의 찜 목록을 조회합니다."
     )
     @GetMapping("/bookmark")
-    public ResponseEntity<List<DogResDto>> getBookmarkDogList(@RequestHeader(ACCESS_TOKEN) String token) {
-        return null;
+    public ResponseEntity<List<RegisterDogResDto>> getBookmarkDogList(@RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(dogService.getBookmarkDogList(token));
     }
 
     @Operation(
@@ -175,24 +171,6 @@ public class DogController {
     public ResponseEntity<Boolean> checkBookmarkDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(dogService.checkBookmark(dogNo, token));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

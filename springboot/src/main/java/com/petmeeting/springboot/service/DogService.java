@@ -309,9 +309,28 @@ public class DogService {
         return bookmarkDogRepository.existsBookmarkDogByMemberNoAndDogNo(userNo, dogNo);
     }
 
-    public List<DogResDto> getBookmarkDogList(String token) {
+    public List<RegisterDogResDto> getBookmarkDogList(String token) {
+        log.info("[유기견 찜 리스트 조회] 로그인한 사용자의 유기견 찜 리스트 전체조회");
         Integer userNo = jwtUtils.getUserNo(token);
 
-        return null;
+        return dogRepository.selectAllJoinOnBookmarkDog(userNo).stream()
+                .map(dog -> RegisterDogResDto.builder()
+                        .dogNo(dog.getDogNo())
+                        .name(dog.getName())
+                        .dogSize(dog.getDogSize())
+                        .gender(dog.getGender())
+                        .weight(dog.getWeight())
+                        .age(dog.getAge())
+                        .personality(dog.getPersonality())
+                        .protectionStartDate(dog.getProtectionStartDate())
+                        .protectionEndDate(dog.getProtectionEndDate())
+                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .currentStatus(dog.getCurrentStatus())
+                        .dogSpecies(dog.getDogSpecies())
+                        .reasonAbandonment(dog.getReasonAbandonment())
+                        .isInoculated(dog.getIsInoculated())
+                        .imagePath(dog.getImagePath())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

@@ -15,14 +15,9 @@ public interface DogRepository extends JpaRepository<Dog, Integer> {
 
     List<Dog> findDogByIsDeletedFalse();
 
-
-    // List<Dog>
-    @Query(value = "SELECT D.DOG_NO, D.NAME, D.DOG_SIZE, D.GENDER, D.WEIGHT, D.AGE, D.PERSONALITY, D.PROTECTION_START_DATE, D.PROTECTION_END_DATE, D.ADOPTION_AVAILABILITY, D.CURRENT_STATUS, D.DOG_SPECIES, D.REASON_ABANDONMENT, D.IS_INOCULATED, D.IMAGE_PATH\n" +
-            "FROM DOG D \n" +
-            "JOIN BOOKMARK_DOG B \n" +
-            "ON D.DOG_NO = :dogNo \n" +
-            "WHERE B.MEMBER_NO = :memberNo", nativeQuery = true)
-    List<Dog> selectAllJoinOnBookmarkDog(Integer dogNo, Integer memberNo);
-
+    // 로그인 사용자의 유기견 찜 리스트 조회
+    @Query(value = "select * from dog where dog_no in (" +
+            "select dog_no from bookmark_dog where member_no = :memberNo)", nativeQuery = true)
+    List<Dog> selectAllJoinOnBookmarkDog(Integer memberNo);
 
 }
