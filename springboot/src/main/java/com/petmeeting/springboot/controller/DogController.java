@@ -20,8 +20,8 @@ import java.util.Map;
 @RequestMapping("/api/v1/dog")
 public class DogController {
 
-    private final DogService dogService;
     private final String ACCESS_TOKEN = "AccessToken";
+    private final DogService dogService;
 
     @Operation(
             summary = "유기견 등록(CREATE)",
@@ -81,9 +81,8 @@ public class DogController {
     }
 
 
-
     @Operation(
-            summary = "조건에 따라 유기견 목록 조회하기",
+            summary = "조건에 따라 유기견 목록 조회",
             description = " 검색 조건에 따라 유기견의 목록을 반환합니다."
     )
     @GetMapping
@@ -96,6 +95,10 @@ public class DogController {
         }
 
         // 2. Option : Like
+        // 로그인한 유저가 좋아요한 유기견
+        if(condition.getOption() != null && condition.getOption().toLowerCase().equals("like")) {
+            return ResponseEntity.ok(dogService.getLikeDogList(token));
+        }
 
         // 3. Option : random
 

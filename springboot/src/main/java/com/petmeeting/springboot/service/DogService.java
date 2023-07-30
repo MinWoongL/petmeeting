@@ -213,6 +213,12 @@ public class DogService {
                 .member((Member) userRepository.findById(userNo).get())
                 .build();
 
+        Dog dog = dogRepository.findDogByDogNo(dogNo)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다."));
+
+        dog.updateLikeCnt(true);
+        dogRepository.save(dog);
+
         log.info("[유기견 좋아요] 유기견 좋아요 설정. dogNo : {}, userNo : {}", dogNo, userNo);
         likeDogRepository.save(likeDog);
     }
@@ -234,6 +240,12 @@ public class DogService {
 
         Integer dislikeCnt = likeDogRepository.deleteLikeDogByMemberNoAndDogNo(userNo, dogNo);
         log.info("[유기견 좋아요 취소] 유기견 좋아요 취소 완료. {}개", dislikeCnt);
+
+        Dog dog = dogRepository.findDogByDogNo(dogNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다."));
+
+        dog.updateLikeCnt(false);
+        dogRepository.save(dog);
     }
 
     /**
@@ -309,11 +321,48 @@ public class DogService {
         return bookmarkDogRepository.existsBookmarkDogByMemberNoAndDogNo(userNo, dogNo);
     }
 
+    /**
+     * 유기견 찜 목록
+     * 로그인 사용자가 찜한 유기견 목록 전체를 반환
+     * @param token
+     * @return
+     */
     public List<RegisterDogResDto> getBookmarkDogList(String token) {
         log.info("[유기견 찜 리스트 조회] 로그인한 사용자의 유기견 찜 리스트 전체조회");
         Integer userNo = jwtUtils.getUserNo(token);
 
-        return dogRepository.selectAllJoinOnBookmarkDog(userNo).stream()
+        return dogRepository.selectAllFromBookmarkDog(userNo).stream()
+                .map(dog -> RegisterDogResDto.builder()
+                        .dogNo(dog.getDogNo())
+                        .name(dog.getName())
+                        .dogSize(dog.getDogSize())
+                        .gender(dog.getGender())
+                        .weight(dog.getWeight())
+                        .age(dog.getAge())
+                        .personality(dog.getPersonality())
+                        .protectionStartDate(dog.getProtectionStartDate())
+                        .protectionEndDate(dog.getProtectionEndDate())
+                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .currentStatus(dog.getCurrentStatus())
+                        .dogSpecies(dog.getDogSpecies())
+                        .reasonAbandonment(dog.getReasonAbandonment())
+                        .isInoculated(dog.getIsInoculated())
+                        .imagePath(dog.getImagePath())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 유기견 좋아요 목록
+     * 로그인 사용자가 좋아요한 유기견 목록 전체를 반환
+     * @param token
+     * @return
+     */
+    public List<RegisterDogResDto> getLikeDogList(String token) {
+        log.info("[유기견 좋아요 리스트 조회] 로그인한 사용자의 유기견 좋아요 리스트 전체조회");
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        return dogRepository.selectAllFromLikeDog(userNo).stream()
                 .map(dog -> RegisterDogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
