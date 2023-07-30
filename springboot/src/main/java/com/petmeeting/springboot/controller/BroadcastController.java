@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.controller;
 
+import com.petmeeting.springboot.dto.broadcast.BroadcastCheckResDto;
 import com.petmeeting.springboot.dto.broadcast.BroadcastReqDto;
 import com.petmeeting.springboot.dto.broadcast.BroadcastShelterResDto;
 import com.petmeeting.springboot.dto.common.MessageDto;
@@ -68,5 +69,24 @@ public class BroadcastController {
     public ResponseEntity<MessageDto> startBroadcast(@RequestBody BroadcastReqDto broadcastReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         broadcastService.startBroadcast(broadcastReqDto, token);
         return ResponseEntity.ok(MessageDto.builder().msg("Start Broadcast").build());
+    }
+
+    @Operation(
+            summary = "방송 종료하기",
+            description = "보호소가 방송을 종료합니다."
+    )
+    @DeleteMapping
+    public ResponseEntity<MessageDto> stopBroadcast(@RequestHeader(ACCESS_TOKEN) String token) {
+        broadcastService.stopBroadcast(token);
+        return ResponseEntity.ok(MessageDto.builder().msg("Stop Broadcast").build());
+    }
+
+    @Operation(
+            summary = "조작 중인 유저 체크",
+            description = "IOT 기기를 조작 중인 회원이 있는지 체크합니다. 조작 중인 유저가 없을 시 유저 이름과 남은 시간에 null을 반환합니다."
+    )
+    @GetMapping("/check/{shelterNo}")
+    public ResponseEntity<BroadcastCheckResDto> checkControlUser(@PathVariable Integer shelterNo) {
+        return ResponseEntity.ok(broadcastService.checkControlUser(shelterNo));
     }
 }

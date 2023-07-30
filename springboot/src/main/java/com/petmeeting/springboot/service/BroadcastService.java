@@ -3,6 +3,7 @@ package com.petmeeting.springboot.service;
 import com.petmeeting.springboot.domain.Dog;
 import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Shelter;
+import com.petmeeting.springboot.dto.broadcast.BroadcastCheckResDto;
 import com.petmeeting.springboot.dto.broadcast.BroadcastReqDto;
 import com.petmeeting.springboot.dto.broadcast.BroadcastShelterResDto;
 import com.petmeeting.springboot.repository.DogRepository;
@@ -118,7 +119,45 @@ public class BroadcastService {
         }
 
         log.info("[방송 시작하기] 방송 시작. 방송제목 : {}, 방송유기견 이름 : {}", broadcastReqDto.getOnBroadcastTitle(), dog.getName());
-        shelter.startBroadCast(broadcastReqDto.getOnBroadcastTitle(), dog.getDogNo());
+        shelter.updateBroadCast(broadcastReqDto.getOnBroadcastTitle(), dog.getDogNo());
         shelterRepository.save(shelter);
+    }
+
+    @Transactional
+    public void stopBroadcast(String token) {
+        Integer shelterNo = jwtUtils.getUserNo(token);
+
+        Shelter shelter = shelterRepository.findById(shelterNo)
+                .orElseThrow(() -> {
+                    log.error("[방송 종료하기] 해당 보호소를 찾을 수 없습니다. shelterNo : {}", shelterNo);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "보호소를 찾을 수 없습니다.");
+                });
+
+        log.info("[방송 종료하기] 방송 종료.");
+        shelter.updateBroadCast(null, null);
+        shelterRepository.save(shelter);
+    }
+
+    public BroadcastCheckResDto checkControlUser(Integer shelterNo) {
+        Shelter shelter = shelterRepository.findById(shelterNo)
+                .orElseThrow(() -> {
+                    log.error("[IOT 조작가능 여부 체크] 해당 보호소를 찾을 수 없습니다. shelterNo : {}", shelterNo);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "보호소를 찾을 수 없습니다.");
+                });
+
+        Long remainTime = shelter.getControlEndTime() == null ? null : shelter.getControlEndTime() - System.currentTimeMillis() / 1000;
+        if (remainTime == null || remainTime <= 0) {
+            log.info("[IOT 조작가능 여부 체크] 조작 중인 유저가 없습니다.");
+            return BroadcastCheckResDto.builder()
+                    .userName(null)
+                    .remainTime(null)
+                    .build();
+        }
+
+        log.info("[IOT 조작가능 여부 체크] 조작 중인 유저가 있습니다. userName : {}, remainTime : {}", shelter.getControlUserName(), remainTime);
+        return BroadcastCheckResDto.builder()
+                .userName(shelter.getControlUserName())
+                .remainTime(remainTime)
+                .build();
     }
 }
