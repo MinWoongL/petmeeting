@@ -74,7 +74,7 @@ public class DogController {
 
         // 2. Option : Like
 
-        // 3. Option : random
+        // 3. Option : random 
 
         // 4. Option : Rank(좋아요 상위)
 
