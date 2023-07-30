@@ -16,6 +16,7 @@ public class DogSearchCondition {
     Integer shelterNo; // 얘는 입양가능 아니여도 모두 보이게
     Integer page;
     Integer max;
+
     @Transient
     AdoptionAvailability adoptionAvailability; // 입양가능만
 
