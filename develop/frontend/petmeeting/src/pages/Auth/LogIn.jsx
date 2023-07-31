@@ -62,12 +62,9 @@ export default function Login() {
           })
         ); // 로그인 상태로 설정
 
-        console.log(response);
-        console.log(response.headers.get("Authorization"));
-        if (response.headers["accessToken"]) {
+        if (response.headers["token"]) {
           // Store JWT token in session storage
-          console.log("seesss 들");
-          sessionStorage.setItem("token", response.headers["accessToken"]);
+          sessionStorage.setItem("token", response.headers["token"]);
         } else {
           console.log("No token found in response");
         }

@@ -65,26 +65,26 @@ export default function SignUp() {
           name: data.get("name"),
           phoneNumber: data.get("phoneNumber"),
           userGroup: data.get("userGroup"),
-          //   userGroup: "사용자",
           imagePath: data.get("imagePath"),
         },
       });
 
       console.log("Signup successful:", response.data);
       if (response.status === 201) {
-        console.log("ㅡㄷㄹ어왔음");
-        dispatch(
-          login({
-            userId: data.get("name"),
-            points: response.data.points,
-          })
-        ); // 로그인 상태로 설정
-        if (response.headers["accessToken"]) {
+        console.log("Received");
+        console.log(response.headers["token"]);
+        if (response.headers["token"]) {
           // Store JWT token in session storage
-          sessionStorage.setItem(
-            "token",
-            "Bearer " + response.headers["accessToken"]
-          );
+
+          sessionStorage.setItem("token", response.headers["token"]);
+
+          // Dispatch login action
+          dispatch(
+            login({
+              userId: data.get("name"),
+              points: response.data.points,
+            })
+          ); // set to log in
         } else {
           console.log("No token found in response");
         }
@@ -196,15 +196,6 @@ export default function SignUp() {
                 </FormControl>
               </Grid>
 
-              {/* <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="userGroup"
-                  label="User Group"
-                  name="userGroup"
-                />
-              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   required

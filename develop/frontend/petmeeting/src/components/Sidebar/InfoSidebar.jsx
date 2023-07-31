@@ -26,6 +26,7 @@ function InfoSidebar() {
   const Logout = () => {
     dispatch(logout());
     localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
   };
 
   const handleSubmit = (e) => {
