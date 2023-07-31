@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.service;
 
+import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Shelter;
 import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.dto.auth.Token;
@@ -264,5 +265,24 @@ public class UserService {
         userRepository.save(user);
 
         return AdminUserResDto.builder().build().userToDto(user);
+    }
+
+
+    /**
+     * 마이페이지 정보조회
+     * 로그인한 사용자의 정보를 스스로 조회합니다.
+     * @param userNo
+     * @param token
+     * @return
+     */
+    public MypageResDto getUserInMyPage(Integer userNo, String token) {
+        Users user = userRepository.findById(userNo)
+                .orElseThrow(() -> {
+                    log.error("[마이페이지 - 정보조회] 회원을 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.");
+                });
+
+        log.info("[마이페이지 - 정보조회] userId : {}", userNo);
+        return MypageResDto.mypageToDto((Member) user);
     }
 }
