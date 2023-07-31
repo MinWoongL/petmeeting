@@ -50,4 +50,5 @@ public class UserResDto {
                 .siteUrl(shelter.getSiteUrl())
                 .build();
     }
+
 }
