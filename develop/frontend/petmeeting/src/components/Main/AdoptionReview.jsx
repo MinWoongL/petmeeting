@@ -1,0 +1,129 @@
+import React, { useState } from 'react';
+import { Card, CardHeader, CardMedia, CardContent, CardActions, Collapse, Typography, IconButton, Box, Button } from '@mui/material';
+import { useSelector } from 'react-redux';
+import ShareIcon from '@mui/icons-material/Share';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { styled } from '@mui/material/styles';
+import heartOn from "../../assets/images/pet_heart_on.png";
+import heartOff from "../../assets/images/pet_heart_off.png";
+
+const ExpandMore = styled((props) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+  marginLeft: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+}));
+
+function AdoptionReview() {
+    const [expandedIds, setExpandedIds] = useState([]);
+    const [likedReviews, setLikedReviews] = useState([]);
+    const [startIndex, setStartIndex] = useState(0);
+    const itemsToShow = 3;
+    const reviews = useSelector(state => state.reviews.reviewData);
+
+    const handleLikeClick = (id) => {
+        if (likedReviews.includes(id)) {
+            setLikedReviews(prev => prev.filter(likeId => likeId !== id));
+        } else {
+            setLikedReviews(prev => [...prev, id]);
+        }
+    };
+
+    const handleExpandClick = (id) => {
+        const isExpanded = expandedIds.includes(id);
+        if (isExpanded) {
+            setExpandedIds(prev => prev.filter(itemId => itemId !== id));
+        } else {
+            setExpandedIds(prev => [...prev, id]);
+        }
+    };
+
+    const handlePrev = () => {
+        if (startIndex === 0) {
+            setStartIndex(reviews.length - 1);
+        } else {
+            setStartIndex(startIndex - 1);
+        }
+    };
+
+    const handleNext = () => {
+        if (startIndex + itemsToShow - 1 === reviews.length - 1) {
+            setStartIndex(0);
+        } else {
+            setStartIndex(startIndex + 1);
+        }
+    };
+
+    const getVisibleReviews = () => {
+        let visibleReviews = reviews.slice(startIndex, startIndex + itemsToShow);
+        while (visibleReviews.length < itemsToShow) {
+            visibleReviews = [...visibleReviews, ...reviews.slice(0, itemsToShow - visibleReviews.length)];
+        }
+        return visibleReviews;
+    };
+
+    return (
+        <Box sx={{ mt: 1, mb: 4 }}>
+            <Box sx={{ mb: 1 }}>
+                <Typography variant="h5" gutterBottom>
+                    입양 후기
+                </Typography>
+            </Box>
+            <Button onClick={handlePrev}>Prev</Button>
+            <Button onClick={handleNext}>Next</Button>
+            <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
+                {getVisibleReviews().map(review => (
+                    <Card key={review.id} sx={{ width: 300 }}>
+                        <CardHeader
+                            title={review.title}
+                            subheader={review.date}
+                        />
+                        <CardMedia
+                            component="img"
+                            height="160"
+                            image={review.image}
+                            alt={review.title}
+                        />
+                        <CardContent>
+                            <Typography variant="body2" color="text.secondary">
+                                {review.shortDescription}
+                            </Typography>
+                        </CardContent>
+                        <CardActions disableSpacing>
+                            <IconButton 
+                                aria-label="add to favorites" 
+                                onClick={() => handleLikeClick(review.id)}
+                            >
+                                <img src={likedReviews.includes(review.id) ? heartOn : heartOff} alt="like" style={{ width: 24, height: 24 }}/>
+                            </IconButton>
+                            <IconButton aria-label="share">
+                                <ShareIcon />
+                            </IconButton>
+                            <ExpandMore
+                                expand={expandedIds.includes(review.id)}
+                                onClick={() => handleExpandClick(review.id)}
+                                aria-expanded={expandedIds.includes(review.id)}
+                                aria-label="show more"
+                            >
+                                <ExpandMoreIcon />
+                            </ExpandMore>
+                        </CardActions>
+                        <Collapse in={expandedIds.includes(review.id)} timeout="auto" unmountOnExit>
+                            <CardContent>
+                                <Typography paragraph>
+                                    {review.fullDescription}
+                                </Typography>
+                            </CardContent>
+                        </Collapse>
+                    </Card>
+                ))}
+            </Box>
+        </Box>
+    );
+}
+
+export default AdoptionReview;
