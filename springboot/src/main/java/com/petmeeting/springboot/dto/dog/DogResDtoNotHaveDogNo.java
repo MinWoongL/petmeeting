@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class DogResDto {
+public class DogResDtoNotHaveDogNo {
 
     private String name;
     private DogSize dogSize;
@@ -26,8 +26,8 @@ public class DogResDto {
     private Boolean isInoculated;
     private String imagePath;
 
-    public static DogResDto dogToDto(Dog dog) {
-        return DogResDto.builder()
+    public static DogResDtoNotHaveDogNo dogToDto(Dog dog) {
+        return DogResDtoNotHaveDogNo.builder()
                 .name(dog.getName())
                 .dogSize(dog.getDogSize())
                 .gender(dog.getGender())

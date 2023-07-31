@@ -22,10 +22,10 @@ public class DogSearchCondition {
 
     public Integer getOffset() {
         if(page == null || max == null) {
-            return null;
+            return 0;
         }
 
-        return max * (page - 1);
+        return max * page;
     }
 
 }

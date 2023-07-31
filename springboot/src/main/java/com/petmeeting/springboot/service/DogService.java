@@ -2,14 +2,11 @@ package com.petmeeting.springboot.service;
 
 import com.petmeeting.springboot.domain.*;
 import com.petmeeting.springboot.dto.dog.*;
-import com.petmeeting.springboot.enums.AdoptionAvailability;
 import com.petmeeting.springboot.repository.*;
 import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -47,7 +44,7 @@ public class DogService {
         dogRepository.save(dog);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("dog", RegisterDogResDto.dogToDto(dog));
+        result.put("dog", DogResDto.dogToDto(dog));
 
         return result;
     }
@@ -62,7 +59,7 @@ public class DogService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다."));
 
         Map<String, Object> result = new HashMap<>();
-        result.put("dog", DogResDto.dogToDto(dog));
+        result.put("dog", DogResDtoNotHaveDogNo.dogToDto(dog));
 
         return result;
     }
@@ -98,13 +95,13 @@ public class DogService {
 //        }
 
         Map<String, Object> result = new HashMap<>();
-        result.put("dog", DogResDto.dogToDto(updateDog));
+        result.put("dog", DogResDtoNotHaveDogNo.dogToDto(updateDog));
 
         return result;
     }
 
     @Transactional
-    public DogResDto updateDog(Integer dogNo, RegisterDogReqDto registerDogReqDto, String token) {
+    public DogResDtoNotHaveDogNo updateDog(Integer dogNo, RegisterDogReqDto registerDogReqDto, String token) {
         Shelter shelter = (Shelter) userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "보호소를 찾을 수 없습니다."));
 
@@ -118,12 +115,11 @@ public class DogService {
         updateDog.updateDogInfo(registerDogReqDto);
         dogRepository.save(updateDog);
 
-        return DogResDto.dogToDto(updateDog);
+        return DogResDtoNotHaveDogNo.dogToDto(updateDog);
     }
 
     @Transactional
     public void deleteDog(Integer dogNo, String token) {
-        // 유기견부터 찾기
         Dog dog = dogRepository.findDogByDogNo(dogNo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다."));
 
@@ -141,11 +137,11 @@ public class DogService {
     }
 
     @Transactional
-    public List<RegisterDogResDto> findDogByCondition(DogSearchCondition condition) {
+    public List<DogResDto> findDogByCondition(DogSearchCondition condition) {
         log.info("[강아지 검색조건으로 검색] condition : {}", condition.toString());
 
         return dogQueryDslRepository.findByCondition(condition).stream()
-                .map(dog -> RegisterDogResDto.builder()
+                .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
                         .dogSize(dog.getDogSize())
@@ -166,11 +162,11 @@ public class DogService {
     }
 
     @Transactional
-    public List<RegisterDogResDto> getAllDog() {
+    public List<DogResDto> getAllDog() {
         log.info("[모든 강아지 검색]");
 
         return dogRepository.findDogByIsDeletedFalse().stream()
-                .map(dog -> RegisterDogResDto.builder()
+                .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
                         .dogSize(dog.getDogSize())
@@ -191,11 +187,11 @@ public class DogService {
     }
 
     @Transactional
-    public List<RegisterDogResDto> getAllDogOrderByRank() {
+    public List<DogResDto> getAllDogOrderByRank() {
         log.info("[랭크 옵션에 따른 모든 강아지 검색]");
 
         return dogRepository.selectAllOrderByLikeCnt().stream()
-                .map(dog -> RegisterDogResDto.builder()
+                .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
                         .dogSize(dog.getDogSize())
@@ -216,11 +212,11 @@ public class DogService {
     }
 
     @Transactional
-    public List<RegisterDogResDto> getAllDogByRandom() {
+    public List<DogResDto> getAllDogByRandom() {
         log.info("[랜덤 옵션에 따른 모든 강아지 검색]");
 
         return dogRepository.selectAllByRandom().stream()
-                .map(dog -> RegisterDogResDto.builder()
+                .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
                         .dogSize(dog.getDogSize())
@@ -377,12 +373,12 @@ public class DogService {
      * @param token
      * @return
      */
-    public List<RegisterDogResDto> getBookmarkDogList(String token) {
+    public List<DogResDto> getBookmarkDogList(String token) {
         log.info("[유기견 찜 리스트 조회] 로그인한 사용자의 유기견 찜 리스트 전체조회");
         Integer userNo = jwtUtils.getUserNo(token);
 
         return dogRepository.selectAllFromBookmarkDog(userNo).stream()
-                .map(dog -> RegisterDogResDto.builder()
+                .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
                         .dogSize(dog.getDogSize())
@@ -408,12 +404,12 @@ public class DogService {
      * @param token
      * @return
      */
-    public List<RegisterDogResDto> getLikeDogList(String token) {
+    public List<DogResDto> getLikeDogList(String token) {
         log.info("[유기견 좋아요 리스트 조회] 로그인한 사용자의 유기견 좋아요 리스트 전체조회");
         Integer userNo = jwtUtils.getUserNo(token);
 
         return dogRepository.selectAllFromLikeDog(userNo).stream()
-                .map(dog -> RegisterDogResDto.builder()
+                .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
                         .dogSize(dog.getDogSize())

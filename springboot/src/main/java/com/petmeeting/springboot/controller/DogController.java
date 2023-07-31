@@ -2,14 +2,12 @@ package com.petmeeting.springboot.controller;
 
 import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.dto.dog.*;
-import com.petmeeting.springboot.enums.AdoptionAvailability;
 import com.petmeeting.springboot.service.DogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,11 +26,11 @@ public class DogController {
             description = "새로운 유기견을 등록합니다."
     )
     @PostMapping
-    public ResponseEntity<RegisterDogResDto> registerDog(@RequestBody RegisterDogReqDto requestDto, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<DogResDto> registerDog(@RequestBody RegisterDogReqDto requestDto, @RequestHeader(ACCESS_TOKEN) String token) {
         Map<String, Object> result = dogService.registerDog(requestDto, token);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body((RegisterDogResDto) result.get("dog"));
+                .body((DogResDto) result.get("dog"));
     }
 
     @Operation(
@@ -42,10 +40,10 @@ public class DogController {
     )
     @PutMapping("/status/{dogNo}") // 이거 파라미터 어케해야대징
 //    @PreAuthorize("hasRole('ROLE_SHELTER')")
-    public ResponseEntity<DogResDto> updateDogStatus(@PathVariable Integer dogNo, @RequestBody DogStatusUpdateReqDto dogStatusUpdateReqDto, @RequestHeader(ACCESS_TOKEN) String token){
+    public ResponseEntity<DogResDtoNotHaveDogNo> updateDogStatus(@PathVariable Integer dogNo, @RequestBody DogStatusUpdateReqDto dogStatusUpdateReqDto, @RequestHeader(ACCESS_TOKEN) String token){
         Map<String, Object> result = dogService.updateDogStatus(dogNo, dogStatusUpdateReqDto, token);
         return ResponseEntity.status(HttpStatus.OK)
-                .body((DogResDto) result.get("dog"));
+                .body((DogResDtoNotHaveDogNo) result.get("dog"));
     }
 
     @Operation(
@@ -53,11 +51,11 @@ public class DogController {
             description = "특정 유기견을 상세보기합니다. 로그인 해야만 권한이 있습니다."
     )
     @GetMapping("/{dogNo}")
-    public ResponseEntity<DogResDto> findDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<DogResDtoNotHaveDogNo> findDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
         Map<String, Object> result = dogService.findDog(dogNo, token);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body((DogResDto) result.get("dog"));
+                .body((DogResDtoNotHaveDogNo) result.get("dog"));
     }
 
     @Operation(
@@ -65,7 +63,7 @@ public class DogController {
             description = "shelter의 번호와 유기견의 보호소가 일치하는 경우에만 수정됩니다."
     )
     @PutMapping("/{dogNo}")
-    public ResponseEntity<DogResDto> updateDog(@PathVariable Integer dogNo, @RequestBody RegisterDogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<DogResDtoNotHaveDogNo> updateDog(@PathVariable Integer dogNo, @RequestBody RegisterDogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(dogService.updateDog(dogNo, registerDogReqDto, token));
     }
 
@@ -86,7 +84,7 @@ public class DogController {
             description = " 검색 조건에 따라 유기견의 목록을 반환합니다."
     )
     @GetMapping
-    public ResponseEntity<List<RegisterDogResDto>> findAllDogByOption
+    public ResponseEntity<List<DogResDto>> findAllDogByOption
             (@Parameter(description = "option : 'all' / 'random' / 'like' 등등")
              DogSearchCondition condition, @RequestHeader(ACCESS_TOKEN) String token) {
         // 1. Option : all
@@ -146,7 +144,7 @@ public class DogController {
             description = "로그인한 유저의 찜 목록을 조회합니다."
     )
     @GetMapping("/bookmark")
-    public ResponseEntity<List<RegisterDogResDto>> getBookmarkDogList(@RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<List<DogResDto>> getBookmarkDogList(@RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(dogService.getBookmarkDogList(token));
     }
 
