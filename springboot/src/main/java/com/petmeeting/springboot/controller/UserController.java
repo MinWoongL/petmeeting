@@ -7,6 +7,7 @@ import com.petmeeting.springboot.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import nonapi.io.github.classgraph.json.JSONSerializer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +60,11 @@ public class UserController {
     @PostMapping("/sign-in")
     public ResponseEntity<SignInResDto> signIn(@RequestBody SignInReqDto requestDto) {
         Map<String, Object> result = userService.signIn(requestDto);
+
+        HttpHeaders headers = new HttpHeaders();
+        String token = result.get("token").toString();
+        headers.set("Authorization", token);
+        headers.set("Access-Control-Expose-Headers", "Authorization, Content-type");
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Token", JSONSerializer.serializeObject(result.get("token")))
@@ -134,4 +140,5 @@ public class UserController {
     public ResponseEntity<MypageResDto> getUserInMyPage(@PathVariable Integer userNo, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(userService.getUserInMyPage(userNo, token));
     }
+
 }

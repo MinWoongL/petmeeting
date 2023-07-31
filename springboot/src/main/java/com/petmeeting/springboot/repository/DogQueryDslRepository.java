@@ -21,12 +21,12 @@ public class DogQueryDslRepository {
 
     public List<Dog> findByCondition(DogSearchCondition condition) {
         return jpaQueryFactory.selectFrom(dog)
-                .where(dog.isDeleted.eq(false),
+                .where(dog.isDeleted.eq(false), // 삭제되지 않으면서
                         containsName(condition.getName()),
                         sameDogSize(condition.getDogSize()),
                         containsShelterNo(condition.getShelterNo()))
-                .limit(condition.getMax() == null ? 10 : condition.getMax())
-                .offset(condition.getOffset() == null ? 0 : condition.getOffset())
+                .limit(condition.getMax() == 0 ? 10 : condition.getMax())
+                .offset(condition.getOffset() == null ? 1 : condition.getOffset())
                 .fetch();
     }
 
@@ -46,18 +46,22 @@ public class DogQueryDslRepository {
         return dog.dogSize.eq(size);
     }
 
-    // 검색조건에 보호소번호가 있는지에 따라 검색 결과가 달라짐
+    /**
+     * 보호소 번호를 검색하면 해당 보호소의 모든 유기견이 조회된다.(입양상태 무관)
+     * 보호소 번호가 null이면 입양 가능한 유기견만 조회된다.
+     * @param shelterNo
+     * @return
+     */
     private BooleanExpression containsShelterNo(Integer shelterNo) {
-        // 보호소 번호가 있으면
-        if(shelterNo != null)
-            // 같은 보호소번호를 가진 모든 강아지 검색
-            return dog.shelter.id.eq(shelterNo);
-
         // 보호소 번호가 없으면
-        // 입양 가능한 강아지만 나온다.
-        return dog.adoptionAvailability.eq(AdoptionAvailability.ADOPT_POSSIBLE);
-    }
+        if(shelterNo == 0 || shelterNo == null) {
+            // 입양 가능한 강아지만 나온다.
+            return dog.adoptionAvailability.eq(AdoptionAvailability.ADOPT_POSSIBLE);
+        }
 
-
+        // 보호소 번호가 있으면
+        // 같은 보호소번호를 가진 모든 강아지 검색
+        return dog.shelter.id.eq(shelterNo);
+       }
 
 }
