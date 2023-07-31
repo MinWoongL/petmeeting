@@ -61,13 +61,9 @@ public class UserController {
     public ResponseEntity<SignInResDto> signIn(@RequestBody SignInReqDto requestDto) {
         Map<String, Object> result = userService.signIn(requestDto);
 
-        HttpHeaders headers = new HttpHeaders();
-        String token = result.get("token").toString();
-        headers.set("Authorization", token);
-        headers.set("Access-Control-Expose-Headers", "Authorization, Content-type");
-
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Token", JSONSerializer.serializeObject(result.get("token")))
+                .header("Access-Control-Expose-Headers", "token, Content-type")
                 .body((SignInResDto) result.get("user"));
     }
 
