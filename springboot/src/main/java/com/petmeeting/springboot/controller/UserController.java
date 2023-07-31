@@ -1,6 +1,7 @@
 package com.petmeeting.springboot.controller;
 
-import com.petmeeting.springboot.dto.auth.Token;
+import com.petmeeting.springboot.dto.common.MessageDto;
+import com.petmeeting.springboot.dto.common.ResultDto;
 import com.petmeeting.springboot.dto.user.*;
 import com.petmeeting.springboot.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,8 +28,8 @@ public class UserController {
             description = "사용가능할 시 'true', 불가능할 시 'false'를 반환합니다."
     )
     @GetMapping("/check/{userId}")
-    ResponseEntity<Boolean> duplicateCheck(@PathVariable String userId) {
-        return ResponseEntity.ok(userService.check(userId));
+    ResponseEntity<ResultDto> duplicateCheck(@PathVariable String userId) {
+        return ResponseEntity.ok(ResultDto.builder().result(userService.check(userId)).build());
     }
 
     @Operation(
@@ -36,10 +37,10 @@ public class UserController {
             description = "Access Token 만료 시 Refresh Token으로 Access Token을 재발급 받습니다."
     )
     @GetMapping("/reissue")
-    ResponseEntity<String> reIssue(@RequestHeader(REFRESH_TOKEN) String token) {
+    ResponseEntity<MessageDto> reIssue(@RequestHeader(REFRESH_TOKEN) String token) {
         return ResponseEntity.status(HttpStatus.OK)
                 .header(ACCESS_TOKEN, userService.reissueToken(token))
-                .body("Reissue Success");
+                .body(MessageDto.builder().msg("Reissue Success").build());
     }
 
     @Operation(
@@ -47,9 +48,9 @@ public class UserController {
             description = "성공 시 “SignUp Success” 메시지를 반환합니다."
     )
     @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody SignUpReqDto signUpReqDto){
+    public ResponseEntity<MessageDto> signUp(@RequestBody SignUpReqDto signUpReqDto){
         userService.signUp(signUpReqDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("SignUp Success");
+        return ResponseEntity.status(HttpStatus.CREATED).body(MessageDto.builder().msg("SignUp Success").build());
     }
 
     @Operation(
@@ -71,10 +72,10 @@ public class UserController {
             description = "성공 시 “SignOut Success”메시지를 반환합니다."
     )
     @DeleteMapping("/sign-out")
-    public ResponseEntity<String> signOut(@RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<MessageDto> signOut(@RequestHeader(ACCESS_TOKEN) String token) {
         userService.signOut(token);
 
-        return ResponseEntity.ok("SignOut Success");
+        return ResponseEntity.ok(MessageDto.builder().msg("SignOut Success").build());
     }
 
     @Operation(
@@ -82,10 +83,10 @@ public class UserController {
             description = "성공 시 “Delete Success”메시지를 반환합니다."
     )
     @DeleteMapping
-    public ResponseEntity<String> withdraw(@RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<MessageDto> withdraw(@RequestHeader(ACCESS_TOKEN) String token) {
         userService.withdraw(token);
 
-        return ResponseEntity.ok("Delete Success");
+        return ResponseEntity.ok(MessageDto.builder().msg("Delete Success").build());
     }
 
     @Operation(
