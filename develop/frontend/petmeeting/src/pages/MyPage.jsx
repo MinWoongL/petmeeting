@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Typography, Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { UserInformation } from "../components/MyPage/UserInformation";
+import UserInformation from "../components/MyPage/UserInformation";
 
 function Adoption() {
   const [user, setUser] = useState(null);
@@ -33,7 +33,7 @@ function Adoption() {
 
       {/* 마이페이지 메인 박스 */}
 
-      <UserInformation>123</UserInformation>
+      <UserInformation>1234</UserInformation>
     </Box>
   );
 }

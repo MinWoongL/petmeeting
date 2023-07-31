@@ -61,6 +61,17 @@ export default function Login() {
             points: response.data.points,
           })
         ); // 로그인 상태로 설정
+
+        console.log(response);
+        console.log(response.headers.get("Authorization"));
+        if (response.headers["accessToken"]) {
+          // Store JWT token in session storage
+          console.log("seesss 들");
+          sessionStorage.setItem("token", response.headers["accessToken"]);
+        } else {
+          console.log("No token found in response");
+        }
+
         const user = {
           name: response.data.name,
         };
@@ -68,6 +79,7 @@ export default function Login() {
         // If there is no user object in localStorage, create one
         if (!localStorage.getItem("user")) {
           localStorage.setItem("user", JSON.stringify({}));
+          console.log("없었어서 겟함");
         }
 
         // Retrieve the user object from localStorage

@@ -79,8 +79,18 @@ export default function SignUp() {
             points: response.data.points,
           })
         ); // 로그인 상태로 설정
+        if (response.headers["accessToken"]) {
+          // Store JWT token in session storage
+          sessionStorage.setItem(
+            "token",
+            "Bearer " + response.headers["accessToken"]
+          );
+        } else {
+          console.log("No token found in response");
+        }
+
         const user = {
-          name: data.get("name"),
+          name: response.data.name,
         };
 
         // If there is no user object in localStorage, create one
