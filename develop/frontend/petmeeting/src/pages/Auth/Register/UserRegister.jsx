@@ -79,6 +79,24 @@ export default function SignUp() {
             points: response.data.points,
           })
         ); // 로그인 상태로 설정
+        const user = {
+          name: data.get("name"),
+        };
+
+        // If there is no user object in localStorage, create one
+        if (!localStorage.getItem("user")) {
+          localStorage.setItem("user", JSON.stringify({}));
+        }
+
+        // Retrieve the user object from localStorage
+        const localStorageUser = JSON.parse(localStorage.getItem("user"));
+
+        // Update the user object with the new name
+        localStorageUser.name = user.name;
+
+        // Save the updated user object back to localStorage
+        localStorage.setItem("user", JSON.stringify(localStorageUser));
+
         navigate("/"); // Home으로 이동
       } else {
         console.log("Login failed");
