@@ -20,7 +20,6 @@ import {
 
 import axios from "axios";
 
-
 export default function Login() {
   const [id, setId] = useState(""); // ID 상태
   const [password, setPassword] = useState(""); // 비밀번호 상태
@@ -50,7 +49,7 @@ export default function Login() {
     try {
       const response = await axios({
         method: "post",
-        url: "http://i9a203.p.ssafy.io/backapi/api/v1/user/sign-in",
+        url: "https://i9a203.p.ssafy.io/backapi/api/v1/user/sign-in",
         headers: { "Content-Type": "application/json" },
         data: JSON.stringify({ userId, password }),
       });
@@ -61,7 +60,6 @@ export default function Login() {
             userId: response.data.name,
             points: response.data.points,
           })
-          
         ); // 로그인 상태로 설정
         navigate("/"); // Home으로 이동
       } else {
