@@ -79,16 +79,16 @@ function App() {
           <Hidden smDown>
             {/* 로그인 또는 회원가입 페이지가 아니면 왼쪽 영역을 표시 */}
             {!pageCheck && (
-              <Grid item xs={3} style={{ maxHeight: 'calc(100vh - 64px)' }}> {/* 왼쪽 3칸 */}
+              <Grid item xs={3} style={{ maxHeight: 'calc(100vh - 64px)', borderRadius:"8px" }}> {/* 왼쪽 3칸 */}
                 <Box border={1} borderColor="grey.900" height="100%">
                   <Grid container direction="row" style={{ height: '100%' }}>
                     <Grid item style={{ flex: 2 }}>
-                      <Box border={1} borderColor="grey.900" height="100%">
+                      <Box border={1} borderColor="grey.900" height="100%" borderRadius="8px">
                         <InfoSidebar />
                       </Box>
                     </Grid>
                     <Grid item style={{ flex: 3 }} sx={{mt:2}}>
-                      <Box border={1} borderColor="grey.900" height="100%" style={{ backgroundColor: 'var(--yellow6)'}}>
+                      <Box border={1} borderColor="grey.900" height="100%" style={{ backgroundColor: 'var(--yellow6)', borderRadius: '8px'}}>
                         <RankSystemSidebar />
                       </Box>
                     </Grid>

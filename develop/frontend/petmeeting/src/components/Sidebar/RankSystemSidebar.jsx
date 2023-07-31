@@ -10,7 +10,7 @@ function RankSide() {
       { name: 'Dog 1', likes: 5, image: 'https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2023/05/202307181707536.jpg' },
       { name: 'Dog 2', likes: 2, image: 'https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2023/07/202307251307624.jpg' },
       { name: 'Dog 3', likes: 8, image: 'https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2023/05/202307171707248.jpg' },
-      { name: 'Dog 4', likes: 12, image: '../../assets/images/img_1.jpg' },
+      { name: 'Dog 4', likes: 12, image: '../../assets/images/img_2.jpg' },
     ];
 
     setDogs(fetchedDogs);
@@ -35,23 +35,43 @@ function RankSide() {
   };
 
   return (
-    <Box sx={{ width: '100%', height: '100%', mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Typography component="h1" variant="h5" gutterBottom>
-        Dogs Ranking
+    <Box sx={{ width: '100%', height: '100%', mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius:'8px' }}>
+      <Typography component="h1" variant="h5" gutterBottom style={{ fontFamily: 'Poor Story' }}>
+        오늘의 인기 강아지
       </Typography>
 
-      <Tabs value={currentTab} onChange={handleTabChange} centered sx={{ marginBottom: '20px' }}>
-        <Tab label="좋아요순" />
-        <Tab label="랜덤순" />
-      </Tabs>
+      <Paper elevation={3} sx={{ width: '90%', overflowX: 'auto', borderRadius: '0 0 4px 4px' }}>
+      <Tabs
+      value={currentTab}
+      onChange={handleTabChange}
+      centered
+      sx={{
+        marginBottom: '0px',
+        borderBottom: '1px solid #e0e0e0',
+        '& .Mui-selected': {
+          color: 'var(--dark)',
+          fontWeight: 'bold',
+        },
+        '& .MuiTabs-indicator': {
+          backgroundColor: 'var(--yellow7)',
+        },
+        '& .MuiTab-root': {
+          '&:hover': {
+            backgroundColor: 'var(--yellow8)'  // Or any other hover effect you want
+          },
+        }
+      }}
+    >
+      <Tab label="좋아요순" />
+      <Tab label="랜덤순" />
+    </Tabs>
 
-      <Paper elevation={3} sx={{ width: '90%', overflowX: 'auto' }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>Image</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell>
-              <TableCell align="right" sx={{ fontWeight: 'bold' }}>Likes</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>강아지</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>이름</TableCell>
+              <TableCell align="right" sx={{ fontWeight: 'bold' }}>좋아요</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

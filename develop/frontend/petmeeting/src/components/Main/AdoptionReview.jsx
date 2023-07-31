@@ -60,13 +60,14 @@ function AdoptionReview() {
     } else {
       setStartIndex(startIndex - 1);
     }
-  };
+  };  
 
   const handleNext = () => {
-    if (startIndex + itemsToShow - 1 === reviews.length - 1) {
-      setStartIndex(0);
-    } else {
-      setStartIndex(startIndex + 1);
+    if (startIndex === reviews.length-1){
+        setStartIndex(0)
+    }
+    else {
+        setStartIndex(startIndex + 1);
     }
   };
 
@@ -93,7 +94,10 @@ function AdoptionReview() {
       <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
         {getVisibleReviews().map((review) => (
           <Card key={review.id} sx={{ width: 300 }}>
-            <CardHeader title={review.title} subheader={review.date} />
+            <CardHeader title={review.title} subheader={review.date}
+              titleTypographyProps={{ style: { fontFamily: "Jua" } }}
+              subheaderTypographyProps={{ style: { fontFamily: "Arial" } }}
+            />
             <CardMedia
               component="img"
               height="160"
