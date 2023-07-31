@@ -96,7 +96,9 @@ public class Dog {
 
     @PrePersist
     public void prePersist() {
-        this.protectionStartDate = protectionStartDate == null ? System.currentTimeMillis() / 1000 : protectionStartDate;
+        System.out.println("dog 에서 prePersist 작동! " +  protectionStartDate);
+
+        this.protectionStartDate = protectionStartDate == 0 ? System.currentTimeMillis() / 1000 : protectionStartDate;
     }
 
     public void delete(){
