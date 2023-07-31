@@ -7,9 +7,11 @@ import com.petmeeting.springboot.domain.Shelter;
 import com.petmeeting.springboot.enums.AdoptionAvailability;
 import com.petmeeting.springboot.enums.DogSize;
 import com.petmeeting.springboot.enums.Gender;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class RegisterDogReqDto {
     String name;
     DogSize dogSize;

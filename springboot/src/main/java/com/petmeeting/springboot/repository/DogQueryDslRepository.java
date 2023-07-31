@@ -29,7 +29,7 @@ public class DogQueryDslRepository {
                             sameDogSize(condition.getDogSize()),
                             notContainsShelter())
                     .limit(condition.getMax() == 0 ? 10 : condition.getMax())
-                    .offset(condition.getOffset() == null ? 1 : condition.getOffset())
+                    .offset(condition.getOffset() == 0 ? 1 : condition.getOffset())
                     .fetch();
         }
 
