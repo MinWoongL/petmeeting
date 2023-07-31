@@ -73,6 +73,9 @@ public class Dog {
     @ColumnDefault("false")
     private Boolean isDeleted;
 
+    @Column(name = "like_cnt", nullable = false)
+    @ColumnDefault("0")
+    private Integer likeCnt;
 
     // Dog |---|| a
     @Column(name = "image_path")
@@ -123,6 +126,14 @@ public class Dog {
         this.isInoculated = updateDogReqDto.getIsInoculated() == null ? isInoculated : updateDogReqDto.getIsInoculated();
         this.imagePath = updateDogReqDto.getImagePath() == null ? imagePath : updateDogReqDto.getImagePath();
         // 삭제는 (isDeleted)는 삭제 기능으로만 가능
+    }
+
+    public void updateLikeCnt(boolean isLike) {
+        if(isLike) {
+            this.likeCnt += 1;
+        } else {
+            this.likeCnt -= 1;
+        }
     }
 
 }
