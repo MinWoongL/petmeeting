@@ -51,9 +51,10 @@ function AdoptionReview() {
     };
 
     const handleNext = () => {
-        if (startIndex + itemsToShow - 1 === reviews.length - 1) {
-            setStartIndex(0);
-        } else {
+        if (startIndex === reviews.length-1){
+            setStartIndex(0)
+        }
+        else {
             setStartIndex(startIndex + 1);
         }
     };
