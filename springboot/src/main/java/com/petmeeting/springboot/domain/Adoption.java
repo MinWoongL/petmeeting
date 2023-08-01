@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.dto.adoption.AdoptionUpdateReqDto;
 import com.petmeeting.springboot.enums.AdoptionStatus;
 import com.petmeeting.springboot.enums.Gender;
 import lombok.AllArgsConstructor;
@@ -67,5 +68,16 @@ public class Adoption {
     // 해당 유기견의 보호가 종료되면 입양신청이 모두 미채택으로 변경되어야 함
     public void updateAdoptionStatusToFail(){
         this.adoptionStatus = AdoptionStatus.ADOPT_FAIL;
+    }
+
+    public void updateAdoption(AdoptionUpdateReqDto reqDto) {
+        this.name = reqDto.getName() == null ? this.name : reqDto.getName();
+        this.gender = reqDto.getGender() == null ? this.gender : Gender.valueOf(reqDto.getGender());
+        this.age = reqDto.getAge() == null ? this.age : reqDto.getAge();
+        this.callTime = reqDto.getCallTime() == null ? this.callTime : reqDto.getCallTime();
+        this.residence = reqDto.getResidence() == null ? residence : reqDto.getResidence();
+        this.job = reqDto.getJob() == null ? job : reqDto.getJob();
+        this.petExperience = reqDto.getPetExperience() == null ? petExperience : reqDto.getPetExperience();
+        this.additional = reqDto.getAdditional() == null ? additional : reqDto.getAdditional();
     }
 }
