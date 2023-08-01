@@ -1,9 +1,6 @@
 package com.petmeeting.springboot.controller;
 
-import com.petmeeting.springboot.dto.adoption.AdoptionCreateReqDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionResDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionSearchCondition;
-import com.petmeeting.springboot.dto.adoption.AdoptionUpdateReqDto;
+import com.petmeeting.springboot.dto.adoption.*;
 import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.service.AdoptionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,8 +32,8 @@ public class AdoptionController {
             description = "입양신청서 번호로 입양신청서 세부내용을 조회합니다."
     )
     @GetMapping("/{adoptionNo}")
-    public ResponseEntity<?> getAdoption() {
-        return null;
+    public ResponseEntity<?> getAdoption(@PathVariable Integer adoptionNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(adoptionService.getAdoption(adoptionNo, token));
     }
 
     @Operation(
@@ -55,9 +52,9 @@ public class AdoptionController {
                     "adoptionStatus가 '채택'이면 요청을 거부합니다."
     )
     @DeleteMapping("/{adoptionNo}")
-    public ResponseEntity<MessageDto> deleteAdoption() {
-
-        return ResponseEntity.ok(MessageDto.builder().msg("").build());
+    public ResponseEntity<MessageDto> deleteAdoption(@PathVariable Integer adoptionNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        adoptionService.deleteAdoption(adoptionNo, token);
+        return ResponseEntity.ok(MessageDto.msg("Delete Success"));
     }
 
     @Operation(
@@ -67,8 +64,8 @@ public class AdoptionController {
                     "해당 유기견의 모든 adoptionStatus가 '미채택'으로 변경됩니다."
     )
     @PutMapping("/status/{adoptionNo}")
-    public ResponseEntity<?> updateAdoptionStatus() {
-        return null;
+    public ResponseEntity<AdoptionResDto> updateAdoptionStatus(@PathVariable Integer adoptionNo, AdoptStatusUpdateReqDto adoptStatusUpdateDto, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(adoptionService.updateAdoptionStatus(adoptionNo, adoptStatusUpdateDto, token));
     }
 
     @Operation(
