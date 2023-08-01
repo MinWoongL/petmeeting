@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.controller;
 
+import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.dto.inquiry.InquiryCreateReqDto;
 import com.petmeeting.springboot.dto.inquiry.InquiryResDto;
 import com.petmeeting.springboot.dto.inquiry.InquirySearchCondition;
@@ -39,11 +40,25 @@ public class InquiryController {
     }
 
     @Operation(
-            summary = "문의게시글 상세보기",
-            description = "문의게시글 상세정보를 반환합니다."
+            summary = "문의게시글 목록 보기",
+            description = "검색조건에 따라 문의게시글 목록이 반환됩니다.\n" +
+                    "option : all or null (page나 max에 관계없이 모든 게시글 반환)\n" +
+                    "max : 최대페이지 수\n" +
+                    "page : 해당 페이지\n" +
+                    "title : 해당 제목을 포함하는 게시글"
     )
     @GetMapping
-    public ResponseEntity<List<InquiryResDto>> getInquiry(@Parameter(description = "") InquirySearchCondition inquirySearchCondition) {
+    public ResponseEntity<List<InquiryResDto>> getInquiry(@Parameter InquirySearchCondition inquirySearchCondition) {
         return ResponseEntity.ok(inquiryService.searchInquiry(inquirySearchCondition));
+    }
+
+    @Operation(
+            summary = "문의게시글 삭제",
+            description = "문의게시글을 삭제합니다."
+    )
+    @DeleteMapping("/{inquiryNo}")
+    public ResponseEntity<MessageDto> deleteInquiry(@PathVariable Integer inquiryNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        inquiryService.deleteInquiry(inquiryNo, token);
+        return ResponseEntity.ok(MessageDto.msg("Delete Success"));
     }
 }
