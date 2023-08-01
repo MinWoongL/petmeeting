@@ -1,15 +1,13 @@
 package com.petmeeting.springboot.dto.adoption;
 
-
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class AdoptionCreateReqDto {
+public class AdoptionUpdateReqDto {
 
-    Integer dogNo;
-    String name; // 사람이름
+    String name;
     String gender;
     Integer age;
     String callTime;

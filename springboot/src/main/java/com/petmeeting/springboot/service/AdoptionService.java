@@ -6,6 +6,7 @@ import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.dto.adoption.AdoptionCreateReqDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionResDto;
+import com.petmeeting.springboot.dto.adoption.AdoptionUpdateReqDto;
 import com.petmeeting.springboot.enums.AdoptionStatus;
 import com.petmeeting.springboot.enums.Gender;
 import com.petmeeting.springboot.repository.AdoptionRepository;
@@ -30,6 +31,14 @@ public class AdoptionService {
     private final DogRepository dogRepository;
     private final AdoptionRepository adoptionRepository;
 
+
+    /**
+     * 입양신청서 작성
+     * 멤버가 아닌 회원은 작성 불가넝
+     * @param adoptionCreateReqDto
+     * @param token
+     * @return
+     */
     @Transactional
     public AdoptionResDto createAdoption(AdoptionCreateReqDto adoptionCreateReqDto, String token) {
         Integer userNo = jwtUtils.getUserNo(token);
@@ -65,10 +74,24 @@ public class AdoptionService {
                 .build();
 
         adoptionRepository.save(adoption);
-
         return AdoptionResDto.entityToDto(adoption);
     }
 
+
+    @Transactional
+    public AdoptionResDto getAdoption(Integer adoptionNo) {
+
+        return null;
+    }
+
+    @Transactional
+    public AdoptionResDto updateAdoption(Integer adoptionNo, AdoptionUpdateReqDto adoptionUpdateReqDto, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        // 작성자와 로그인 사용자가 일치해야만 수정 가능
+//        if(userNo != )
+        return null;
+    }
 
 
 }
