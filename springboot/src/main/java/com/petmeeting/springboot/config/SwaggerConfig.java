@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
-        servers = {@Server(url = "https://i9a203.p.ssafy.io/", description = "Default Server URL")
+        servers = {@Server(url = "https://i9a203.p.ssafy.io/backapi/", description = "Default Server URL")
                 , @Server(url = "http://localhost:5000/", description = "Develop URL")},
         info = @Info(title = "PetMeeting API 명세서",
                 description = "PetMeeting WebService API 명세서",
