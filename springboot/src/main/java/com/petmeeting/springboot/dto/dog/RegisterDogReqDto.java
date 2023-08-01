@@ -7,19 +7,21 @@ import com.petmeeting.springboot.domain.Shelter;
 import com.petmeeting.springboot.enums.AdoptionAvailability;
 import com.petmeeting.springboot.enums.DogSize;
 import com.petmeeting.springboot.enums.Gender;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class RegisterDogReqDto {
     String name;
-    DogSize dogSize;
-    Gender gender;
+    String dogSize;
+    String gender;
     Integer weight;
     Integer age;
     String personality;
     Long protectionStartDate;
     Long protectionEndDate;
-    AdoptionAvailability adoptionAvailability;
+    String adoptionAvailability;
     String currentStatus;
     String dogSpecies;
     String reasonAbandonment;
@@ -27,23 +29,23 @@ public class RegisterDogReqDto {
     String imagePath;
 
     // Dto -> Entity 로직
-    public Dog toEntity(Shelter shelter){
-        return Dog.builder()
-                .shelter(shelter)
-                .name(name)
-                .dogSize(dogSize)
-                .gender(gender)
-                .weight(weight)
-                .age(age)
-                .personality(personality)
-                .protectionStartDate(protectionStartDate)
-                .protectionEndDate(protectionEndDate)
-                .adoptionAvailability(adoptionAvailability)
-                .currentStatus(currentStatus)
-                .dogSpecies(dogSpecies)
-                .reasonAbandonment(reasonAbandonment)
-                .isInoculated(isInoculated)
-                .imagePath(imagePath)
-                .build();
-    }
+//    public Dog toEntity(Shelter shelter){
+//        return Dog.builder()
+//                .shelter(shelter)
+//                .name(name)
+//                .dogSize((DogSize) dogSize)
+//                .gender(gender)
+//                .weight(weight)
+//                .age(age)
+//                .personality(personality)
+//                .protectionStartDate(protectionStartDate)
+//                .protectionEndDate(protectionEndDate)
+//                .adoptionAvailability(adoptionAvailability)
+//                .currentStatus(currentStatus)
+//                .dogSpecies(dogSpecies)
+//                .reasonAbandonment(reasonAbandonment)
+//                .isInoculated(isInoculated)
+//                .imagePath(imagePath)
+//                .build();
+//    }
 }

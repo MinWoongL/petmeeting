@@ -11,6 +11,6 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 public class DogStatusUpdateReqDto {
 
-    private AdoptionAvailability adoptionAvailability;
+    private String adoptionAvailability;
 
 }

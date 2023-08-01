@@ -34,11 +34,10 @@ public class Adoption {
     @JoinColumn(name = "shelter_no")
     private Shelter shelter;
 
-
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    @Column(name = "gender", columnDefinition = "char(1)", nullable = false)
+    @Column(name = "gender", columnDefinition = "char(6)", nullable = false)
     @Enumerated(EnumType.STRING)
     private Gender gender;
 

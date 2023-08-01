@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 public class DogSearchCondition {
     String option; // random & like & all & rank
     String name; // 포함
-    DogSize dogSize; // 일치
+    String dogSize; // 일치
     Integer shelterNo; // 얘는 입양가능 아니여도 모두 보이게
     Integer page;
     Integer max;
