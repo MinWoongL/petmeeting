@@ -17,7 +17,7 @@ import {
   setPassword as setReduxPassword,
   login,
 } from "../../stores/Slices/UserSlice";
-
+import { Link } from 'react-router-dom';
 import axios from "axios";
 
 export default function Login() {
@@ -34,7 +34,6 @@ export default function Login() {
   const dispatch = useDispatch();
   //   const user = useSelector((state) => state.user);
 
-  const [memberType, setMemberType] = useState("general");
 
   useEffect(() => {
     console.log(user);
@@ -161,16 +160,18 @@ export default function Login() {
               로그인
             </Button>
           </form>
-
-          <Button
-            variant="text"
-            color="primary"
-            fullWidth
-            style={{ marginTop: "10px" }}
-            // 회원가입 모달을 여는 함수나 회원가입 페이지로 이동하는 로직을 여기에 넣으세요.
-          >
-            회원가입
-          </Button>
+          <Link to="/signup">
+            <Button
+              variant="text"
+              color="primary"
+              fullWidth
+              style={{ marginTop: "10px" }}
+              // 회원가입 모달을 여는 함수나 회원가입 페이지로 이동하는 로직을 여기에 넣으세요.
+            >
+              회원가입
+            </Button>
+          </Link>
+          
         </Paper>
       </Grid>
     </Grid>

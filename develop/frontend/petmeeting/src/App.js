@@ -1,16 +1,17 @@
-import React, {useState} from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom';
-import { Provider, useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom'
+import { Provider, useSelector, useDispatch } from 'react-redux'
 import store from './stores/index';
+import { login } from './stores/Slices/UserSlice'
 import { AppBar, Button, Typography, Grid, Box, Menu, MenuItem, Hidden, Toolbar } from '@mui/material'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import MainPage from './pages/MainPage';
-import ShelterPage from './pages/Shelter';
-import AdoptionPage from './pages/Adoption';
-import BoardPage from './pages/Board';
-import MyPage from './pages/MyPage';
-import LogIn from './pages/Auth/LogIn';
-import UserRegister from './pages/Auth/Register/UserRegister';
+import MainPage from './pages/MainPage'
+import ShelterPage from './pages/Shelter'
+import AdoptionPage from './pages/Adoption'
+import BoardPage from './pages/Board'
+import MyPage from './pages/MyPage'
+import LogIn from './pages/Auth/LogIn'
+import UserRegister from './pages/Auth/Register/UserRegister'
 import InfoSidebar from './components/Sidebar/InfoSidebar'
 import RankSystemSidebar from './components/Sidebar/RankSystemSidebar'
 import BroadCastingPage from './pages/BroadCasting'
@@ -64,7 +65,18 @@ function NavBar({ isLoggedIn }) {
 
 function App() {
   const location = useLocation();
+  const dispatch = useDispatch();
   const isLoggedIn = useSelector(state => state.user.isLoggedIn);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('token');
+    
+    if (token) {
+      const user = localStorage.getItem('user');
+      const userData = JSON.parse(user)
+      dispatch(login({userId : userData.name}));
+    }
+  }, [dispatch]);
 
   const authPage = ['/signup', '/login'];
   const pageCheck = authPage.includes(location.pathname);
@@ -73,7 +85,7 @@ function App() {
 
   return (
     <>
-      <div className="theme-yellow" style={{ minHeight: '100vh', height: '100%', backgroundColor: 'var(--yellow3)', overflowYL: 'auto' }}>
+      <div className="theme-yellow" style={{ minHeight: '120vh', height: '100%', backgroundColor: 'var(--yellow3)', overflowYL: 'auto' }}>
         <NavBar isLoggedIn={isLoggedIn}/>
 
         <Grid container spacing={3} style={{ height: 'calc(100% - 64px)' }}>
