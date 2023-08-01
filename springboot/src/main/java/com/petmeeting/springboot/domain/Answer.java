@@ -20,4 +20,7 @@ public class Answer {
 
     @Column(name = "content", columnDefinition = "text", nullable = false)
     private String content;
+
+    @OneToOne(mappedBy = "answer")
+    private Inquiry inquiry;
 }
