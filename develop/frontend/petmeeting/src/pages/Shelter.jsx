@@ -1,25 +1,55 @@
-import { useMemo, useEffect } from "react";
-
-// prop-types is a library for typechecking of props
-import PropTypes from "prop-types";
-
-// react-table components
+import React, { useState, useEffect, useMemo } from "react";
+import axios from "axios";
+import ProfileCard from "../components/Shelter/ShelterList";
 import {
   useTable,
   usePagination,
   useGlobalFilter,
   useSortBy,
 } from "react-table";
+import { Table, TableBody, TableContainer } from "@mui/material";
 
-// @mui material components
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
-import TableRow from "@mui/material/TableRow";
+function DataTable() {
+  const [tableData, setTableData] = useState([]);
 
-function DataTable({ table }) {
-  const columns = useMemo(() => table.columns, [table]);
-  const data = useMemo(() => table.rows, [table]);
+  useEffect(() => {
+    axios
+      .get("https://i9a203.p.ssafy.io/backapi/api/v1/shelter?option=all")
+      .then((res) => {
+        setTableData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const data = useMemo(() => tableData, [tableData]);
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: "보호소 이름",
+        accessor: "name",
+      },
+      {
+        Header: "주소",
+        accessor: "address",
+      },
+      {
+        Header: "전화번호",
+        accessor: "phoneNumber",
+      },
+      {
+        Header: "이메일",
+        accessor: "email",
+      },
+      {
+        Header: "웹사이트",
+        accessor: "website",
+      },
+    ],
+    []
+  );
 
   const tableInstance = useTable(
     { columns, data, initialState: { pageIndex: 0 } },
@@ -28,46 +58,20 @@ function DataTable({ table }) {
     usePagination
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, page } =
-    tableInstance;
+  const { getTableProps, page, prepareRow } = tableInstance;
 
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
       <Table {...getTableProps()}>
-        <TableBody {...getTableBodyProps()}>
-          {page.map((row, key) => {
+        <TableBody>
+          {page.map((row, i) => {
             prepareRow(row);
-            return (
-              <TableRow key={key} {...row.getRowProps()}>
-                {row.cells.map((cell, idx) => (
-                  <td
-                    key={idx}
-                    align={cell.column.align ? cell.column.align : "left"}
-                    {...cell.getCellProps()}
-                  >
-                    {cell.render("Cell")}
-                  </td>
-                ))}
-              </TableRow>
-            );
+            return <ProfileCard key={i} profile={row.original} />;
           })}
         </TableBody>
       </Table>
     </TableContainer>
   );
 }
-
-// Setting default values for the props of DataTable
-DataTable.defaultProps = {
-  table: { columns: [], rows: [] },
-};
-
-// Typechecking props for the DataTable
-DataTable.propTypes = {
-  table: PropTypes.shape({
-    columns: PropTypes.arrayOf(PropTypes.object),
-    rows: PropTypes.arrayOf(PropTypes.object),
-  }).isRequired,
-};
 
 export default DataTable;
