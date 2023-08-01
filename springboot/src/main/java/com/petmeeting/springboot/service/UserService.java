@@ -5,6 +5,8 @@ import com.petmeeting.springboot.domain.Shelter;
 import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.dto.auth.Token;
 import com.petmeeting.springboot.dto.user.*;
+import com.petmeeting.springboot.repository.ChargeRepository;
+import com.petmeeting.springboot.repository.DonationRepository;
 import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final DonationRepository donationRepository;
+    private final ChargeRepository chargeRepository;
+
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
@@ -88,6 +93,11 @@ public class UserService {
 
         user.updateRefreshToken(token.getRefreshToken());
         userRepository.save(user);
+
+        if (user instanceof Member) {
+            ((Member) user).setHoldingPoint(chargeRepository.findSumByUserNo(user.getId()).orElse(0)
+                    - donationRepository.findSumByUserNo(user.getId()).orElse(0));
+        }
 
         Map<String, Object> result = new HashMap<>();
         result.put("token", token);
