@@ -1,11 +1,6 @@
 package com.petmeeting.springboot.dto.adoption;
 
 import com.petmeeting.springboot.domain.Adoption;
-import com.petmeeting.springboot.domain.Dog;
-import com.petmeeting.springboot.domain.Member;
-import com.petmeeting.springboot.domain.Shelter;
-import com.petmeeting.springboot.enums.AdoptionStatus;
-import com.petmeeting.springboot.enums.Gender;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,34 +9,34 @@ import lombok.Data;
 public class AdoptionResDto {
 
     Integer adoptionNo;
-    Member member;
-    Dog dog;
-    Shelter shelter;
+    Integer memberNo;
+    Integer dogNo;
+    Integer shelterNo; // 여기는 객체쓰면안댐
     String name;
-    Gender gender;
+    String gender;
     Integer age;
     String callTime;
     String residence;
     String job;
     Boolean petExperience;
     String additional;
-    AdoptionStatus adoptionStatus;
+    String adoptionStatus;
 
     public static AdoptionResDto entityToDto(Adoption adoption) {
         return AdoptionResDto.builder()
                 .adoptionNo(adoption.getAdoptionNo())
-                .member(adoption.getMember())
-                .dog(adoption.getDog())
-                .shelter(adoption.getShelter())
+                .memberNo(adoption.getMember().getId())
+                .dogNo(adoption.getDog().getDogNo())
+                .shelterNo(adoption.getShelter().getId())
                 .name(adoption.getName())
-                .gender(adoption.getGender())
+                .gender(adoption.getGender().getValue())
                 .age(adoption.getAge())
                 .callTime(adoption.getCallTime())
                 .residence(adoption.getResidence())
                 .job(adoption.getJob())
                 .petExperience(adoption.getPetExperience())
                 .additional(adoption.getAdditional())
-                .adoptionStatus(adoption.getAdoptionStatus())
+                .adoptionStatus(adoption.getAdoptionStatus().getValue())
                 .build();
     }
 }

@@ -2,6 +2,9 @@ package com.petmeeting.springboot.service;
 
 import com.petmeeting.springboot.domain.*;
 import com.petmeeting.springboot.dto.dog.*;
+import com.petmeeting.springboot.enums.AdoptionAvailability;
+import com.petmeeting.springboot.enums.DogSize;
+import com.petmeeting.springboot.enums.Gender;
 import com.petmeeting.springboot.repository.*;
 import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +42,22 @@ public class DogService {
         Shelter shelter = (Shelter) userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "보호소를 찾을 수 없습니다."));
 
-        Dog dog = registerDogReqDto.toEntity(shelter);
+        Dog dog = Dog.builder()
+                .shelter(shelter)
+                .name(registerDogReqDto.getName())
+                .dogSize(DogSize.valueOf(registerDogReqDto.getDogSize()))
+                .gender(Gender.valueOf(registerDogReqDto.getGender()))
+                .weight(registerDogReqDto.getWeight())
+                .age(registerDogReqDto.getAge())
+                .personality(registerDogReqDto.getPersonality())
+                .protectionStartDate(registerDogReqDto.getProtectionStartDate())
+                .protectionEndDate(registerDogReqDto.getProtectionEndDate())
+                .adoptionAvailability(AdoptionAvailability.valueOf(registerDogReqDto.getAdoptionAvailability()))
+                .currentStatus(registerDogReqDto.getCurrentStatus())
+                .dogSpecies(registerDogReqDto.getDogSpecies())
+                .reasonAbandonment(registerDogReqDto.getReasonAbandonment())
+                .isInoculated(registerDogReqDto.getIsInoculated())
+                .build();
 
         dogRepository.save(dog);
 
@@ -85,7 +103,7 @@ public class DogService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
 
-        updateDog.updateStatus(dogStatusUpdateReqDto.getAdoptionAvailability());
+        updateDog.updateStatus(AdoptionAvailability.valueOf(dogStatusUpdateReqDto.getAdoptionAvailability()));
         dogRepository.save(updateDog);
 
 //        // 만약 보호종료 상태가 된다면, 해당 유기견에게 할당된 모든 입양신청서 "미채택"
@@ -144,14 +162,14 @@ public class DogService {
                 .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
-                        .dogSize(dog.getDogSize())
-                        .gender(dog.getGender())
+                        .dogSize(dog.getDogSize().getValue())
+                        .gender(dog.getGender().getValue())
                         .weight(dog.getWeight())
                         .age(dog.getAge())
                         .personality(dog.getPersonality())
                         .protectionStartDate(dog.getProtectionStartDate())
                         .protectionEndDate(dog.getProtectionEndDate())
-                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .adoptionAvailability(dog.getAdoptionAvailability().getValue())
                         .currentStatus(dog.getCurrentStatus())
                         .dogSpecies(dog.getDogSpecies())
                         .reasonAbandonment(dog.getReasonAbandonment())
@@ -169,14 +187,14 @@ public class DogService {
                 .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
-                        .dogSize(dog.getDogSize())
-                        .gender(dog.getGender())
+                        .dogSize(dog.getDogSize().getValue())
+                        .gender(dog.getGender().getValue())
                         .weight(dog.getWeight())
                         .age(dog.getAge())
                         .personality(dog.getPersonality())
                         .protectionStartDate(dog.getProtectionStartDate())
                         .protectionEndDate(dog.getProtectionEndDate())
-                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .adoptionAvailability(dog.getAdoptionAvailability().getValue())
                         .currentStatus(dog.getCurrentStatus())
                         .dogSpecies(dog.getDogSpecies())
                         .reasonAbandonment(dog.getReasonAbandonment())
@@ -194,14 +212,14 @@ public class DogService {
                 .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
-                        .dogSize(dog.getDogSize())
-                        .gender(dog.getGender())
+                        .dogSize(dog.getDogSize().getValue())
+                        .gender(dog.getGender().getValue())
                         .weight(dog.getWeight())
                         .age(dog.getAge())
                         .personality(dog.getPersonality())
                         .protectionStartDate(dog.getProtectionStartDate())
                         .protectionEndDate(dog.getProtectionEndDate())
-                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .adoptionAvailability(dog.getAdoptionAvailability().getValue())
                         .currentStatus(dog.getCurrentStatus())
                         .dogSpecies(dog.getDogSpecies())
                         .reasonAbandonment(dog.getReasonAbandonment())
@@ -219,14 +237,14 @@ public class DogService {
                 .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
-                        .dogSize(dog.getDogSize())
-                        .gender(dog.getGender())
+                        .dogSize(dog.getDogSize().getValue())
+                        .gender(dog.getGender().getValue())
                         .weight(dog.getWeight())
                         .age(dog.getAge())
                         .personality(dog.getPersonality())
                         .protectionStartDate(dog.getProtectionStartDate())
                         .protectionEndDate(dog.getProtectionEndDate())
-                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .adoptionAvailability(dog.getAdoptionAvailability().getValue())
                         .currentStatus(dog.getCurrentStatus())
                         .dogSpecies(dog.getDogSpecies())
                         .reasonAbandonment(dog.getReasonAbandonment())
@@ -381,14 +399,14 @@ public class DogService {
                 .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
-                        .dogSize(dog.getDogSize())
-                        .gender(dog.getGender())
+                        .dogSize(dog.getDogSize().getValue())
+                        .gender(dog.getGender().getValue())
                         .weight(dog.getWeight())
                         .age(dog.getAge())
                         .personality(dog.getPersonality())
                         .protectionStartDate(dog.getProtectionStartDate())
                         .protectionEndDate(dog.getProtectionEndDate())
-                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .adoptionAvailability(dog.getAdoptionAvailability().getValue())
                         .currentStatus(dog.getCurrentStatus())
                         .dogSpecies(dog.getDogSpecies())
                         .reasonAbandonment(dog.getReasonAbandonment())
@@ -412,14 +430,14 @@ public class DogService {
                 .map(dog -> DogResDto.builder()
                         .dogNo(dog.getDogNo())
                         .name(dog.getName())
-                        .dogSize(dog.getDogSize())
-                        .gender(dog.getGender())
+                        .dogSize(dog.getDogSize().getValue())
+                        .gender(dog.getGender().getValue())
                         .weight(dog.getWeight())
                         .age(dog.getAge())
                         .personality(dog.getPersonality())
                         .protectionStartDate(dog.getProtectionStartDate())
                         .protectionEndDate(dog.getProtectionEndDate())
-                        .adoptionAvailability(dog.getAdoptionAvailability())
+                        .adoptionAvailability(dog.getAdoptionAvailability().getValue())
                         .currentStatus(dog.getCurrentStatus())
                         .dogSpecies(dog.getDogSpecies())
                         .reasonAbandonment(dog.getReasonAbandonment())

@@ -6,6 +6,7 @@ import com.petmeeting.springboot.service.DogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/dog")
@@ -36,7 +38,7 @@ public class DogController {
     @Operation(
             summary = "유기견 보호상태 변경(보호소)",
             description = "해당 유기견의 보호 상태를 변경합니다. " +
-                    "만약 '보호종료'가 되면 해당 유기견의 입양신청서가 모두 '미채택'으로 변경됩니다."
+                    "만약 '보호종료', '입양완료'가 되면 해당 유기견의 입양신청서가 모두 '미채택'으로 변경됩니다."
     )
     @PutMapping("/status/{dogNo}") // 이거 파라미터 어케해야대징
 //    @PreAuthorize("hasRole('ROLE_SHELTER')")
@@ -86,7 +88,7 @@ public class DogController {
     @GetMapping
     public ResponseEntity<List<DogResDto>> findAllDogByOption
             (@Parameter(description = "option : 'all' / 'random' / 'like' / 'rank'")
-             DogSearchCondition condition, @RequestHeader(ACCESS_TOKEN) String token) {
+             DogSearchCondition condition, @RequestHeader(value = ACCESS_TOKEN, required = false) String token) {
         // 1. Option : all
         if(condition.getOption() != null && condition.getOption().toLowerCase().equals("all")){
             return ResponseEntity.ok(dogService.getAllDog());
@@ -94,6 +96,11 @@ public class DogController {
 
         // 2. Option : Like(로그인한 유저가 좋아요한 목록)
         if(condition.getOption() != null && condition.getOption().toLowerCase().equals("like")) {
+            if(token == null)  {
+                log.info("[로그인한 유저가 좋아요한 목록 조회] - 로그아웃 상태에선 랜덤으로 조회됩니다.");
+                return ResponseEntity.ok(dogService.getAllDogByRandom());
+            }
+
             return ResponseEntity.ok(dogService.getLikeDogList(token));
         }
 

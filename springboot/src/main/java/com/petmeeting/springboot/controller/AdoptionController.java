@@ -1,7 +1,6 @@
 package com.petmeeting.springboot.controller;
 
 import com.petmeeting.springboot.dto.adoption.AdoptionCreateReqDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionCreateResDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionResDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionSearchCondition;
 import com.petmeeting.springboot.dto.common.MessageDto;

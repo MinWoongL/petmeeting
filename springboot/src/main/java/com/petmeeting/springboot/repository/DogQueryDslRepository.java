@@ -26,17 +26,17 @@ public class DogQueryDslRepository {
             return jpaQueryFactory.selectFrom(dog)
                     .where(dog.isDeleted.eq(false),
                             containsName(condition.getName()),
-                            sameDogSize(condition.getDogSize()),
+                            sameDogSize(DogSize.valueOf(condition.getDogSize())),
                             notContainsShelter())
                     .limit(condition.getMax() == 0 ? 10 : condition.getMax())
-                    .offset(condition.getOffset() == 0 ? 1 : condition.getOffset())
+                    .offset(condition.getOffset() == null ? 1 : condition.getOffset()) // 0이 아니라 null이여야 정상작동
                     .fetch();
         }
 
         return jpaQueryFactory.selectFrom(dog)
                 .where(dog.isDeleted.eq(false),
                         containsName(condition.getName()),
-                        sameDogSize(condition.getDogSize()),
+                        sameDogSize(DogSize.valueOf(condition.getDogSize())),
                         containsShelter(condition.getShelterNo()))
                 .limit(condition.getMax() == 0 ? 10 : condition.getMax())
                 .offset(condition.getOffset() == null ? 1 : condition.getOffset())

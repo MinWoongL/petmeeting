@@ -12,9 +12,9 @@ import lombok.Data;
 @Builder
 public class AdoptionCreateReqDto {
 
-    Dog dog;
+    Integer dogNo;
     String name; // 사람이름
-    Gender gender;
+    String gender;
     Integer age;
     String callTime;
     String residence;

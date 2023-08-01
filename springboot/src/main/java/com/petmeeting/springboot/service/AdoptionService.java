@@ -1,11 +1,13 @@
 package com.petmeeting.springboot.service;
 
 import com.petmeeting.springboot.domain.Adoption;
+import com.petmeeting.springboot.domain.Dog;
 import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.dto.adoption.AdoptionCreateReqDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionCreateResDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionResDto;
+import com.petmeeting.springboot.enums.AdoptionStatus;
+import com.petmeeting.springboot.enums.Gender;
 import com.petmeeting.springboot.repository.AdoptionRepository;
 import com.petmeeting.springboot.repository.DogRepository;
 import com.petmeeting.springboot.repository.UserRepository;
@@ -38,9 +40,30 @@ public class AdoptionService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "입양신청 권한이 없습니다.");
         }
 
+        Dog dog = dogRepository.findDogByDogNo(adoptionCreateReqDto.getDogNo())
+                .orElseThrow(() -> {
+                    log.error("[입양신청서 작성] 유기견을 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다.");
+                });
+
+
         log.info("[입양신청서 작성] userId : {}", user.getUserId());
 
-        Adoption adoption = adoptionCreateReqDto.toEntity((Member) user);
+        Adoption adoption = Adoption.builder()
+                .member((Member) user)
+                .dog(dog)
+                .shelter(dog.getShelter())
+                .name(adoptionCreateReqDto.getName())
+                .gender(Gender.valueOf(adoptionCreateReqDto.getGender()))
+                .age(adoptionCreateReqDto.getAge())
+                .callTime(adoptionCreateReqDto.getCallTime())
+                .residence(adoptionCreateReqDto.getResidence())
+                .job(adoptionCreateReqDto.getJob())
+                .petExperience(adoptionCreateReqDto.getPetExperience())
+                .additional(adoptionCreateReqDto.getAdditional())
+                .adoptionStatus(AdoptionStatus.WAITING)
+                .build();
+
         adoptionRepository.save(adoption);
 
         return AdoptionResDto.entityToDto(adoption);
