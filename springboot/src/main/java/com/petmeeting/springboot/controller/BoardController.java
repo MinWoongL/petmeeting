@@ -63,7 +63,7 @@ public class BoardController {
     @DeleteMapping("/{boardNo}")
     public ResponseEntity<MessageDto> deleteBoard(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
         boardService.deleteBoard(boardNo, token);
-        return ResponseEntity.ok(MessageDto.builder().msg("Delete Success").build());
+        return ResponseEntity.ok(MessageDto.msg("Delete Success"));
     }
 
     @Operation(
@@ -73,7 +73,7 @@ public class BoardController {
     @PostMapping("/like/{boardNo}")
     public ResponseEntity<MessageDto> likeBoard(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
         boardService.likeBoard(boardNo, token);
-        return ResponseEntity.ok(MessageDto.builder().msg("Like Success").build());
+        return ResponseEntity.ok(MessageDto.msg("Like Success"));
     }
 
     @Operation(
@@ -83,7 +83,7 @@ public class BoardController {
     @DeleteMapping("/like/{boardNo}")
     public ResponseEntity<MessageDto> dislikeBoard(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
         boardService.dislikeBoard(boardNo, token);
-        return ResponseEntity.ok(MessageDto.builder().msg("Dislike Success").build());
+        return ResponseEntity.ok(MessageDto.msg("Dislike Success"));
     }
 
     @Operation(
@@ -92,6 +92,6 @@ public class BoardController {
     )
     @GetMapping("/like/{boardNo}")
     public ResponseEntity<ResultDto> checkLiked(@PathVariable Integer boardNo, @RequestHeader(ACCESS_TOKEN) String token) {
-        return ResponseEntity.ok(ResultDto.builder().result(boardService.checkLiked(boardNo, token)).build());
+        return ResponseEntity.ok(ResultDto.result(boardService.checkLiked(boardNo, token)));
     }
 }

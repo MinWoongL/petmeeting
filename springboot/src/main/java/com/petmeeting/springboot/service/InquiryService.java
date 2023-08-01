@@ -5,6 +5,7 @@ import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.dto.inquiry.InquiryCreateReqDto;
 import com.petmeeting.springboot.dto.inquiry.InquiryResDto;
 import com.petmeeting.springboot.dto.inquiry.InquirySearchCondition;
+import com.petmeeting.springboot.repository.InquiryQueryDslRepository;
 import com.petmeeting.springboot.repository.InquiryRepository;
 import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,6 +26,7 @@ public class InquiryService {
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final InquiryRepository inquiryRepository;
+    private final InquiryQueryDslRepository inquiryQueryDslRepository;
 
     /**
      * 문의게시글 작성
@@ -60,6 +63,7 @@ public class InquiryService {
      * @param inquiryNo
      * @return InquiryResDto
      */
+    @Transactional
     public InquiryResDto getInquiry(Integer inquiryNo) {
         Inquiry inquiry = inquiryRepository.findById(inquiryNo)
                 .orElseThrow(() -> {
@@ -67,11 +71,28 @@ public class InquiryService {
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "문의게시글을 찾을 수 없습니다.");
                 });
 
+        if (inquiry.getDeletedTime() != null) {
+            log.error("[문의게시글 상세정보] 삭제된 게시글입니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제된 문의게시글입니다.");
+        }
+
         return InquiryResDto.entityToDto(inquiry);
     }
 
-
+    /**
+     * 문의게시글 목록 가져오기
+     * @param inquirySearchCondition
+     * @return List<InquiryResDto>
+     */
+    @Transactional
     public List<InquiryResDto> searchInquiry(InquirySearchCondition inquirySearchCondition) {
-        return null;
+        log.info("[문의게시글 검색] 검색조건에 따라 게시글 검색");
+        return inquiryQueryDslRepository.findByCondition(inquirySearchCondition).stream()
+                .map(inquiry -> InquiryResDto.entityToDto(inquiry))
+                .collect(Collectors.toList());
+    }
+
+
+    public void deleteInquiry(Integer inquiryNo, String token) {
     }
 }
