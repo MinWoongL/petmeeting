@@ -53,7 +53,6 @@ public class Member extends Users {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Chat> chatList;
 
-    // user_no 라서 변수 Users
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Reply> replyList;
 
@@ -67,6 +66,13 @@ public class Member extends Users {
 
     public void setHoldingPoint(Integer holdingPoint) {
         this.holdingPoint = holdingPoint;
+    }
+
+    /**
+     * 입양신청서가 채택되면 입양여부(adopted)가 true로 변경
+     */
+    public void updateAdopted() {
+        this.adopted = true;
     }
 
 }

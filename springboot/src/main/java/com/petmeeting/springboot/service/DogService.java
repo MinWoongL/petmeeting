@@ -99,18 +99,19 @@ public class DogService {
         Dog updateDog = dogRepository.findDogByDogNo(dogNo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "강아지를 찾을 수 없습니다."));
 
-        if(shelter.getId() != updateDog.getShelter().getId()){
+        if(!shelter.getId().equals(updateDog.getShelter().getId())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
 
         updateDog.updateStatus(AdoptionAvailability.valueOf(dogStatusUpdateReqDto.getAdoptionAvailability()));
         dogRepository.save(updateDog);
 
-//        // 만약 보호종료 상태가 된다면, 해당 유기견에게 할당된 모든 입양신청서 "미채택"
-//        if(dogStatusUpdateReqDto.getAdoptionAvailability().equals(AdoptionAvailability.ADOPT_IMPOSSIBLE)){
-//            Adoption adoption = adoptionRepository.updateAdoptionStatus(updateDog.getDogNo());
-//            adoptionRepository.save(adoption);
-//        }
+        // 230801 수정해야함
+        // 만약 보호종료 상태가 된다면, 해당 유기견에게 할당된 모든 입양신청서 "미채택"
+        if(dogStatusUpdateReqDto.getAdoptionAvailability().equals(AdoptionAvailability.ADOPT_IMPOSSIBLE)){
+            List<Adoption> adoptions = adoptionRepository.updateAdoptionStatus(updateDog.getDogNo());
+//            adoptionRepository.save(adoptions);
+        }
 
         Map<String, Object> result = new HashMap<>();
         result.put("dog", DogResDtoNotHaveDogNo.dogToDto(updateDog));
@@ -126,7 +127,7 @@ public class DogService {
         Dog updateDog = dogRepository.findDogByDogNo(dogNo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "강아지를 찾을 수 없습니다."));
 
-        if(shelter.getId() != updateDog.getShelter().getId()){
+        if(!shelter.getId().equals(updateDog.getShelter().getId())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
 
@@ -146,7 +147,7 @@ public class DogService {
         Shelter shelter = (Shelter) userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "보호소를 찾을 수 없습니다."));
 
-        if(dog.getShelter().getId() != shelter.getId()){
+        if(!dog.getShelter().getId().equals(shelter.getId())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한 없음(해당 보호소의 갱얼쥐가 아님)");
         }
 
@@ -207,6 +208,8 @@ public class DogService {
     @Transactional
     public List<DogResDto> getAllDogOrderByRank() {
         log.info("[랭크 옵션에 따른 모든 강아지 검색]");
+
+        // 같은 순위일 땐 랜덤조회
 
         return dogRepository.selectAllOrderByLikeCnt().stream()
                 .map(dog -> DogResDto.builder()

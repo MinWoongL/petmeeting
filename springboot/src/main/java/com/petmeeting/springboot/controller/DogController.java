@@ -108,7 +108,7 @@ public class DogController {
             return ResponseEntity.ok(dogService.getAllDogByRandom());
         }
 
-        // 4. Option : Rank(좋아요 상위)
+        // 4. Option : Rank(좋아요 상위) - 같은 순위일 땐 랜덤
         if(condition.getOption() != null && condition.getOption().toLowerCase().equals("rank")) {
             return ResponseEntity.ok(dogService.getAllDogOrderByRank());
         }

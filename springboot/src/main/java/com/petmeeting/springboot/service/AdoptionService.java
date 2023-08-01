@@ -196,8 +196,31 @@ public class AdoptionService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한이 없습니다");
         };
 
-        // 채택, 미채택에 따라 달라지는 업데이트 
+        log.info("[입양신청서 상태 변경] 신청서도 찾았고, 수정 권한도 있으니 이제 수정을 해봅시다.");
 
+
+        // 수정중
+
+        // 채택, 미채택에 따라 달라지는 업데이트
+        // 채택일시, 해당 멤버의 adopted = true로 변경되고
+        // 해당 유기견에게 할당된 모든 입양신청서의 adoptionStatus가 "미채택(ADOPT_FAIL)"으로 변경됨.
+        if(adoptStatusUpdateDto.getAdoptionStatus().equals(AdoptionStatus.ADOPT_SUCCESS.getValue())
+             ||adoptStatusUpdateDto.getAdoptionStatus().equals(AdoptionStatus.ADOPT_SUCCESS)) {
+
+            adoption.updateAdoptionStatus(true);
+
+            Member member = adoption.getMember();
+            member.updateAdopted();
+            userRepository.save(member); // 엔티티를 직접 바꾸는거는 save를 해줘야하고,
+
+            adoptionRepository.updateAdoptionStatus(adoption.getDog().getDogNo()); // jpa 사용해서 db를 변경하는건 save할 필요가 없다
+
+
+
+        } else {
+            adoption.updateAdoptionStatus(false);
+        }
+        adoptionRepository.save(adoption);
 
         return null;
     }

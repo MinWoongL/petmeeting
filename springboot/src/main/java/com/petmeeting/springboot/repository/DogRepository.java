@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public interface DogRepository extends JpaRepository<Dog, Integer> {
 
-    Optional<Dog> findDogByDogSize(DogSize dogSize);
     Optional<Dog> findDogByDogNo(Integer dogNo);
 
     List<Dog> findDogByIsDeletedFalse();
@@ -22,15 +21,15 @@ public interface DogRepository extends JpaRepository<Dog, Integer> {
 
     // 로그인 사용자의 유기견 좋아요 리스트 조회
     @Query(value = "select * from dog where dog_no in (" +
-            "select dog_no from like_dog where member_no = :memberNo)", nativeQuery = true)
+            "select dog_no from like_dog where member_no = :memberNo and is_deleted = false)", nativeQuery = true)
     List<Dog> selectAllFromLikeDog(Integer memberNo);
 
-    // 좋아요 상위권 강아지 순
-    @Query(value = "select * from dog order by like_cnt desc", nativeQuery = true)
+    // 좋아요 상위권 강아지 순 - 동일순위는 랜덤 정렬
+    @Query(value = "select * from dog where is_deleted = false order by like_cnt desc, rand()", nativeQuery = true)
     List<Dog> selectAllOrderByLikeCnt();
 
     // 랜덤 목록 조회
-    @Query(value = "select * from dog order by rand()", nativeQuery = true)
+    @Query(value = "select * from dog where is_deleted = false order by rand()", nativeQuery = true)
     List<Dog> selectAllByRandom();
 
 }
