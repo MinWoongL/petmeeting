@@ -3,7 +3,7 @@ package com.petmeeting.springboot.dto.inquiry;
 import lombok.Data;
 
 @Data
-public class InquiryCreateReqDto {
+public class InquiryReqDto {
     String title;
     String content;
 }
