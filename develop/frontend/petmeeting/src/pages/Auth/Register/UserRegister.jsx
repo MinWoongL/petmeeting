@@ -55,7 +55,6 @@ export default function SignUp() {
     const data = new FormData(event.currentTarget);
 
     try {
-      console.log(data.get("userId"));
       const response = await axios({
         method: "post",
         url: "https://i9a203.p.ssafy.io/backapi/api/v1/user/sign-up",
@@ -70,51 +69,61 @@ export default function SignUp() {
       });
 
       console.log("Signup successful:", response.data);
+
       if (response.status === 201) {
-        console.log("Received");
-        console.log(response.headers["token"]);
-        if (response.headers["token"]) {
-          // Store JWT token in session storage
+        const userId = data.get("userId");
+        const password = data.get("password");
 
-          sessionStorage.setItem("token", response.headers["token"]);
+        try {
+          const loginResponse = await axios({
+            method: "post",
+            url: "https://i9a203.p.ssafy.io/backapi/api/v1/user/sign-in",
+            headers: { "Content-Type": "application/json" },
+            data: JSON.stringify({ userId, password }),
+          });
 
-          // Dispatch login action
-          dispatch(
-            login({
-              userId: data.get("name"),
-              points: response.data.points,
-            })
-          ); // set to log in
-        } else {
-          console.log("No token found in response");
+          if (loginResponse.status === 200) {
+            dispatch(
+              login({
+                userId: loginResponse.data.name,
+                points: loginResponse.data.points,
+              })
+            ); // 로그인 상태로 설정
+
+            if (loginResponse.headers["token"]) {
+              // Store JWT token in session storage
+              sessionStorage.setItem("token", loginResponse.headers["token"]);
+            } else {
+              console.log("No token found in response");
+            }
+
+            // If there is no user object in localStorage, create one
+            if (!localStorage.getItem("user")) {
+              localStorage.setItem("user", JSON.stringify({}));
+            }
+
+            // Retrieve the user object from localStorage
+            const localStorageUser = JSON.parse(localStorage.getItem("user"));
+
+            // Update the user object with the new name
+            localStorageUser.name = loginResponse.data.name;
+
+            // Save the updated user object back to localStorage
+            localStorage.setItem("user", JSON.stringify(localStorageUser));
+
+            navigate("/"); // Home으로 이동
+          } else {
+            console.log("Login failed");
+          }
+        } catch (error) {
+          console.error("회원가입 했으나 로그인 실패:", error);
         }
-
-        const user = {
-          name: response.data.name,
-        };
-
-        // If there is no user object in localStorage, create one
-        if (!localStorage.getItem("user")) {
-          localStorage.setItem("user", JSON.stringify({}));
-        }
-
-        // Retrieve the user object from localStorage
-        const localStorageUser = JSON.parse(localStorage.getItem("user"));
-
-        // Update the user object with the new name
-        localStorageUser.name = user.name;
-
-        // Save the updated user object back to localStorage
-        localStorage.setItem("user", JSON.stringify(localStorageUser));
-
-        navigate("/"); // Home으로 이동
-      } else {
-        console.log("Login failed");
       }
     } catch (error) {
       console.error("Signup failed:", error);
     }
   };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
