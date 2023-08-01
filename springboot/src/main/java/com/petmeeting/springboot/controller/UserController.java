@@ -28,7 +28,7 @@ public class UserController {
     )
     @GetMapping("/check/{userId}")
     ResponseEntity<ResultDto> duplicateCheck(@PathVariable String userId) {
-        return ResponseEntity.ok(ResultDto.builder().result(userService.check(userId)).build());
+        return ResponseEntity.ok(ResultDto.result(userService.check(userId)));
     }
 
     @Operation(
@@ -39,7 +39,7 @@ public class UserController {
     ResponseEntity<MessageDto> reIssue(@RequestHeader(REFRESH_TOKEN) String token) {
         return ResponseEntity.status(HttpStatus.OK)
                 .header(ACCESS_TOKEN, userService.reissueToken(token))
-                .body(MessageDto.builder().msg("Reissue Success").build());
+                .body(MessageDto.msg("Reissue Success"));
     }
 
     @Operation(
@@ -49,7 +49,7 @@ public class UserController {
     @PostMapping("/sign-up")
     public ResponseEntity<MessageDto> signUp(@RequestBody SignUpReqDto signUpReqDto){
         userService.signUp(signUpReqDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(MessageDto.builder().msg("SignUp Success").build());
+        return ResponseEntity.status(HttpStatus.CREATED).body(MessageDto.msg("SignUp Success"));
     }
 
     @Operation(
@@ -74,7 +74,7 @@ public class UserController {
     public ResponseEntity<MessageDto> signOut(@RequestHeader(ACCESS_TOKEN) String token) {
         userService.signOut(token);
 
-        return ResponseEntity.ok(MessageDto.builder().msg("SignOut Success").build());
+        return ResponseEntity.ok(MessageDto.msg("SignOut Success"));
     }
 
     @Operation(
@@ -85,7 +85,7 @@ public class UserController {
     public ResponseEntity<MessageDto> withdraw(@RequestHeader(ACCESS_TOKEN) String token) {
         userService.withdraw(token);
 
-        return ResponseEntity.ok(MessageDto.builder().msg("Delete Success").build());
+        return ResponseEntity.ok(MessageDto.msg("Delete Success"));
     }
 
     @Operation(

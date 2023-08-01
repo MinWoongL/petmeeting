@@ -68,7 +68,7 @@ public class BroadcastController {
     @PostMapping("/broadcast")
     public ResponseEntity<MessageDto> startBroadcast(@RequestBody BroadcastReqDto broadcastReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         broadcastService.startBroadcast(broadcastReqDto, token);
-        return ResponseEntity.ok(MessageDto.builder().msg("Start Broadcast").build());
+        return ResponseEntity.ok(MessageDto.msg("Start Broadcast"));
     }
 
     @Operation(
@@ -78,7 +78,7 @@ public class BroadcastController {
     @DeleteMapping
     public ResponseEntity<MessageDto> stopBroadcast(@RequestHeader(ACCESS_TOKEN) String token) {
         broadcastService.stopBroadcast(token);
-        return ResponseEntity.ok(MessageDto.builder().msg("Stop Broadcast").build());
+        return ResponseEntity.ok(MessageDto.msg("Stop Broadcast"));
     }
 
     @Operation(
