@@ -1,5 +1,6 @@
 // 일반, 보호소 유저에 따라 항목 다르게 보이도록
 import React, { useState } from "react";
+import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import {
@@ -12,7 +13,9 @@ import {
   Card,
   CardContent,
   IconButton,
+  Snackbar,
 } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
 import { logout, updateNickName } from "../../stores/Slices/UserSlice";
 
@@ -23,10 +26,42 @@ function InfoSidebar() {
   const [nicknameInput, setNicknameInput] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
-  const Logout = () => {
-    dispatch(logout());
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("token");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
+  const Logout = async () => {
+    try {
+      // This is just an example endpoint and might be different in your application.
+      const token = JSON.parse(sessionStorage.getItem("token"));
+      console.log(token.accessToken);
+      // Create the header
+      const config = {
+        headers: { Authorization: `Bearer ${token.accessToken}` },
+      };
+      console.log("header야", config.headers);
+      const response = await axios.delete(
+        "https://i9a203.p.ssafy.io/backapi/api/v1/user/sign-out",
+        {},
+        config
+      );
+
+      // If the request is successful, remove the user data and token from local and session storage.
+      if (response.status === 200) {
+        dispatch(logout());
+        localStorage.removeItem("user");
+        sessionStorage.removeItem("token");
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      console.error("Failed to logout:", error);
+      setOpenSnackbar(true);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -67,6 +102,20 @@ function InfoSidebar() {
             </Box>
           </Box>
         </CardContent>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+        >
+          <MuiAlert
+            onClose={handleSnackbarClose}
+            severity="success"
+            elevation={6}
+            variant="filled"
+          >
+            로그아웃이 완료 되었습니다!
+          </MuiAlert>
+        </Snackbar>
       </Card>
     );
   }
