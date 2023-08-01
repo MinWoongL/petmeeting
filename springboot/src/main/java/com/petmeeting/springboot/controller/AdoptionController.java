@@ -3,6 +3,7 @@ package com.petmeeting.springboot.controller;
 import com.petmeeting.springboot.dto.adoption.AdoptionCreateReqDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionResDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionSearchCondition;
+import com.petmeeting.springboot.dto.adoption.AdoptionUpdateReqDto;
 import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.service.AdoptionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,13 +31,22 @@ public class AdoptionController {
     }
 
     @Operation(
+            summary = "입양신청서 세부 조회",
+            description = "입양신청서 번호로 입양신청서 세부내용을 조회합니다."
+    )
+    @GetMapping("/{adoptionNo}")
+    public ResponseEntity<?> getAdoption() {
+        return null;
+    }
+
+    @Operation(
             summary = "입양신청 결과를 수정합니다.",
             description = "입양신청 수정 결과를 반환합니다. " +
                     "adoptionStatus가 '대기중'이 아니면 요청을 거부합니다."
     )
     @PutMapping("/{adoptionNo}")
-    public ResponseEntity<?> updateAdoption() {
-        return null;
+    public ResponseEntity<?> updateAdoption(@PathVariable Integer adoptionNo, @RequestBody AdoptionUpdateReqDto adoptionUpdateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(adoptionService.updateAdoption(adoptionNo, adoptionUpdateReqDto, token));
     }
 
     @Operation(
@@ -58,15 +68,6 @@ public class AdoptionController {
     )
     @PutMapping("/status/{adoptionNo}")
     public ResponseEntity<?> updateAdoptionStatus() {
-        return null;
-    }
-
-    @Operation(
-            summary = "입양신청서 세부 조회",
-            description = "입양신청서 번호로 입양신청서 세부내용을 조회합니다."
-    )
-    @GetMapping("/{adoptionNo}")
-    public ResponseEntity<?> getAdoption() {
         return null;
     }
 
