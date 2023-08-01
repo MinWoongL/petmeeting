@@ -14,6 +14,7 @@ const ProfileCard = ({ profile }) => {
             color="text.secondary"
             component="div"
           >
+            임시 프로필 번호: {profile.shelterNO}
             전화번호 : {profile.phoneNumber} 전화번호
           </Typography>
           <Typography

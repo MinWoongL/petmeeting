@@ -7,6 +7,7 @@ import {
   useGlobalFilter,
   useSortBy,
 } from "react-table";
+import { Link } from "react-router-dom";
 import { Table, TableBody, TableContainer } from "@mui/material";
 
 function DataTable() {
@@ -66,7 +67,16 @@ function DataTable() {
         <TableBody>
           {page.map((row, i) => {
             prepareRow(row);
-            return <ProfileCard key={i} profile={row.original} />;
+
+            return (
+              <Link
+                to={`/shelter/${row.original.shelterNo}`}
+                style={{ textDecoration: "none" }}
+                key={i}
+              >
+                <ProfileCard profile={row.original} />
+              </Link>
+            );
           })}
         </TableBody>
       </Table>
