@@ -1,16 +1,12 @@
 package com.petmeeting.springboot.controller;
 
-import com.petmeeting.springboot.dto.adoption.AdoptionCreateReqDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionResDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionSearchCondition;
-import com.petmeeting.springboot.dto.adoption.AdoptionUpdateReqDto;
+import com.petmeeting.springboot.dto.adoption.*;
 import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.service.AdoptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -68,8 +64,8 @@ public class AdoptionController {
                     "해당 유기견의 모든 adoptionStatus가 '미채택'으로 변경됩니다."
     )
     @PutMapping("/status/{adoptionNo}")
-    public ResponseEntity<AdoptionResDto> updateAdoptionStatus(@PathVariable Integer adoptionNo, ) {
-        return null;
+    public ResponseEntity<AdoptionResDto> updateAdoptionStatus(@PathVariable Integer adoptionNo, AdoptStatusUpdateReqDto adoptStatusUpdateDto, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(adoptionService.updateAdoptionStatus(adoptionNo, adoptStatusUpdateDto, token));
     }
 
     @Operation(

@@ -66,9 +66,13 @@ public class Adoption {
     private AdoptionStatus adoptionStatus;
 
     // 해당 유기견의 보호가 종료되면 입양신청이 모두 미채택으로 변경되어야 함
-    public void updateAdoptionStatusToFail(){
-        this.adoptionStatus = AdoptionStatus.ADOPT_FAIL;
+    public void updateAdoptionStatus(Boolean isAdopted){
+        if(isAdopted)
+            this.adoptionStatus = AdoptionStatus.ADOPT_SUCCESS;
+        else
+            this.adoptionStatus = AdoptionStatus.ADOPT_FAIL;
     }
+
 
     public void updateAdoption(AdoptionUpdateReqDto reqDto) {
         this.name = reqDto.getName() == null ? this.name : reqDto.getName();

@@ -4,6 +4,7 @@ import com.petmeeting.springboot.domain.Adoption;
 import com.petmeeting.springboot.domain.Dog;
 import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Users;
+import com.petmeeting.springboot.dto.adoption.AdoptStatusUpdateReqDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionCreateReqDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionResDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionUpdateReqDto;
@@ -170,6 +171,35 @@ public class AdoptionService {
 
         Integer deleteAdoptionCnt = adoptionRepository.deleteAdoptionByAdoptionNo(adoptionNo);
         log.info("[입양신청서 삭제] 입양신청서 삭제 완료. {}개", deleteAdoptionCnt);
+    }
+
+    /**
+     * 입양신청서 상태 변경
+     * @param adoptionNo
+     * @param adoptStatusUpdateDto
+     * @param token
+     * @return
+     */
+    @Transactional
+    public AdoptionResDto updateAdoptionStatus(Integer adoptionNo, AdoptStatusUpdateReqDto adoptStatusUpdateDto, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        Adoption adoption = adoptionRepository.findById(adoptionNo)
+                .orElseThrow(() -> {
+                    log.error("[입양신청서 상태 변경] 입양신청서를 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "입양신청서를 찾을 수 없습니다.");
+                });
+
+        // 로그인 유저 == 등록한 보호소
+        if(!adoption.getShelter().getId().equals(userNo)) {
+            log.error("[입양신청서 상태 변경] 유기견을 등록한 보호소만 수정 가능합니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한이 없습니다");
+        };
+
+        // 채택, 미채택에 따라 달라지는 업데이트 
+
+
+        return null;
     }
 
 }
