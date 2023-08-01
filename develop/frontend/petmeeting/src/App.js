@@ -13,6 +13,7 @@ import LogIn from './pages/Auth/LogIn';
 import UserRegister from './pages/Auth/Register/UserRegister';
 import InfoSidebar from './components/Sidebar/InfoSidebar'
 import RankSystemSidebar from './components/Sidebar/RankSystemSidebar'
+import BroadCastingPage from './pages/BroadCasting'
 import './styles/base.css'
 
 
@@ -108,6 +109,7 @@ function App() {
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/signup" element={<UserRegister />} />
+                <Route path="/broadcasting" element={<BroadCastingPage />}></Route>
               </Routes>
             </Box>
           </Grid>

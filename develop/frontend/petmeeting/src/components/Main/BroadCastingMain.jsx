@@ -1,6 +1,7 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom'
 // import './BroadCastingMain.css'
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -9,6 +10,11 @@ import 'swiper/css/navigation';
 import { EffectCoverflow, Pagination, Navigation } from 'swiper';
 
 function BroadCastingMain() {
+  const navigate = useNavigate()
+
+  const handleCardClick = () => {
+    navigate('/broadcasting')
+  }
   return (
     <Box className="container" sx={{ mt: 1 }}>
       <Typography variant="h6" gutterBottom className="heading">
@@ -37,7 +43,7 @@ function BroadCastingMain() {
       >
         {[1, 2, 3].map((index) => (
           <SwiperSlide key={index}>
-            <Card>
+            <Card onClick={handleCardClick}>
               <Box display="flex" alignItems="center">
                 <Box 
                   flexGrow={1} 
