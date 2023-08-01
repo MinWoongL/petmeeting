@@ -1,28 +1,73 @@
-import React from 'react';
-import { Typography, Box } from '@mui/material';
-// import { useSelector } from 'react-redux';
+import { useMemo, useEffect } from "react";
 
-function Shelter() {
-  // const message = useSelector(state => state.message)
+// prop-types is a library for typechecking of props
+import PropTypes from "prop-types";
+
+// react-table components
+import {
+  useTable,
+  usePagination,
+  useGlobalFilter,
+  useSortBy,
+} from "react-table";
+
+// @mui material components
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+import TableRow from "@mui/material/TableRow";
+
+function DataTable({ table }) {
+  const columns = useMemo(() => table.columns, [table]);
+  const data = useMemo(() => table.rows, [table]);
+
+  const tableInstance = useTable(
+    { columns, data, initialState: { pageIndex: 0 } },
+    useGlobalFilter,
+    useSortBy,
+    usePagination
+  );
+
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, page } =
+    tableInstance;
 
   return (
-    <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Typography component="h1" variant="h5">
-        Home
-      </Typography>
-      <Box component="div" noValidate sx={{ mt: 1 }}>
-        <Typography component="p">
-          Welcome to the Shelter page!
-        </Typography>
-      </Box>
-    </Box>
+    <TableContainer sx={{ boxShadow: "none" }}>
+      <Table {...getTableProps()}>
+        <TableBody {...getTableBodyProps()}>
+          {page.map((row, key) => {
+            prepareRow(row);
+            return (
+              <TableRow key={key} {...row.getRowProps()}>
+                {row.cells.map((cell, idx) => (
+                  <td
+                    key={idx}
+                    align={cell.column.align ? cell.column.align : "left"}
+                    {...cell.getCellProps()}
+                  >
+                    {cell.render("Cell")}
+                  </td>
+                ))}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 
-export default Shelter;
+// Setting default values for the props of DataTable
+DataTable.defaultProps = {
+  table: { columns: [], rows: [] },
+};
 
-// 보호소 상세 (상세페이지 컴포넌트)
+// Typechecking props for the DataTable
+DataTable.propTypes = {
+  table: PropTypes.shape({
+    columns: PropTypes.arrayOf(PropTypes.object),
+    rows: PropTypes.arrayOf(PropTypes.object),
+  }).isRequired,
+};
 
-// 메뉴바 (여기에 만들어져있는상태)
-
-// 메뉴바상태에따라서 랭킹, 강아지목록 컴포넌트 호출
+export default DataTable;
