@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.dto.inquiry.InquiryReqDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,4 +48,19 @@ public class Inquiry {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_no")
     private Answer answer;
+
+    public void delete() {
+        this.deletedTime = System.currentTimeMillis() / 1000L;
+    }
+
+    public void update(InquiryReqDto inquiryReqDto) {
+        this.title = inquiryReqDto.getTitle() == null ? this.title : inquiryReqDto.getTitle();
+        this.content = inquiryReqDto.getContent() == null ? this.content : inquiryReqDto.getContent();
+        this.modifiedTime = System.currentTimeMillis() / 1000L;
+    }
+
+    public void makeAnswer(Answer answer) {
+        this.answer = answer;
+        this.status = true;
+    }
 }

@@ -2,7 +2,7 @@ package com.petmeeting.springboot.service;
 
 import com.petmeeting.springboot.domain.Inquiry;
 import com.petmeeting.springboot.domain.Users;
-import com.petmeeting.springboot.dto.inquiry.InquiryCreateReqDto;
+import com.petmeeting.springboot.dto.inquiry.InquiryReqDto;
 import com.petmeeting.springboot.dto.inquiry.InquiryResDto;
 import com.petmeeting.springboot.dto.inquiry.InquirySearchCondition;
 import com.petmeeting.springboot.repository.InquiryQueryDslRepository;
@@ -31,12 +31,12 @@ public class InquiryService {
     /**
      * 문의게시글 작성
      * 문의게시글 작성 후 작성 결과를 반환
-     * @param inquiryCreateReqDto
+     * @param inquiryReqDto
      * @param token
      * @return InquiryResDto
      */
     @Transactional
-    public InquiryResDto createInquiry(InquiryCreateReqDto inquiryCreateReqDto, String token) {
+    public InquiryResDto createInquiry(InquiryReqDto inquiryReqDto, String token) {
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo)
                 .orElseThrow(() -> {
@@ -46,8 +46,8 @@ public class InquiryService {
 
         Inquiry inquiry = Inquiry.builder()
                 .user(user)
-                .title(inquiryCreateReqDto.getTitle())
-                .content(inquiryCreateReqDto.getContent())
+                .title(inquiryReqDto.getTitle())
+                .content(inquiryReqDto.getContent())
                 .createdTime(System.currentTimeMillis() / 1000L)
                 .status(false)
                 .build();
@@ -92,7 +92,75 @@ public class InquiryService {
                 .collect(Collectors.toList());
     }
 
-
+    /**
+     * 문의게시글 삭제
+     * @param inquiryNo
+     * @param token
+     */
+    @Transactional
     public void deleteInquiry(Integer inquiryNo, String token) {
+        Inquiry inquiry = inquiryRepository.findById(inquiryNo)
+                .orElseThrow(() -> {
+                    log.error("[문의게시글 삭제] 문의게시글을 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "문의게시글을 찾을 수 없습니다.");
+                });
+
+        if (inquiry.getStatus()) {
+            log.error("[문의게시글 삭제] 답변이 작성된 게시글입니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "답변이 작성된 게시글은 수정/삭제할 수 없습니다.");
+        }
+
+        Users user = userRepository.findById(jwtUtils.getUserNo(token))
+                .orElseThrow(() -> {
+                    log.error("[문의게시글 삭제] 사용자를 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.");
+                });
+
+        if (!inquiry.getUser().getId().equals(user.getId())) {
+            log.error("[문의게시글 삭제] 작성자와 삭제요청자가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "작성자와 삭제요청자가 일치하지 않습니다.");
+        }
+
+        log.info("[문의게시글 삭제] 문의게시글이 삭제되었습니다. inquiryNo : {}", inquiryNo);
+        inquiry.delete();
+        inquiryRepository.save(inquiry);
+    }
+
+    /**
+     * 문의게시글 수정
+     * @param inquiryNo
+     * @param inquiryReqDto
+     * @param token
+     * @return InquiryResDto
+     */
+    @Transactional
+    public InquiryResDto updateInquiry(Integer inquiryNo, InquiryReqDto inquiryReqDto, String token) {
+        Inquiry inquiry = inquiryRepository.findById(inquiryNo)
+                .orElseThrow(() -> {
+                    log.error("[문의게시글 수정] 문의게시글을 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "문의게시글을 찾을 수 없습니다.");
+                });
+
+        if (inquiry.getStatus()) {
+            log.error("[문의게시글 수정] 답변이 작성된 게시글입니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "답변이 작성된 게시글은 수정/삭제할 수 없습니다.");
+        }
+
+        Users user = userRepository.findById(jwtUtils.getUserNo(token))
+                .orElseThrow(() -> {
+                    log.error("[문의게시글 수정] 사용자를 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.");
+                });
+
+        if (!inquiry.getUser().getId().equals(user.getId())) {
+            log.error("[문의게시글 수정] 작성자와 수정요청자가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "작성자와 수정요청자가 일치하지 않습니다.");
+        }
+
+        log.info("[문의게시글 수정] 게시글을 수정합니다. inquiryNo : {}", inquiry.getInquiryNo());
+        inquiry.update(inquiryReqDto);
+        inquiryRepository.save(inquiry);
+
+        return InquiryResDto.entityToDto(inquiry);
     }
 }

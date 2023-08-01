@@ -1,7 +1,7 @@
 package com.petmeeting.springboot.controller;
 
 import com.petmeeting.springboot.dto.common.MessageDto;
-import com.petmeeting.springboot.dto.inquiry.InquiryCreateReqDto;
+import com.petmeeting.springboot.dto.inquiry.InquiryReqDto;
 import com.petmeeting.springboot.dto.inquiry.InquiryResDto;
 import com.petmeeting.springboot.dto.inquiry.InquirySearchCondition;
 import com.petmeeting.springboot.service.InquiryService;
@@ -25,9 +25,9 @@ public class InquiryController {
             description = "문의게시글 작성 결과를 반환합니다."
     )
     @PostMapping
-    public ResponseEntity<InquiryResDto> createInquiry(@RequestBody InquiryCreateReqDto inquiryCreateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<InquiryResDto> createInquiry(@RequestBody InquiryReqDto inquiryReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(inquiryService.createInquiry(inquiryCreateReqDto, token));
+                .body(inquiryService.createInquiry(inquiryReqDto, token));
     }
 
     @Operation(
@@ -50,6 +50,16 @@ public class InquiryController {
     @GetMapping
     public ResponseEntity<List<InquiryResDto>> getInquiry(@Parameter InquirySearchCondition inquirySearchCondition) {
         return ResponseEntity.ok(inquiryService.searchInquiry(inquirySearchCondition));
+    }
+
+    @Operation(
+            summary = "문의게시글 수정",
+            description = "문의게시글을 수정합니다."
+    )
+    @PutMapping("/{inquiryNo}")
+    public ResponseEntity<InquiryResDto> updateInquiry
+            (@PathVariable Integer inquiryNo, @RequestBody InquiryReqDto inquiryReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(inquiryService.updateInquiry(inquiryNo, inquiryReqDto, token));
     }
 
     @Operation(
