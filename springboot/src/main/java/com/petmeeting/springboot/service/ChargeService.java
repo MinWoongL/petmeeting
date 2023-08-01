@@ -5,6 +5,7 @@ import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.dto.charge.*;
 import com.petmeeting.springboot.repository.ChargeRepository;
+import com.petmeeting.springboot.repository.DonationRepository;
 import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class ChargeService {
 
     private final UserRepository userRepository;
     private final ChargeRepository chargeRepository;
+    private final DonationRepository donationRepository;
     private final String KAKAO_READY_URL = "https://kapi.kakao.com/v1/payment/ready";
     private final JwtUtils jwtUtils;
 
@@ -126,7 +128,7 @@ public class ChargeService {
                 .addToken(chargeToken)
                 .holdingToken(member.getHoldingToken())
                 .addPoint(chargePrice)
-                .holdingPoint(chargeRepository.findSumByUserNo(member))
+                .holdingPoint(chargeRepository.findSumByUserNo(userNo).orElse(0) - donationRepository.findSumByUserNo(userNo).orElse(0))
                 .build();
     }
 

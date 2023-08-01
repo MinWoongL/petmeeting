@@ -31,7 +31,7 @@ public class Donation {
     private Dog dog;
 
 
-    @Column(name = "danate_value")
+    @Column(name = "donate_value")
     private Integer donateValue;
 
     @Column(name = "donate_time")

@@ -57,22 +57,16 @@ public class Member extends Users {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Reply> replyList;
 
-
-    /**
-     * holdingPoint(충전금액 합계와 후원금액 합계의 차이)를 설정합니다.
-     * 작업 필요
-     */
-    @PostLoad
-    public void setHoldingPoint() {
-        this.holdingPoint = 0;
-    }
-
     public void chargeTokens(int chargeToken) {
         this.holdingToken += chargeToken;
     }
 
     public void spendToken(int spendToken) {
         this.holdingToken -= spendToken;
+    }
+
+    public void setHoldingPoint(Integer holdingPoint) {
+        this.holdingPoint = holdingPoint;
     }
 
 }
