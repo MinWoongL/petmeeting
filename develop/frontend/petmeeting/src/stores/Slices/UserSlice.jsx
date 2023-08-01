@@ -8,7 +8,7 @@ const initialState = {
   userId: "Duhee",
   password: "",
   points: 0,
-  isLoggedIn: false,
+  isLoggedIn: false,https://i9a203.p.ssafy.io:8081/
 };
 
 // id : member
