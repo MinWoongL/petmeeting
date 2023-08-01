@@ -4,6 +4,7 @@ import com.petmeeting.springboot.domain.Adoption;
 import com.petmeeting.springboot.domain.Dog;
 import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Users;
+import com.petmeeting.springboot.dto.adoption.AdoptStatusUpdateReqDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionCreateReqDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionResDto;
 import com.petmeeting.springboot.dto.adoption.AdoptionUpdateReqDto;
@@ -30,7 +31,6 @@ public class AdoptionService {
     private final UserRepository userRepository;
     private final DogRepository dogRepository;
     private final AdoptionRepository adoptionRepository;
-
 
     /**
      * 입양신청서 작성
@@ -77,21 +77,129 @@ public class AdoptionService {
         return AdoptionResDto.entityToDto(adoption);
     }
 
-
+    /**
+     * 입양신청서 상세조회
+     * 작성자 및 해당 보호소만 상세조회가 가능합니다.
+     * @param adoptionNo
+     * @param token
+     * @return
+     */
     @Transactional
-    public AdoptionResDto getAdoption(Integer adoptionNo) {
+    public AdoptionResDto getAdoption(Integer adoptionNo, String token) {
+        Adoption adoption = adoptionRepository.findById(adoptionNo)
+                .orElseThrow(() -> {
+                    log.error("[입양신청서 상세조회] 입양신청서를 가져올 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "입양신청서를 가져올 수 없습니다.");
+                });
 
-        return null;
-    }
-
-    @Transactional
-    public AdoptionResDto updateAdoption(Integer adoptionNo, AdoptionUpdateReqDto adoptionUpdateReqDto, String token) {
         Integer userNo = jwtUtils.getUserNo(token);
 
-        // 작성자와 로그인 사용자가 일치해야만 수정 가능
-//        if(userNo != )
-        return null;
+        // 작성자이거나 해당 보호소일때만 반환
+        if(!(userNo.equals(adoption.getMember().getId()) || userNo.equals(adoption.getShelter().getId()))) {
+            log.error("[입양신청서 상세조회] 작성자 및 해당 보호소만 상세 조회가 가능합니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+        };
+
+        log.info("[입양신청서 상세조회] adoptionNo : {} ", adoptionNo);
+        return AdoptionResDto.entityToDto(adoption);
     }
 
+    /**
+     * 입양신청서 수정
+     * 작성자와 신청자가 일치하지 않으면 수정 불가능
+     * @param adoptionNo
+     * @param adoptionUpdateReqDto
+     * @param token
+     * @return
+     */
+    @Transactional
+    public AdoptionResDto updateAdoption(Integer adoptionNo, AdoptionUpdateReqDto adoptionUpdateReqDto, String token) {
+        Adoption adoption = adoptionRepository.findById(adoptionNo)
+                .orElseThrow(() -> {
+                    log.error("[입양신청서 수정] 입양신청서를 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "입양신청서를 찾을 수 없습니다.");
+                });
+
+        // 대기중이 아니면 요청 거부
+        if(!adoption.getAdoptionStatus().equals(AdoptionStatus.WAITING)) {
+            log.error("[입양신청서 수정] 채택/미채택이 완료되어 수정할 수 없습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정할 수 없습니다.");
+        };
+
+        // 작성자와 로그인 사용자가 일치해야만 수정 가능
+        Integer userNo = jwtUtils.getUserNo(token);
+        if(!adoption.getMember().getId().equals(userNo)) {
+            log.error("[입양신청서 수정] 작성자만 수정할 수 있습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한이 없습니다.");
+        }
+
+        adoption.updateAdoption(adoptionUpdateReqDto);
+        adoptionRepository.save(adoption);
+
+        log.info("[입양신청서 수정] 입양신청서 수정 완료 adoptionNo : {}", adoption.getAdoptionNo());
+
+        return AdoptionResDto.entityToDto(adoption);
+    }
+
+    /**
+     * 입양신청서 삭제
+     * 작성자와 로그인 사용자(삭제자)가 일치하지 않으면 삭제 불가능
+     * @param adoptionNo
+     * @param token
+     */
+    @Transactional
+    public void deleteAdoption(Integer adoptionNo, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        Adoption adoption = adoptionRepository.findById(adoptionNo)
+                .orElseThrow(() -> {
+                    log.error("[입양신청서 삭제] 입양신청서를 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "입양신청서를 찾을 수 없습니다.");
+                });
+
+        // 작성자 == 로그인사용자
+        if(!adoption.getMember().getId().equals(userNo)) {
+            log.error("[입양신청서 삭제] 작성자와 로그인사용자가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+        };
+
+        // adoptStatus 상태가 채택이면 요청 거부
+        if(adoption.getAdoptionStatus().equals(AdoptionStatus.ADOPT_SUCCESS)) {
+            log.error("[입양신청서 삭제] 채택된 입양신청서는 삭제할 수 없습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "채택된 입양신청서는 삭제할 수 없습니다.");
+        };
+
+        Integer deleteAdoptionCnt = adoptionRepository.deleteAdoptionByAdoptionNo(adoptionNo);
+        log.info("[입양신청서 삭제] 입양신청서 삭제 완료. {}개", deleteAdoptionCnt);
+    }
+
+    /**
+     * 입양신청서 상태 변경
+     * @param adoptionNo
+     * @param adoptStatusUpdateDto
+     * @param token
+     * @return
+     */
+    @Transactional
+    public AdoptionResDto updateAdoptionStatus(Integer adoptionNo, AdoptStatusUpdateReqDto adoptStatusUpdateDto, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        Adoption adoption = adoptionRepository.findById(adoptionNo)
+                .orElseThrow(() -> {
+                    log.error("[입양신청서 상태 변경] 입양신청서를 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "입양신청서를 찾을 수 없습니다.");
+                });
+
+        // 로그인 유저 == 등록한 보호소
+        if(!adoption.getShelter().getId().equals(userNo)) {
+            log.error("[입양신청서 상태 변경] 유기견을 등록한 보호소만 수정 가능합니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한이 없습니다");
+        };
+
+        // 채택, 미채택에 따라 달라지는 업데이트 
+
+
+        return null;
+    }
 
 }
