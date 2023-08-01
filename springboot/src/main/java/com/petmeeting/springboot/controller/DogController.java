@@ -77,9 +77,8 @@ public class DogController {
     public ResponseEntity<MessageDto> deleteDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
         dogService.deleteDog(dogNo, token);
 
-        return ResponseEntity.ok(MessageDto.builder().msg("Delete Success").build());
+        return ResponseEntity.ok(MessageDto.msg("Delete Success"));
     }
-
 
     @Operation(
             summary = "조건에 따라 유기견 목록 조회",
