@@ -197,7 +197,7 @@ function App() {
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/signup" element={<UserRegister />} />
                 <Route
-                  path="/broadcasting"
+                  path="/broadcasting/:broadcastId"
                   element={<BroadCastingPage />}
                 ></Route>
               </Routes>

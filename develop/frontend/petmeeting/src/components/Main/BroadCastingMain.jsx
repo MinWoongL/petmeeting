@@ -12,8 +12,10 @@ import { EffectCoverflow, Pagination, Navigation } from 'swiper';
 function BroadCastingMain() {
   const navigate = useNavigate()
 
-  const handleCardClick = () => {
-    navigate('/broadcasting')
+  const liveBroadcasts = [{id: "jfKfPfyJRdk"}, {id: "FJfwehhzIhw"}, {id: "36YnV9STBqc"}]
+
+  const handleCardClick = (broadcastId) => {
+    navigate(`/broadcasting/${broadcastId}`)
   }
   return (
     <Box className="container" sx={{ mt: 1 }}>
@@ -24,7 +26,7 @@ function BroadCastingMain() {
         effect={'coverflow'}
         grabCursor={true}
         centeredSlides={true}
-        loop={true}
+        loop={false}
         slidesPerView={'auto'}
         coverflowEffect={{
             rotate: 0,
@@ -41,9 +43,9 @@ function BroadCastingMain() {
         modules={[EffectCoverflow, Pagination, Navigation]}
         className="swiper_container"
       >
-        {[1, 2, 3].map((index) => (
-          <SwiperSlide key={index}>
-            <Card onClick={handleCardClick}>
+        {liveBroadcasts.map((broadcast, index) => (
+          <SwiperSlide key={broadcast.id}>
+            <Card onClick={() => handleCardClick(broadcast.id)}>
               <Box display="flex" alignItems="center">
                 <Box 
                   flexGrow={1} 

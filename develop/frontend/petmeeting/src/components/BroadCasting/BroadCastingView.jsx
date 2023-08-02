@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';  // Redux store에서 상태를 가져오기 위한 훅
 import { Box, Typography, Avatar, Button, Dialog, DialogTitle, Paper } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
 function BroadCastingView({ timerLimit = 10 }) {
     // 상태 선언 부분
     const [seconds, setSeconds] = useState(timerLimit);
     const [isPlaying, setIsPlaying] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
+    const { broadcastId } = useParams()
+    const liveStreamId = broadcastId
 
     // Redux store에서 사용자 정보 가져오기
     const currentUser = useSelector((state) => state.user);
     const isLoggedIn = currentUser.isLoggedIn;
     const currentUserId = currentUser.userId;
+
+    // 라이브 스트림 ID를 저장
+    // const liveStreamId = "36YnV9STBqc";  // 아무 Live 방송 ID
 
     // 타이머 및 다이얼로그 로직
     useEffect(() => {
@@ -83,10 +89,14 @@ function BroadCastingView({ timerLimit = 10 }) {
             </Box>
 
             {/* 라이브 스트리밍 영상 출력 부분 */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', border: '1px solid gray', height: 400, borderRadius: '8px', overflow: 'hidden' }}>
-                <Typography variant="body1" sx={{ m: 'auto' }}>
-                    [Live Streaming 영상 출력 부분]
-                </Typography>
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', border: '1px solid gray', height: 400, borderRadius: '8px', overflow: 'hidden' }}>
+                <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src={"https://www.youtube.com/embed/" + liveStreamId + "?autoplay=1&mute=1"} 
+                    title="Live Stream"
+                    allowFullScreen>
+                </iframe>
             </Box>
 
             {/* 놀기 종료 후 다이얼로그 */}
