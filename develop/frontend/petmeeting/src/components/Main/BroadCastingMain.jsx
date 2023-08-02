@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom'
-// import './BroadCastingMain.css'
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
@@ -15,34 +14,68 @@ function BroadCastingMain() {
 
   const [videoTitles, setvideoTitles] = useState({})
   const [videoThumbnails, setVideoThumbnails] = useState({})
+  const [videoDescriptions, setVideoDescriptions] = useState({})
 
   // 라이브 스트리밍 채널 ID
-  const liveBroadcasts = [{id: "jfKfPfyJRdk"}, {id: "FJfwehhzIhw"}, {id: "36YnV9STBqc"}]
+  const liveBroadcasts = [{id: "BZcu8MK_jfo"}, {id: "zwVAKBO8rJM"}, {id: "q4hKVXL_L1g"}]
 
   useEffect(()=> {
-    const API_KEY = "AIzaSyCQ8_N0tJG0HpTwE4AUys0Tjf-0HWhqPZY"
-    const fetchVideoTitles = async() => {
-      try {
-        var fetchedTitles = {}
-        var fetchedThumbnails = {}
-        for (let broadcast of liveBroadcasts) {
-          const response = await axios.get(`https://www.googleapis.com/youtube/v3/videos?id=${broadcast.id}&key=${API_KEY}&part=snippet`);
-          fetchedTitles[broadcast.id] = response.data.items[0].snippet.title;
-          fetchedThumbnails[broadcast.id] = response.data.items[0].snippet.thumbnails.high.url; // high 해상도 썸네일 URL 가져오기
+    const API_KEY = "AIzaSyB1Wdv8X-6SZJFgtNRh-JD1VkeLjTNCFKc"
 
-        }
+    const fetchVideoDetails = async() => {
+      const cachedData = localStorage.getItem('videoDetails');
+      if (cachedData) {
+        const { titles, thumbnails, descriptions } = JSON.parse(cachedData);
+        setvideoTitles(titles);
+        setVideoThumbnails(thumbnails);
+        setVideoDescriptions(descriptions);
+        console.log('로컬스토리지에서 받아옴')
+        // console.log('제목: ', titles);
+        // console.log('썸네일: ', thumbnails);
+        // console.log('영상정보: ', descriptions);
+        return; // 캐시된 데이터가 있으면 API 호출을 스킵
+      }
+
+      try {
+        const videoIds = liveBroadcasts.map(broadcast => broadcast.id).join(',');
+        const response = await axios.get(`https://www.googleapis.com/youtube/v3/videos?id=${videoIds}&key=${API_KEY}&part=snippet`);
+
+        let fetchedTitles = {}
+        let fetchedThumbnails = {}
+        let fetchedDescriptions = {}
+
+        response.data.items.forEach(item => {
+          fetchedTitles[item.id] = item.snippet.title;
+          fetchedThumbnails[item.id] = item.snippet.thumbnails.high.url;
+          fetchedDescriptions[item.id] = item.snippet.description;
+        });
+
         setvideoTitles(fetchedTitles)
         setVideoThumbnails(fetchedThumbnails);
+        setVideoDescriptions(fetchedDescriptions);
+
+        // API 호출 후 데이터를 localStorage에 저장
+        localStorage.setItem('videoDetails', JSON.stringify({
+            titles: fetchedTitles,
+            thumbnails: fetchedThumbnails,
+            descriptions: fetchedDescriptions
+        }));
+
       } catch (e) {
         console.log('제목 가져오기 에러 : ', e)
       };
-
     }
-    fetchVideoTitles();
+
+    fetchVideoDetails();
   }, [])
 
   const handleCardClick = (broadcastId) => {
-    navigate(`/broadcasting/${broadcastId}`)
+    navigate(`/broadcasting/${broadcastId}`,
+     { state: {
+      title: videoTitles[broadcastId],
+      description: videoDescriptions[broadcastId],
+      thumbnail: videoThumbnails[broadcastId]
+    } });
   }
   return (
     <Box className="container" sx={{ mt: 1 }} style={{ maxWidth: '932px' }}>
@@ -75,11 +108,12 @@ function BroadCastingMain() {
             <Card onClick={() => handleCardClick(broadcast.id)} style={{ height: '100%' }}>
               <Box display="flex" flexDirection="column" height="100%">
               <Box 
-                flexGrow={2} 
+                
                 display="flex" 
                 justifyContent="center" 
                 alignItems="center"
                 style={{ 
+                  flexGrow: 5,
                   width: '100%', 
                   backgroundImage: `url(${videoThumbnails[broadcast.id]})`, // 배경 이미지로 썸네일 설정
                   backgroundSize: 'cover',
@@ -87,9 +121,9 @@ function BroadCastingMain() {
                 }}
               >
               </Box>
-                <CardContent flexGrow={1}>
-                  <Typography variant="h6">{videoTitles[broadcast.id] || "Loading..."}</Typography>
-                </CardContent>
+              <CardContent style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Typography variant="Jua">{videoTitles[broadcast.id] || "Loading..."}</Typography>
+              </CardContent>
               </Box>
             </Card>
           </SwiperSlide>
