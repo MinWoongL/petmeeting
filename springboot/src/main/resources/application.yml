@@ -60,6 +60,7 @@ server:
     include-message: always       # Response 에 Exception Message 를 표시할지 (never | always | on_param)
     include-stacktrace: on_param  # Response 에 Stack Trace 를 표시할지 (never | always | on_param) on_trace_params 은 deprecated
   port: 5000
+  forward-headers-strategy: native
 
 jwt:
   issuer: petmeetingservice
