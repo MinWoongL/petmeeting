@@ -65,10 +65,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("*")); // 모든 오리진을 허용하려면 *로 설정합니다.
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 메소드들을 지정합니다.
-        configuration.setAllowedHeaders(Collections.singletonList("*")); // 모든 헤더를 허용하려면 *로 설정합니다.
-        configuration.setAllowCredentials(true); // Credentials 허용 여부를 설정합니다.
+        configuration.setAllowedOriginPatterns(Collections.singletonList("*")); // "*" 대신 허용할 도메인 패턴을 지정합니다.
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
