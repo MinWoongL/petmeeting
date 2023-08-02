@@ -46,7 +46,8 @@ public class Reply {
     private List<LikeReply> likeReplyList;
 
     public void updateReply(ReplyUpdateReqDto reqDto) {
-
+        this.content = reqDto.getContent();
+        this.modifiedTime = System.currentTimeMillis() / 1000L;
     }
 
     public void deleteReply() {

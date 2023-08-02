@@ -4,13 +4,16 @@ import com.petmeeting.springboot.domain.Reply;
 import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.dto.reply.ReplyReqDto;
 import com.petmeeting.springboot.dto.reply.ReplyResDto;
+import com.petmeeting.springboot.dto.reply.ReplyUpdateReqDto;
 import com.petmeeting.springboot.repository.BoardRepository;
 import com.petmeeting.springboot.repository.ReplyRepository;
 import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -70,13 +73,49 @@ public class ReplyService {
                         .replyNo(reply.getReplyNo())
                         .boardNo(reply.getBoard().getBoardNo())
                         .userNo(reply.getUser().getId())
-                        .writer(reply.getUser().getName())
+                        .writer(reply.getUser().getUserId())
                         .content(reply.getContent())
                         .createTime(reply.getCreatedTime())
                         .modifiedTime(reply.getModifiedTime())
                         .likeCnt(reply.getLikeCnt())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 입양후기 댓글 수정
+     * 작성자와 수정자가 일치하지 않으면 수정 불가능 / 삭제된 댓글일 경우 불가능
+     * @param replyNo
+     * @param replyUpdateReqDto
+     * @param token
+     * @return
+     */
+    @Transactional
+    public ReplyResDto updateReply(Integer replyNo, ReplyUpdateReqDto replyUpdateReqDto, String token) {
+        int userNo = jwtUtils.getUserNo(token);
+
+        Reply reply = replyRepository.findById(replyNo)
+                .orElseThrow(() -> {
+                    log.error("[입양후기 댓글 수정] 댓글을 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.");
+                });
+
+        if(reply.getDeletedTime() != null) {
+            log.error("[입양후기 댓글 수정] 삭제된 댓글입니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제된 댓글입니다.");
+        };
+
+        if(!reply.getUser().getId().equals(userNo)) {
+            log.error("[입양후기 댓글 수정] 작성자와 수정자가 일치하지 않습니다. ReplyUser : {}, loginUser : {}", reply.getUser().getId(), userNo);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "작성자와 수정자가 일치하지 않습니다.");
+        };
+
+        reply.updateReply(replyUpdateReqDto);
+        replyRepository.save(reply);
+
+        log.info("[입양후기 댓글 수정] 댓글 수정완료~ ");
+
+        return ReplyResDto.builder().build().entityToDto(reply);
     }
 
 

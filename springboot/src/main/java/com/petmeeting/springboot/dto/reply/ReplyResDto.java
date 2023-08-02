@@ -1,5 +1,7 @@
 package com.petmeeting.springboot.dto.reply;
 
+import com.petmeeting.springboot.domain.Reply;
+import com.petmeeting.springboot.domain.Users;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,5 +18,19 @@ public class ReplyResDto {
     Long modifiedTime;
     Integer likeCnt;
 
+    public ReplyResDto entityToDto(Reply reply) {
+        Users user = reply.getUser();
+
+        return ReplyResDto.builder()
+                .replyNo(reply.getReplyNo())
+                .boardNo(reply.getBoard().getBoardNo())
+                .userNo(user.getId())
+                .writer(user.getUserId())
+                .content(reply.getContent())
+                .createTime(reply.getCreatedTime())
+                .modifiedTime(reply.getModifiedTime())
+                .likeCnt(reply.getLikeCnt())
+                .build();
+    }
 
 }
