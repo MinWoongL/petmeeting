@@ -1,6 +1,8 @@
 package com.petmeeting.springboot.domain;
 
+import com.petmeeting.springboot.dto.reply.ReplyUpdateReqDto;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.List;
@@ -36,7 +38,18 @@ public class Reply {
     @Column(name = "deleted_time")
     private Long deletedTime;
 
+    @Column(name = "like_cnt", nullable = false)
+    @ColumnDefault("0")
+    private Integer likeCnt;
 
     @OneToMany(mappedBy = "reply", fetch = FetchType.LAZY)
     private List<LikeReply> likeReplyList;
+
+    public void updateReply(ReplyUpdateReqDto reqDto) {
+
+    }
+
+    public void deleteReply() {
+        this.deletedTime = System.currentTimeMillis() / 1000L;
+    }
 }

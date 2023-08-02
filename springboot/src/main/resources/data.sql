@@ -54,3 +54,17 @@ values
 ('100001', '100004', '댕댕이2', 'SMALL_SIZE', 'MALE', '17', '5', '16849213', 'ADOPT_POSSIBLE', false),
 ('100002', '100002', '댕댕이3', 'BIG_SIZE', 'FEMALE', '30', '1', '16849213', 'ADOPT_POSSIBLE', false),
 ('100003', '100003', '댕댕이4', 'SMALL_SIZE', 'FEMALE', '30', '1', '16849213', 'ADOPT_POSSIBLE', true);
+
+insert into board
+(board_no, member_no, title, content, created_time)
+values
+('100', '100009', '입양후기 제목1', '입양후기 내용1', '16849213'),
+('200', '100009', '입양후기 제목2', '입양후기 내용2', '16849213');
+
+insert into reply
+(reply_no, user_no, board_no, content, created_time)
+values
+('100', '100001', '100', '입양후기 댓글입니다.', '16849213'),
+('101', '100002', '100', '보호소의 입양후기 댓글입니다.', '16849213'),
+('102', '100001', '200', '200번글의 댓글입니다.', '16849213');
+
