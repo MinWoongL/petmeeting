@@ -10,7 +10,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
 #     <H2 인메모리 DB>
-#      ddl-auto: create
+#      ddl-auto: creater
       ddl-auto: none
     defer-datasource-initialization: true
 
