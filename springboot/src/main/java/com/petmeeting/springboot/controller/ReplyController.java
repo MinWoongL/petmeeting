@@ -1,5 +1,6 @@
 package com.petmeeting.springboot.controller;
 
+import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.dto.reply.ReplyReqDto;
 import com.petmeeting.springboot.dto.reply.ReplyResDto;
 import com.petmeeting.springboot.dto.reply.ReplyUpdateReqDto;
@@ -41,8 +42,8 @@ public class ReplyController {
 
     @Operation(
             summary = "입양후기 댓글 수정",
-            description = "수정 성공 시 댓글 정보를 반환합니다.\n" +
-                    "* 댓글작성자와 수정요청자가 같은 경우에만 수정\n" +
+            description = "수정 성공 시 댓글 정보를 반환합니다." +
+                    "* 댓글작성자와 수정요청자가 같은 경우에만 수정" +
                     "* userNo는 현재 로그인한 유저의 고유번호를 입력합니다."
     )
     @PutMapping("/{replyNo}")
@@ -50,5 +51,15 @@ public class ReplyController {
         return ResponseEntity.ok(replyService.updateReply(replyNo, replyUpdateReqDto, token));
     }
 
-
+    @Operation(
+            summary = "입양후기 댓글 삭제",
+            description = "삭제 성공 시 'Delete Success' 메세지를 반환합니다." +
+                    "작성자와 삭제자가 동일한 경우만 삭제가 가능합니다." +
+                    "userNo는 현재 로그인한 유저의 고유번호를 입력합니다."
+    )
+    @DeleteMapping("/{replyNo}")
+    public ResponseEntity<MessageDto> deleteReply(@PathVariable Integer replyNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        replyService.deleteReply(replyNo, token);
+        return ResponseEntity.ok(MessageDto.msg("Delete Success"));
+    }
 }

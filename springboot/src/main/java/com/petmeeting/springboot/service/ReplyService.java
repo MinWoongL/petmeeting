@@ -118,6 +118,32 @@ public class ReplyService {
         return ReplyResDto.builder().build().entityToDto(reply);
     }
 
+    /**
+     * 입양후기 댓글 삭제
+     * 작성자와 삭제자(로그인 유저)가 일치하지 않으면 삭제 불가능
+     * @param replyNo
+     * @param token
+     */
+    @Transactional
+    public void deleteReply(Integer replyNo, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        Reply reply = replyRepository.findById(replyNo)
+                .orElseThrow(() -> {
+                    log.error("[입양후기 댓글 삭제] 댓글을 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다");
+                });
+
+        if(!reply.getUser().getId().equals(userNo)) {
+            log.error("[입양후기 댓글 삭제] 작성자와 삭제자가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다.");
+        };
+
+        Integer deleteReplyCnt = replyRepository.deleteReplyByReplyNo(replyNo);
+        log.info("[입양후기 댓글 삭제] 댓글 삭제 완료. {}개.", deleteReplyCnt);
+    }
+
+
 
 
 }

@@ -145,7 +145,7 @@ public class AdoptionService {
 
     /**
      * 입양신청서 삭제
-     * 작성자와 로그인 사용자(삭제자)가 일치하지 않으면 삭제 불가능
+     * 작성자와 삭제자(로그인 유저)가 일치하지 않으면 삭제 불가능
      * @param adoptionNo
      * @param token
      */
