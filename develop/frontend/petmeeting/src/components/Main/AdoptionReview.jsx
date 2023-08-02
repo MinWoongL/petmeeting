@@ -45,6 +45,32 @@ function AdoptionReview() {
     }
   };
 
+  const checkLikeAPI = async (reviewId, userId) => {
+    try {
+      const response = await axios.get(
+        `http://api.example.com/check_like/${reviewId}/${userId}`
+      );
+      return response.data.isLiked; // API response의 isLiked 값을 반환한다고 가정
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const requestLikeAPI = async (reviewId, userId) => {
+    try {
+      const response = await axios.post(
+        `http://api.example.com/request_like/`,
+        {
+          reviewId,
+          userId,
+        }
+      );
+      return response.data.success; // API response의 success 값을 반환한다고 가정
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleExpandClick = (id) => {
     const isExpanded = expandedIds.includes(id);
     if (isExpanded) {
@@ -60,14 +86,13 @@ function AdoptionReview() {
     } else {
       setStartIndex(startIndex - 1);
     }
-  };  
+  };
 
   const handleNext = () => {
-    if (startIndex === reviews.length-1){
-        setStartIndex(0)
-    }
-    else {
-        setStartIndex(startIndex + 1);
+    if (startIndex === reviews.length - 1) {
+      setStartIndex(0);
+    } else {
+      setStartIndex(startIndex + 1);
     }
   };
 
@@ -94,7 +119,9 @@ function AdoptionReview() {
       <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
         {getVisibleReviews().map((review) => (
           <Card key={review.id} sx={{ width: 300 }}>
-            <CardHeader title={review.title} subheader={review.date}
+            <CardHeader
+              title={review.title}
+              subheader={review.date}
               titleTypographyProps={{ style: { fontFamily: "Jua" } }}
               subheaderTypographyProps={{ style: { fontFamily: "Arial" } }}
             />
