@@ -48,8 +48,10 @@ function InfoSidebar() {
       console.log("header야", config.headers);
       const response = await axios.delete(
         "https://i9a203.p.ssafy.io/backapi/api/v1/user/sign-out",
-        {},
-        config
+
+        {
+          headers: { AccessToken: `Bearer ${token.accessToken}` },
+        }
       );
 
       // If the request is successful, remove the user data and token from local and session storage.
