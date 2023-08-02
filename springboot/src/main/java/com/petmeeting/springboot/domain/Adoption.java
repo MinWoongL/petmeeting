@@ -65,14 +65,19 @@ public class Adoption {
     @Enumerated(EnumType.STRING)
     private AdoptionStatus adoptionStatus;
 
-    // 해당 유기견의 보호가 종료되면 입양신청이 모두 미채택으로 변경되어야 함
-    public void updateAdoptionStatus(Boolean isAdopted){
-        if(isAdopted)
-            this.adoptionStatus = AdoptionStatus.ADOPT_SUCCESS;
-        else
-            this.adoptionStatus = AdoptionStatus.ADOPT_FAIL;
-    }
+    /**
+     * 해당 유기견의 입양신청 상태가 "채택"으로 변경시 true 반환
+     * @param adoptionStatus
+     * @return
+     */
+    public Boolean updateAdoptionStatus(AdoptionStatus adoptionStatus){
+        this.adoptionStatus = adoptionStatus;
 
+        if(adoptionStatus.equals(AdoptionStatus.ADOPT_SUCCESS))
+            return true;
+
+        return false;
+    }
 
     public void updateAdoption(AdoptionUpdateReqDto reqDto) {
         this.name = reqDto.getName() == null ? this.name : reqDto.getName();

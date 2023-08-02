@@ -93,11 +93,8 @@ public class Dog {
     @OneToMany(mappedBy = "dog", fetch = FetchType.LAZY)
     private List<Adoption> adoptionList;
 
-
     @PrePersist
     public void prePersist() {
-        System.out.println("dog 에서 prePersist 작동! " +  protectionStartDate);
-
         this.protectionStartDate = protectionStartDate == 0 ? System.currentTimeMillis() / 1000 : protectionStartDate;
     }
 
@@ -105,11 +102,27 @@ public class Dog {
         this.isDeleted = true;
     }
 
-    public void updateStatus(AdoptionAvailability adoptionAvailability){
+    /**
+     * '입양가능(ADOPT_POSSIBLE)' 또는 '보호종료(ADOPT_IMPOSSIBLE)'로만 상태 변경 가능하며,
+     * '보호종료'시,
+     * 해당 유기견의 보호종료날짜(protectionEndDate)가 현재 시각으로 자동 할당 후 true 반환
+     *
+     * '입양가능'시,
+     * 해당 유기견의 보호종료날짜가 null로 변경 후 false 반환
+     *
+     *  AdoptionService에 의해 '입양완료(ADOPT_SUCCESS)'도 가능
+     */
+    public Boolean updateStatus(AdoptionAvailability adoptionAvailability){
         this.adoptionAvailability = adoptionAvailability;
 
-        if(adoptionAvailability.equals(AdoptionAvailability.ADOPT_IMPOSSIBLE))
-            protectionEndDate = System.currentTimeMillis() / 1000;
+        if(adoptionAvailability.equals(AdoptionAvailability.ADOPT_POSSIBLE)) {
+            this.protectionEndDate = null;
+            return false;
+        }
+        else {
+            this.protectionEndDate = System.currentTimeMillis() / 1000;
+            return true;
+        }
     }
 
     public void updateDogInfo(RegisterDogReqDto updateDogReqDto){
