@@ -1,11 +1,13 @@
 package com.petmeeting.springboot.service;
 
+import com.petmeeting.springboot.domain.LikeReply;
 import com.petmeeting.springboot.domain.Reply;
 import com.petmeeting.springboot.domain.Users;
 import com.petmeeting.springboot.dto.reply.ReplyReqDto;
 import com.petmeeting.springboot.dto.reply.ReplyResDto;
 import com.petmeeting.springboot.dto.reply.ReplyUpdateReqDto;
 import com.petmeeting.springboot.repository.BoardRepository;
+import com.petmeeting.springboot.repository.LikeReplyRepository;
 import com.petmeeting.springboot.repository.ReplyRepository;
 import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
@@ -29,6 +31,7 @@ public class ReplyService {
     private final ReplyRepository replyRepository;
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private final LikeReplyRepository likeReplyRepository;
 
     /**
      * 입양후기 댓글 작성
@@ -143,7 +146,71 @@ public class ReplyService {
         log.info("[입양후기 댓글 삭제] 댓글 삭제 완료. {}개.", deleteReplyCnt);
     }
 
+    /**
+     * 입양후기 댓글 좋아요 설정
+     * 이미 좋아요 체크가 되어있을 경우 불가능
+     * @param replyNo
+     * @param token
+     */
+    @Transactional
+    public void likeReply(Integer replyNo, String token) {
+        if(checkLiked(replyNo, token)) {
+            log.error("[입양후기 댓글 좋아요] 이미 좋아요를 누른 사용자입니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이미 좋아요를 눌렀습니다.");
+        };
 
+        Integer userNo = jwtUtils.getUserNo(token);
 
+        LikeReply likeReply = LikeReply.builder()
+                .reply(replyRepository.findById(replyNo).orElseThrow(() -> {
+                    log.error("[입양후기 댓글 좋아요] 댓글을 찾을 수 없습니다");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.");
+                }))
+                .user(userRepository.findById(userNo).get())
+                .build();
+
+        Reply reply = replyRepository.findById(replyNo).get();
+
+        reply.updateLikeCnt(true);
+        replyRepository.save(reply);
+
+        log.info("[입양후기 댓글 좋아요] 좋아요 설정 완료. userNo : {}, replyNo : {}", userNo, replyNo);
+        likeReplyRepository.save(likeReply);
+    }
+
+    @Transactional
+    public void dislikeReply(Integer replyNo, String token) {
+        if(!checkLiked(replyNo, token)) {
+            log.error("[입양후기 댓글 좋아요 취소] 아직 좋아요를 누르지 않은 사용자입니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "아직 좋아요를 누르지 않았습니다.");
+        };
+
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        Integer dislikeCnt = likeReplyRepository.deleteLikeReplyByUserAndReply();
+        log.info("[입양후기 댓글 좋아요 취소] 쿼리문 확인하기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!, 취소완료. {}개", dislikeCnt);
+
+        Reply reply = replyRepository.findById(replyNo)
+                .orElseThrow(() -> {
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.");
+                });
+
+        reply.updateLikeCnt(false);
+        replyRepository.save(reply);
+    }
+
+    /**
+     * 입양후기 댓글 좋아요 체크
+     * 좋아요가 이미 눌려있는지 체크
+     * @param replyNo
+     * @param token
+     * @return
+     */
+    public Boolean checkLiked(Integer replyNo, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+
+        log.info("[입양후기 댓글 좋아요 체크] replyNo : {}, userNo : {}", replyNo, userNo);
+        return likeReplyRepository.existsLikeReplyByUserNoAndReplyNo(userNo, replyNo);
+    }
 
 }

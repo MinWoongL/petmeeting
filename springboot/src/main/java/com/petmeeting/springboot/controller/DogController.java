@@ -123,7 +123,7 @@ public class DogController {
     @PostMapping("/like/{dogNo}")
     public ResponseEntity<MessageDto> likeDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
         dogService.likeDog(dogNo, token);
-        return ResponseEntity.ok(MessageDto.builder().msg("Like Success").build());
+        return ResponseEntity.ok(MessageDto.msg("Like Success"));
     }
 
     @Operation(
@@ -133,7 +133,7 @@ public class DogController {
     @DeleteMapping("like/{dogNo}")
     public ResponseEntity<MessageDto> dislikeDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
         dogService.dislikeDog(dogNo, token);
-        return ResponseEntity.ok(MessageDto.builder().msg("Dislike Success").build());
+        return ResponseEntity.ok(MessageDto.msg("Dislike Success"));
     }
 
     @Operation(
@@ -143,7 +143,7 @@ public class DogController {
     @GetMapping("/like/{dogNo}")
     public ResponseEntity<Boolean> checkLiked(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token){
         return ResponseEntity.ok(dogService.checkLiked(dogNo, token));
-    }
+    } // Boolean -> ResultDto 로 변경해야함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     @Operation(
             summary = "유기견 찜 목록 조회",

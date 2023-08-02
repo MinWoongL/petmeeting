@@ -279,8 +279,7 @@ public class DogService {
                 .member((Member) userRepository.findById(userNo).get())
                 .build();
 
-        Dog dog = dogRepository.findDogByDogNo(dogNo)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다."));
+        Dog dog = dogRepository.findDogByDogNo(dogNo).get();
 
         dog.updateLikeCnt(true);
         dogRepository.save(dog);
@@ -298,7 +297,7 @@ public class DogService {
     @Transactional
     public void dislikeDog(Integer dogNo, String token) {
         if(!checkLiked(dogNo, token)) {
-            log.error("[유기견 좋아요] 아직 좋아요를 누르지 않은 사용자입니다. ");
+            log.error("[유기견 좋아요 취소] 아직 좋아요를 누르지 않은 사용자입니다. ");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "아직 좋아요를 누르지 않았습니다.");
         }
 

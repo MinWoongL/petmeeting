@@ -1,6 +1,7 @@
 package com.petmeeting.springboot.controller;
 
 import com.petmeeting.springboot.dto.common.MessageDto;
+import com.petmeeting.springboot.dto.common.ResultDto;
 import com.petmeeting.springboot.dto.reply.ReplyReqDto;
 import com.petmeeting.springboot.dto.reply.ReplyResDto;
 import com.petmeeting.springboot.dto.reply.ReplyUpdateReqDto;
@@ -61,5 +62,34 @@ public class ReplyController {
     public ResponseEntity<MessageDto> deleteReply(@PathVariable Integer replyNo, @RequestHeader(ACCESS_TOKEN) String token) {
         replyService.deleteReply(replyNo, token);
         return ResponseEntity.ok(MessageDto.msg("Delete Success"));
+    }
+
+    @Operation(
+            summary = "입양후기 댓글 좋아요 ",
+            description = "입양후기 댓글 좋아요를 설정합니다."
+    )
+    @PostMapping("/like/{replyNo}")
+    public ResponseEntity<MessageDto> likeReply(@PathVariable Integer replyNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        replyService.likeReply(replyNo, token);
+        return ResponseEntity.ok(MessageDto.msg("Like Success"));
+    }
+
+    @Operation(
+            summary = "입양후기 댓글 좋아요 취소",
+            description = "입양후기 댓글 좋아요를 취소합니다."
+    )
+    @DeleteMapping("/like/{replyNo}")
+    public ResponseEntity<MessageDto> dislikeReply(@PathVariable Integer replyNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        replyService.dislikeReply(replyNo, token);
+        return ResponseEntity.ok(MessageDto.msg("Dislike Success"));
+    }
+
+    @Operation(
+            summary = "입양후기 댓글 좋아요 상태확인(체크)",
+            description = "입양후기 댓글에 좋아요가 눌려있는지 체크합니다."
+    )
+    @GetMapping("/like/{replyNo}")
+    public ResponseEntity<ResultDto> checkLiked(@PathVariable Integer replyNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(ResultDto.result(replyService.checkLiked(replyNo, token)));
     }
 }

@@ -143,12 +143,11 @@ public class Dog {
         // 삭제는 (isDeleted)는 삭제 기능으로만 가능
     }
 
-    public void updateLikeCnt(boolean isLike) {
-        if(isLike) {
+    public void updateLikeCnt(Boolean isLike) {
+        if(isLike)
             this.likeCnt += 1;
-        } else {
+        else
             this.likeCnt -= 1;
-        }
     }
 
 }

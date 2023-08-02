@@ -45,6 +45,18 @@ public class Reply {
     @OneToMany(mappedBy = "reply", fetch = FetchType.LAZY)
     private List<LikeReply> likeReplyList;
 
+    @PrePersist
+    public void prePersist() {
+        this.createdTime = createdTime == null ? System.currentTimeMillis() / 1000L : createdTime;
+    }
+
+    public void updateLikeCnt(Boolean isLike) {
+        if(isLike)
+            this.likeCnt += 1;
+        else
+            this.likeCnt -= 1;
+    }
+
     public void updateReply(ReplyUpdateReqDto reqDto) {
         this.content = reqDto.getContent();
         this.modifiedTime = System.currentTimeMillis() / 1000L;
