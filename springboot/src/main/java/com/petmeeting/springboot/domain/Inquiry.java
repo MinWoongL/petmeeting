@@ -63,4 +63,9 @@ public class Inquiry {
         this.answer = answer;
         this.status = true;
     }
+
+    public void deleteAnswer() {
+        this.answer = null;
+        this.status = false;
+    }
 }
