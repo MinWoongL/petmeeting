@@ -219,6 +219,15 @@ public class AdoptionService {
         return AdoptionResDto.entityToDto(adoption);
     }
 
+    /**
+     * 입양신청서 검색
+     * 로그인 사용자 - 일반인일 경우, 본인이 등록한 신청서 리스트 반환
+     * 로그인 사용자 - 보호소일 경우, 보호소에 신청된 신청서 리스트 반환
+     * DogNo이 있을 시, 해당 유기견에 관련된 리스트만 반환
+     * @param condition
+     * @param token
+     * @return
+     */
     @Transactional
     public List<AdoptionResDto> findAdoptionByCondition(AdoptionSearchCondition condition, String token) {
         Integer userNo = jwtUtils.getUserNo(token);
