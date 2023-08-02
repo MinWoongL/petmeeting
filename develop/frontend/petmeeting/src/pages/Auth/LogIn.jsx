@@ -17,14 +17,25 @@ import {
   setPassword as setReduxPassword,
   login,
 } from "../../stores/Slices/UserSlice";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 export default function Login() {
   const [id, setId] = useState(""); // ID 상태
   const [password, setPassword] = useState(""); // 비밀번호 상태
   //   const dispatch = useDispatch(); // Redux dispatch 사용
   const user = useSelector((state) => state.user);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
 
   useEffect(() => {
     console.log(user);
@@ -33,7 +44,6 @@ export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   //   const user = useSelector((state) => state.user);
-
 
   useEffect(() => {
     console.log(user);
@@ -93,6 +103,17 @@ export default function Login() {
       }
     } catch (error) {
       console.error("Error occurred during login:", error);
+      console.log(error.response, "에러리스폰스");
+      if (error.response.data.message.includes("가입")) {
+        setSnackbarMessage(
+          "아이디가 존재하지 않습니다. 회원 가입 후 이용 해 주세요."
+        );
+      } else if (error.response.data.message.includes("비밀")) {
+        setSnackbarMessage("비밀번호가 일치하지 않습니다.");
+      } else {
+        setSnackbarMessage("오류가 발생했습니다. 다시 시도해주세요");
+      }
+      setOpenSnackbar(true);
     }
   };
   return (
@@ -171,7 +192,20 @@ export default function Login() {
               회원가입
             </Button>
           </Link>
-          
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+          >
+            <MuiAlert
+              onClose={handleSnackbarClose}
+              severity="error"
+              elevation={6}
+              variant="filled"
+            >
+              {snackbarMessage}
+            </MuiAlert>
+          </Snackbar>
         </Paper>
       </Grid>
     </Grid>

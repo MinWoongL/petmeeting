@@ -26,7 +26,7 @@ function InfoSidebar() {
   const [nicknameInput, setNicknameInput] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
-  const [openSnackbar, setOpenSnackbar] = useState(true);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleSnackbarClose = (event, reason) => {
     console.log("Snackbar is closing due to:", reason);
