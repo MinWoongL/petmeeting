@@ -54,14 +54,14 @@ function InfoSidebar() {
           headers: { AccessToken: `Bearer ${token.accessToken}` },
         }
       );
-
+      console.log("실패하는거지?");
       // If the request is successful, remove the user data and token from local and session storage.
       if (response.status === 200) {
         dispatch(logout());
         localStorage.removeItem("user");
         sessionStorage.removeItem("token");
         setOpenSnackbar(true);
-        navigate('/')
+        navigate("/");
       }
     } catch (error) {
       console.error("Failed to logout:", error);

@@ -107,6 +107,15 @@ export default function SignUp() {
             headers: { "Content-Type": "application/json" },
             data: JSON.stringify({ userId, password }),
           });
+
+          const newUser = {
+            name: loginResponse.data.name,
+            userType: userType, // Add userType
+          };
+
+          // Save the new user object to localStorage
+          localStorage.setItem("user", JSON.stringify(newUser));
+
           // console.log("axios 로직에서 터지나?1");
           if (loginResponse.status === 200) {
             dispatch(

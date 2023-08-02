@@ -45,10 +45,6 @@ export default function Login() {
     setOpenSnackbar(false);
   };
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   //   const user = useSelector((state) => state.user);
@@ -86,25 +82,14 @@ export default function Login() {
           console.log("No token found in response");
         }
 
-        const user = {
+        // Create new user object
+        const newUser = {
           name: response.data.name,
+          userType: userType, // Add userType
         };
 
-        // If there is no user object in localStorage, create one
-        if (!localStorage.getItem("user")) {
-          localStorage.setItem("user", JSON.stringify({}));
-
-          console.log("없었어서 겟함");
-        }
-
-        // Retrieve the user object from localStorage
-        const localStorageUser = JSON.parse(localStorage.getItem("user"));
-
-        // Update the user object with the new name
-        localStorageUser.name = user.name;
-
-        // Save the updated user object back to localStorage
-        localStorage.setItem("user", JSON.stringify(localStorageUser));
+        // Save the new user object to localStorage
+        localStorage.setItem("user", JSON.stringify(newUser));
 
         navigate("/"); // Home으로 이동
       } else {
@@ -154,6 +139,16 @@ export default function Login() {
           </Box>
 
           <form onSubmit={handleSubmit}>
+            <ToggleButtonGroup
+              value={userType}
+              exclusive
+              onChange={handleUserTypeChange}
+              style={{ marginBottom: "15px" }}
+            >
+              <ToggleButton value="user">사용자</ToggleButton>
+              <ToggleButton value="shelter">보호소</ToggleButton>
+            </ToggleButtonGroup>
+
             <TextField
               fullWidth
               label="ID"
