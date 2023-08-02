@@ -4,10 +4,13 @@ import com.petmeeting.springboot.dto.adoption.*;
 import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.service.AdoptionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -75,8 +78,9 @@ public class AdoptionController {
                     "dogNo가 있을 경우 해당 강아지에게 해당되는 정보만 제공됩니다."
     )
     @GetMapping
-    public ResponseEntity<?> getAllAdoptions(AdoptionSearchCondition condition) {
-        return null;
+    public ResponseEntity<List<AdoptionResDto>> getAllAdoptions(
+            @Parameter AdoptionSearchCondition condition, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(adoptionService.findAdoptionByCondition(condition, token));
     }
 
 }

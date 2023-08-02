@@ -10,8 +10,9 @@ import java.util.List;
 public interface AdoptionRepository extends JpaRepository<Adoption, Integer> {
 
     @Modifying
-    @Query(value = "UPDATE Adoption adoption SET adoption.adoptionStatus = '미채택' WHERE adoption.dog.dogNo = ?1")
-    List<Adoption> updateAdoptionStatus(Integer dogNo);
+    @Query(value = "update adoption set adoption_status = 'ADOPT_FAIL' where dog_no = :dogNo and member_no <> :memberNo", nativeQuery = true)
+    Integer updateAdoptionByDog(Integer dogNo, Integer memberNo);
+
 
     @Modifying
     Integer deleteAdoptionByAdoptionNo(Integer adoptionNo);

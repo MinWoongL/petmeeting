@@ -103,14 +103,13 @@ public class DogService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
 
-        updateDog.updateStatus(AdoptionAvailability.valueOf(dogStatusUpdateReqDto.getAdoptionAvailability()));
+        Boolean adoptImpossible = updateDog.updateStatus(AdoptionAvailability.valueOf(dogStatusUpdateReqDto.getAdoptionAvailability()));
         dogRepository.save(updateDog);
 
-        // 230801 수정해야함
         // 만약 보호종료 상태가 된다면, 해당 유기견에게 할당된 모든 입양신청서 "미채택"
-        if(dogStatusUpdateReqDto.getAdoptionAvailability().equals(AdoptionAvailability.ADOPT_IMPOSSIBLE)){
-            List<Adoption> adoptions = adoptionRepository.updateAdoptionStatus(updateDog.getDogNo());
-//            adoptionRepository.save(adoptions);
+        if(adoptImpossible){
+            Integer updateAdoptionCnt = adoptionRepository.updateAdoptionByDog(updateDog.getDogNo(), shelter.getId());
+            log.info("[유기견에게 할당된 입양신청서 미채택] : {}개", updateAdoptionCnt);
         }
 
         Map<String, Object> result = new HashMap<>();
