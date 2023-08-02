@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Box,
@@ -22,6 +22,7 @@ import { logout, updateNickName } from "../../stores/Slices/UserSlice";
 function InfoSidebar() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [nicknameInput, setNicknameInput] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -60,6 +61,7 @@ function InfoSidebar() {
         localStorage.removeItem("user");
         sessionStorage.removeItem("token");
         setOpenSnackbar(true);
+        navigate('/')
       }
     } catch (error) {
       console.error("Failed to logout:", error);
