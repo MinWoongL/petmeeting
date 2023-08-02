@@ -26,9 +26,10 @@ function InfoSidebar() {
   const [nicknameInput, setNicknameInput] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(true);
 
   const handleSnackbarClose = (event, reason) => {
+    console.log("Snackbar is closing due to:", reason);
     if (reason === "clickaway") {
       return;
     }
@@ -42,7 +43,7 @@ function InfoSidebar() {
       console.log(token.accessToken);
       // Create the header
       const config = {
-        headers: { Authorization: `Bearer ${token.accessToken}` },
+        headers: { AccessToken: `Bearer ${token.accessToken}` },
       };
       console.log("header야", config.headers);
       const response = await axios.delete(

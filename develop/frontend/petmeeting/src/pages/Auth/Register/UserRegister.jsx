@@ -17,6 +17,9 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+
 import "../../../styles/base.css";
 import {
   setPassword as setReduxPassword,
@@ -49,7 +52,13 @@ const defaultTheme = createTheme();
 export default function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [userType, setUserType] = React.useState("사용자");
+  const handleChange = (event) => {
+    setUserType(event.target.value);
+  };
+  const handleUserTypeChange = (event, newUserType) => {
+    setUserType(newUserType);
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -63,7 +72,7 @@ export default function SignUp() {
           password: data.get("password"),
           name: data.get("name"),
           phoneNumber: data.get("phoneNumber"),
-          userGroup: data.get("userGroup"),
+          userGroup: userType,
           imagePath: data.get("imagePath"),
         },
       });
@@ -150,11 +159,22 @@ export default function SignUp() {
           >
             <Grid container spacing={2}>
               <Grid item xs={12}>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={userType}
+                  exclusive
+                  onChange={handleUserTypeChange}
+                >
+                  <ToggleButton value="사용자">사용자</ToggleButton>
+                  <ToggleButton value="보호소">보호소</ToggleButton>
+                </ToggleButtonGroup>
+              </Grid>
+              <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
                   id="userId"
-                  label="User ID"
+                  label="아이디"
                   name="userId"
                   autoComplete="username"
                 />
@@ -164,7 +184,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="비밀번호"
                   type="password"
                   id="password"
                   autoComplete="new-password"
@@ -175,7 +195,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="name"
-                  label="Name"
+                  label="닉네임"
                   name="name"
                   autoComplete="name"
                 />
@@ -185,26 +205,41 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="phoneNumber"
-                  label="Phone Number"
+                  label="전화번호"
                   name="phoneNumber"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth required>
-                  <InputLabel id="userGroup-label">회원 유형</InputLabel>
-                  <Select
-                    labelId="userGroup-label"
-                    id="userGroup"
-                    name="userGroup"
-                    label="userGroup"
-                    defaultValue=""
-                  >
-                    <MenuItem value={"사용자"}>사용자</MenuItem>
-                    <MenuItem value={"보호소"}>보호소</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
+              {userType === "보호소" && (
+                <>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="location"
+                      label="Location"
+                      name="location"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="siteUrl"
+                      label="Site URL"
+                      name="siteUrl"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="registImagePath"
+                      label="Site Image Path"
+                      name="registImagePath"
+                    />
+                  </Grid>
+                </>
+              )}
               <Grid item xs={12}>
                 <TextField
                   required
@@ -214,7 +249,6 @@ export default function SignUp() {
                   name="imagePath"
                 />
               </Grid>
-
               <Grid item xs={12}>
                 <FormControlLabel
                   control={
