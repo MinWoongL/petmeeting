@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DogStatusUpdateReqDto {
-
+    // 입양가능 or 보호종료만 가능
     private String adoptionAvailability;
 
 }

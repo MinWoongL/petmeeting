@@ -4,12 +4,11 @@ import com.petmeeting.springboot.domain.Adoption;
 import com.petmeeting.springboot.domain.Dog;
 import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Users;
-import com.petmeeting.springboot.dto.adoption.AdoptStatusUpdateReqDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionCreateReqDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionResDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionUpdateReqDto;
+import com.petmeeting.springboot.dto.adoption.*;
+import com.petmeeting.springboot.enums.AdoptionAvailability;
 import com.petmeeting.springboot.enums.AdoptionStatus;
 import com.petmeeting.springboot.enums.Gender;
+import com.petmeeting.springboot.repository.AdoptionQueryDslRepository;
 import com.petmeeting.springboot.repository.AdoptionRepository;
 import com.petmeeting.springboot.repository.DogRepository;
 import com.petmeeting.springboot.repository.UserRepository;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class AdoptionService {
     private final UserRepository userRepository;
     private final DogRepository dogRepository;
     private final AdoptionRepository adoptionRepository;
+    private final AdoptionQueryDslRepository adoptionQueryDslRepository;
 
     /**
      * 입양신청서 작성
@@ -175,9 +177,7 @@ public class AdoptionService {
 
     /**
      * 입양신청서 상태 변경
-     * @param adoptionNo
-     * @param adoptStatusUpdateDto
-     * @param token
+     * @param adoptionNo, adoptStatusUpdateDto, token
      * @return
      */
     @Transactional
@@ -196,33 +196,57 @@ public class AdoptionService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한이 없습니다");
         };
 
-        log.info("[입양신청서 상태 변경] 신청서도 찾았고, 수정 권한도 있으니 이제 수정을 해봅시다.");
-
-
-        // 수정중
-
-        // 채택, 미채택에 따라 달라지는 업데이트
-        // 채택일시, 해당 멤버의 adopted = true로 변경되고
-        // 해당 유기견에게 할당된 모든 입양신청서의 adoptionStatus가 "미채택(ADOPT_FAIL)"으로 변경됨.
-        if(adoptStatusUpdateDto.getAdoptionStatus().equals(AdoptionStatus.ADOPT_SUCCESS.getValue())
-             ||adoptStatusUpdateDto.getAdoptionStatus().equals(AdoptionStatus.ADOPT_SUCCESS)) {
-
-            adoption.updateAdoptionStatus(true);
-
-            Member member = adoption.getMember();
-            member.updateAdopted();
-            userRepository.save(member); // 엔티티를 직접 바꾸는거는 save를 해줘야하고,
-
-            adoptionRepository.updateAdoptionStatus(adoption.getDog().getDogNo()); // jpa 사용해서 db를 변경하는건 save할 필요가 없다
-
-
-
-        } else {
-            adoption.updateAdoptionStatus(false);
-        }
+        AdoptionStatus status = AdoptionStatus.valueOf(adoptStatusUpdateDto.getAdoptionStatus());
+        Boolean adoptSuccess = adoption.updateAdoptionStatus(status);
         adoptionRepository.save(adoption);
+        log.info("[입양신청서 상태 변경] adoption의 상태가 변경되었습니다. {} <- {}", adoption.getAdoptionStatus(), status);
 
-        return null;
+        // "채택"일 때
+        if(adoptSuccess) {
+            log.info("[입양신청서 상태 변경] 채택일 때");
+            Member member = adoption.getMember();
+            member.updateAdopted(); // 해당 멤버의 adopted = true
+            userRepository.save(member);
+
+            Dog dog = adoption.getDog(); // 해당 유기견의 adoptionAvailability = ADOPT_SUCCESS(입양완료)
+            dog.updateStatus(AdoptionAvailability.ADOPT_SUCCESS);
+            dogRepository.save(dog);
+
+            // 해당 유기견에게 할당된 모든 입양신청서의 adoptionStatus가 ADOPT_FAIL(미채택)으로 변경
+            adoptionRepository.updateAdoptionByDog(dog.getDogNo(), member.getId());
+        }
+
+        return AdoptionResDto.entityToDto(adoption);
+    }
+
+    @Transactional
+    public List<AdoptionResDto> findAdoptionByCondition(AdoptionSearchCondition condition, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+        Users user = userRepository.findById(userNo)
+                .orElseThrow(() -> {
+                    log.error("[입양신청서 조건으로 검색] 로그인 상태가 아닙니다.");
+                    return new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 상태가 아닙니다.");
+                });
+
+        log.info("[입양신청서 검색 조건으로 검색] condition : {}", condition.toString());
+
+        return adoptionQueryDslRepository.findByCondition(condition, user).stream()
+                .map(adoption -> AdoptionResDto.builder()
+                        .adoptionNo(adoption.getAdoptionNo())
+                        .memberNo(adoption.getMember().getId())
+                        .dogNo(adoption.getDog().getDogNo())
+                        .shelterNo(adoption.getShelter().getId())
+                        .name(adoption.getName())
+                        .gender(adoption.getGender().getValue())
+                        .age(adoption.getAge())
+                        .callTime(adoption.getCallTime())
+                        .residence(adoption.getResidence())
+                        .job(adoption.getJob())
+                        .petExperience(adoption.getPetExperience())
+                        .additional(adoption.getAdditional())
+                        .adoptionStatus(adoption.getAdoptionStatus().getValue())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

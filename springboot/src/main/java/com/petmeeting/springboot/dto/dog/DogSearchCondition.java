@@ -1,7 +1,6 @@
 package com.petmeeting.springboot.dto.dog;
 
 import com.petmeeting.springboot.enums.AdoptionAvailability;
-import com.petmeeting.springboot.enums.DogSize;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,8 +16,8 @@ public class DogSearchCondition {
     Integer page;
     Integer max;
 
-    @Transient
-    AdoptionAvailability adoptionAvailability; // 입양가능만
+//    @Transient
+//    AdoptionAvailability adoptionAvailability; // 입양가능만
 
     public Integer getOffset() {
         if(page == null || max == null) {

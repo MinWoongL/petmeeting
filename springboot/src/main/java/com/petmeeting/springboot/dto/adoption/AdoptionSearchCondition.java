@@ -8,9 +8,7 @@ import lombok.Data;
 @Builder
 public class AdoptionSearchCondition {
 
-    Users user;
     Integer dogNo;
-
     Integer page;
     Integer max;
 

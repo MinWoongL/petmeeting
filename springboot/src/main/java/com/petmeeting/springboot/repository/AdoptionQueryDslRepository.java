@@ -20,14 +20,13 @@ public class AdoptionQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<Adoption> findByCondition(AdoptionSearchCondition condition) {
-        Users user = condition.getUser();
+    public List<Adoption> findByCondition(AdoptionSearchCondition condition, Users user) {
 
         return jpaQueryFactory.selectFrom(adoption)
                 .where(findUserGroup(user),
                         containsDogNo(condition.getDogNo()))
                 .limit(condition.getMax() == 0 ? 10 : condition.getMax())
-                .offset(condition.getOffset() == 0 ? 1 : condition.getOffset())
+                .offset(condition.getOffset() == null ? 1 : condition.getOffset())
                 .fetch();
     }
 
@@ -37,17 +36,20 @@ public class AdoptionQueryDslRepository {
      * @return
      */
     private BooleanExpression findUserGroup(Users user) {
-        if(user instanceof Member) {
+        if(user instanceof Member)
             return adoption.member.id.eq(user.getId());
-        }
 
-        else if(user instanceof Shelter) {
+        if(user instanceof Shelter)
             return adoption.shelter.id.eq(user.getId());
-        }
 
         return null;
     }
 
+    /**
+     * 검색 조건에 강아지번호를 입력했는지에 따라 조건이 달라진다.
+     * @param dogNo
+     * @return
+     */
     private BooleanExpression containsDogNo(Integer dogNo) {
         if(dogNo == 0 || dogNo == null)
             return null;
