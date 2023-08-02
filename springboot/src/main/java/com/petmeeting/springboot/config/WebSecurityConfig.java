@@ -52,8 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/v1/**").permitAll()
                     .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().permitAll().and()
-                .headers().frameOptions().disable().and()
-                .csrf().ignoringAntMatchers("/h2-console/**").disable();
+                .headers().frameOptions().disable();
         http.addFilterBefore(authenticationJwtFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
