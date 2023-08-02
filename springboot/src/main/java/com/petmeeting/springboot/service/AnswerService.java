@@ -52,18 +52,38 @@ public class AnswerService {
     }
 
     /**
-     * 문의게시글 답변 삭제 (구현 중)
+     * 문의게시글 답변 삭제
      * @param answerNo
      */
     @Transactional
     public void deleteAnswer(Integer answerNo) {
         Answer answer = answerRepository.findById(answerNo)
                         .orElseThrow(() -> {
-
+                            log.error("[문의게시글 답변 삭제] 답변을 찾을 수 없습니다.");
                             return new ResponseStatusException(HttpStatus.NOT_FOUND, "답변을 찾을 수 없습니다.");
                         });
 
+        answer.getInquiry().deleteAnswer();
+        inquiryRepository.save(answer.getInquiry());
         answerRepository.deleteById(answerNo);
         log.info("[문의게시글 답변 삭제] 문의게시글 답변이 삭제되었습니다. answerNo : {}", answerNo);
+    }
+
+    /**
+     * 문의게시글 답변 정보를 가져옵니다.
+     * 답변이 없을 경우 빈 객체를 반환합니다.
+     * @param inquiryNo
+     * @return AnswerResDto
+     */
+    @Transactional
+    public AnswerResDto getAnswer(Integer inquiryNo) {
+        Answer answer = answerRepository.findByInquiry_InquiryNo(inquiryNo).get();
+
+        if (answer == null) {
+            log.info("[문의게시글 답변 상세] 작성된 답변이 없습니다.");
+            return null;
+        }
+        log.info("[문의게시글 답변 상세] 문의게시글 답변 반환. inquiryNo : {}, answerNo : {}", inquiryNo, answer.getAnswerNo());
+        return AnswerResDto.entityToDto(inquiryNo, answer);
     }
 }
