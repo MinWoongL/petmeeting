@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import BroadCastingView from '../components/BroadCasting/BroadCastingView';
+import BroadCastingDetail from '../components/BroadCasting/BroadCastingDetail';
 
 function BroadCasting() {
   return (
@@ -10,6 +11,7 @@ function BroadCasting() {
       </Typography>
       {/* 다른 컨텐츠와 컴포넌트들이 여기에 추가될 수 있습니다. */}
       <BroadCastingView/>
+      <BroadCastingDetail />
     </Box>
     
   );
