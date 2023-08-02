@@ -4,13 +4,11 @@ import com.petmeeting.springboot.domain.Adoption;
 import com.petmeeting.springboot.domain.Dog;
 import com.petmeeting.springboot.domain.Member;
 import com.petmeeting.springboot.domain.Users;
-import com.petmeeting.springboot.dto.adoption.AdoptStatusUpdateReqDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionCreateReqDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionResDto;
-import com.petmeeting.springboot.dto.adoption.AdoptionUpdateReqDto;
+import com.petmeeting.springboot.dto.adoption.*;
 import com.petmeeting.springboot.enums.AdoptionAvailability;
 import com.petmeeting.springboot.enums.AdoptionStatus;
 import com.petmeeting.springboot.enums.Gender;
+import com.petmeeting.springboot.repository.AdoptionQueryDslRepository;
 import com.petmeeting.springboot.repository.AdoptionRepository;
 import com.petmeeting.springboot.repository.DogRepository;
 import com.petmeeting.springboot.repository.UserRepository;
@@ -22,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +32,7 @@ public class AdoptionService {
     private final UserRepository userRepository;
     private final DogRepository dogRepository;
     private final AdoptionRepository adoptionRepository;
+    private final AdoptionQueryDslRepository adoptionQueryDslRepository;
 
     /**
      * 입양신청서 작성
@@ -216,6 +217,36 @@ public class AdoptionService {
         }
 
         return AdoptionResDto.entityToDto(adoption);
+    }
+
+    @Transactional
+    public List<AdoptionResDto> findAdoptionByCondition(AdoptionSearchCondition condition, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+        Users user = userRepository.findById(userNo)
+                .orElseThrow(() -> {
+                    log.error("[입양신청서 조건으로 검색] 로그인 상태가 아닙니다.");
+                    return new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 상태가 아닙니다.");
+                });
+
+        log.info("[입양신청서 검색 조건으로 검색] condition : {}", condition.toString());
+
+        return adoptionQueryDslRepository.findByCondition(condition, user).stream()
+                .map(adoption -> AdoptionResDto.builder()
+                        .adoptionNo(adoption.getAdoptionNo())
+                        .memberNo(adoption.getMember().getId())
+                        .dogNo(adoption.getDog().getDogNo())
+                        .shelterNo(adoption.getShelter().getId())
+                        .name(adoption.getName())
+                        .gender(adoption.getGender().getValue())
+                        .age(adoption.getAge())
+                        .callTime(adoption.getCallTime())
+                        .residence(adoption.getResidence())
+                        .job(adoption.getJob())
+                        .petExperience(adoption.getPetExperience())
+                        .additional(adoption.getAdditional())
+                        .adoptionStatus(adoption.getAdoptionStatus().getValue())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }
