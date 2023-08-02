@@ -11,6 +11,9 @@ import {
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router";
+// 로그인창 토글 버튼 임포트
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -27,9 +30,14 @@ export default function Login() {
   const [password, setPassword] = useState(""); // 비밀번호 상태
   //   const dispatch = useDispatch(); // Redux dispatch 사용
   const user = useSelector((state) => state.user);
+  const [userType, setUserType] = useState("user"); // 사용자 타입 상태
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  const handleUserTypeChange = (event, newUserType) => {
+    setUserType(newUserType);
+  };
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -85,6 +93,7 @@ export default function Login() {
         // If there is no user object in localStorage, create one
         if (!localStorage.getItem("user")) {
           localStorage.setItem("user", JSON.stringify({}));
+
           console.log("없었어서 겟함");
         }
 

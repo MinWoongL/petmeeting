@@ -61,21 +61,33 @@ export default function SignUp() {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const data = new FormData(event.target);
 
     try {
-      const response = await axios({
-        method: "post",
-        url: "https://i9a203.p.ssafy.io/backapi/api/v1/user/sign-up",
-        data: {
-          userId: data.get("userId"),
-          password: data.get("password"),
-          name: data.get("name"),
-          phoneNumber: data.get("phoneNumber"),
-          userGroup: userType,
-          imagePath: data.get("imagePath"),
-        },
-      });
+      console.log(userType);
+
+      let postData = {
+        userId: data.get("userId"),
+        password: data.get("password"),
+        name: data.get("name"),
+        phoneNumber: data.get("phoneNumber"),
+        userGroup: userType,
+        imagePath: data.get("imagePath"),
+      };
+
+      // If the user type is not "사용자", add additional fields
+      if (userType !== "사용자") {
+        postData = {
+          ...postData,
+          location: data.get("location"),
+          siteUrl: data.get("siteUrl"),
+          registImagePath: data.get("registImagePath"),
+        };
+      }
+      const response = await axios.post(
+        "https://i9a203.p.ssafy.io/backapi/api/v1/user/sign-up",
+        postData
+      );
 
       console.log("Signup successful:", response.data);
 
@@ -83,14 +95,19 @@ export default function SignUp() {
         const userId = data.get("userId");
         const password = data.get("password");
 
+        // console.log(userId, password, "아이디 패스워드");
+
+        // 보호소에서 회원가입이 오는 경우에는 회원 가입이 됐는데 로그인이 안되는 경우
+
         try {
+          // console.log("들어는 오지?", userId, password);
           const loginResponse = await axios({
             method: "post",
             url: "https://i9a203.p.ssafy.io/backapi/api/v1/user/sign-in",
             headers: { "Content-Type": "application/json" },
             data: JSON.stringify({ userId, password }),
           });
-
+          // console.log("axios 로직에서 터지나?1");
           if (loginResponse.status === 200) {
             dispatch(
               login({
