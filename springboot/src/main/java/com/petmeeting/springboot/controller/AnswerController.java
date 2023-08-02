@@ -36,4 +36,13 @@ public class AnswerController {
         answerService.deleteAnswer(answerNo);
         return ResponseEntity.ok(MessageDto.msg("Delete Success"));
     }
+
+    @Operation(
+            summary = "문의게시글 답변 상세",
+            description = "문의게시글에 달린 답변 정보를 가져옵니다."
+    )
+    @GetMapping("/{inquiryNo}")
+    public ResponseEntity<AnswerResDto> getAnswer(@PathVariable Integer inquiryNo) {
+        return ResponseEntity.ok(answerService.getAnswer(inquiryNo));
+    }
 }
