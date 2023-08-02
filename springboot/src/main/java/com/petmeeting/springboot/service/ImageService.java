@@ -28,6 +28,11 @@ public class ImageService {
     @Value("${spring.servlet.multipart.location}")
     private String uploadPath;
 
+    private final String BOARD_IMAGE_PATH = "/board";
+    private final String MEMBER_IMAGE_PATH = "/member";
+    private final String SHELTER_IMAGE_PATH = "/shelter";
+    private final String REGIST_IMAGE_PATH = "/regist";
+
     public String uploadImage(MultipartFile image) throws IOException {
 
         File uploadDir = new File(uploadPath);
