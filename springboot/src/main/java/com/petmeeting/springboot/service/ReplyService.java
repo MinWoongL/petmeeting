@@ -192,6 +192,7 @@ public class ReplyService {
 
         Reply reply = replyRepository.findById(replyNo)
                 .orElseThrow(() -> {
+                    log.error("[입양후기 댓글 좋아요 취소] 댓글을 찾을 수 없습니다.");
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.");
                 });
 

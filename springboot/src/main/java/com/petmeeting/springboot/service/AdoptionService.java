@@ -42,7 +42,7 @@ public class AdoptionService {
      * @return
      */
     @Transactional
-    public AdoptionResDto createAdoption(AdoptionCreateReqDto adoptionCreateReqDto, String token) {
+    public AdoptionResDto createAdoption(AdoptionReqDto adoptionCreateReqDto, String token) {
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
 
@@ -56,7 +56,6 @@ public class AdoptionService {
                     log.error("[입양신청서 작성] 유기견을 찾을 수 없습니다.");
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견을 찾을 수 없습니다.");
                 });
-
 
         log.info("[입양신청서 작성] userId : {}", user.getUserId());
 
@@ -88,15 +87,14 @@ public class AdoptionService {
      */
     @Transactional
     public AdoptionResDto getAdoption(Integer adoptionNo, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+
         Adoption adoption = adoptionRepository.findById(adoptionNo)
                 .orElseThrow(() -> {
                     log.error("[입양신청서 상세조회] 입양신청서를 가져올 수 없습니다.");
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "입양신청서를 가져올 수 없습니다.");
                 });
 
-        Integer userNo = jwtUtils.getUserNo(token);
-
-        // 작성자이거나 해당 보호소일때만 반환
         if(!(userNo.equals(adoption.getMember().getId()) || userNo.equals(adoption.getShelter().getId()))) {
             log.error("[입양신청서 상세조회] 작성자 및 해당 보호소만 상세 조회가 가능합니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
@@ -116,6 +114,8 @@ public class AdoptionService {
      */
     @Transactional
     public AdoptionResDto updateAdoption(Integer adoptionNo, AdoptionUpdateReqDto adoptionUpdateReqDto, String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+
         Adoption adoption = adoptionRepository.findById(adoptionNo)
                 .orElseThrow(() -> {
                     log.error("[입양신청서 수정] 입양신청서를 찾을 수 없습니다.");
@@ -128,8 +128,6 @@ public class AdoptionService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정할 수 없습니다.");
         };
 
-        // 작성자와 로그인 사용자가 일치해야만 수정 가능
-        Integer userNo = jwtUtils.getUserNo(token);
         if(!adoption.getMember().getId().equals(userNo)) {
             log.error("[입양신청서 수정] 작성자만 수정할 수 있습니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한이 없습니다.");
@@ -159,7 +157,6 @@ public class AdoptionService {
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "입양신청서를 찾을 수 없습니다.");
                 });
 
-        // 작성자 == 로그인사용자
         if(!adoption.getMember().getId().equals(userNo)) {
             log.error("[입양신청서 삭제] 작성자와 로그인사용자가 일치하지 않습니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
@@ -190,7 +187,6 @@ public class AdoptionService {
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "입양신청서를 찾을 수 없습니다.");
                 });
 
-        // 로그인 유저 == 등록한 보호소
         if(!adoption.getShelter().getId().equals(userNo)) {
             log.error("[입양신청서 상태 변경] 유기견을 등록한 보호소만 수정 가능합니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한이 없습니다");
@@ -240,21 +236,7 @@ public class AdoptionService {
         log.info("[입양신청서 검색 조건으로 검색] condition : {}", condition.toString());
 
         return adoptionQueryDslRepository.findByCondition(condition, user).stream()
-                .map(adoption -> AdoptionResDto.builder()
-                        .adoptionNo(adoption.getAdoptionNo())
-                        .memberNo(adoption.getMember().getId())
-                        .dogNo(adoption.getDog().getDogNo())
-                        .shelterNo(adoption.getShelter().getId())
-                        .name(adoption.getName())
-                        .gender(adoption.getGender().getValue())
-                        .age(adoption.getAge())
-                        .callTime(adoption.getCallTime())
-                        .residence(adoption.getResidence())
-                        .job(adoption.getJob())
-                        .petExperience(adoption.getPetExperience())
-                        .additional(adoption.getAdditional())
-                        .adoptionStatus(adoption.getAdoptionStatus().getValue())
-                        .build())
+                .map(adoption -> AdoptionResDto.entityToDto(adoption))
                 .collect(Collectors.toList());
     }
 

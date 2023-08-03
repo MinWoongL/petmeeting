@@ -25,7 +25,7 @@ public class AdoptionController {
             description = "등록 성공시 등록된 신청서를 반환합니다."
     )
     @PostMapping
-    public ResponseEntity<AdoptionResDto> registerAdoption(@RequestBody AdoptionCreateReqDto adoptionCreateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<AdoptionResDto> registerAdoption(@RequestBody AdoptionReqDto adoptionCreateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(adoptionService.createAdoption(adoptionCreateReqDto, token));
     }
