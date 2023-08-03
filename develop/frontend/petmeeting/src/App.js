@@ -35,6 +35,8 @@ import RankSystemSidebar from "./components/Sidebar/RankSystemSidebar";
 import BroadCastingPage from "./pages/BroadCasting";
 import "./styles/base.css";
 
+import TokenRefresher from "./apis/refresher";
+
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -53,6 +55,7 @@ function NavBar({ isLoggedIn }) {
       className="theme-blueberry"
       style={{ backgroundColor: "var(--dark)" }}
     >
+      <TokenRefresher />
       <Toolbar>
         <Link
           to="/"
