@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import ProfileCard from "../components/Shelter/ShelterList";
-import DogDetail from "../components/Shelter/DogDetail"; // Replace with your actual component
-import DonationRanking from "../components/Shelter/DonationRanking"; // Replace with your actual component
+import ProfileCard from "../../../components/Shelter/ShelterList";
+import DogDetail from "../../../components/Shelter/DogDetail"; // Replace with your actual component
+import DonationRanking from "../../../components/Shelter/DonationRanking"; // Replace with your actual component
 import Button from "@mui/material/Button";
 
-function ShelterDetailPage() {
+function ShelterMyPage() {
   const { shelterNo } = useParams();
   const [shelterData, setShelterData] = useState(null);
   const [view, setView] = useState("dogs"); // The default view is 'dogs'
@@ -52,5 +52,5 @@ function ShelterDetailPage() {
     </div>
   );
 }
-
-export default ShelterDetailPage;
+export { ShelterMyPage as ShelterDetail };
+export default ShelterMyPage;

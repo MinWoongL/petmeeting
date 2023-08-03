@@ -27,6 +27,7 @@ import ShelterDetailPage from "./pages/ShelterDetail";
 import AdoptionPage from "./pages/Adoption";
 import BoardPage from "./pages/Board";
 import MyPage from "./pages/MyPage";
+import ShelterMyPage from "./pages/MyPage/ShelterMyPage/ShelterMyPage";
 import LogIn from "./pages/Auth/LogIn";
 import UserRegister from "./pages/Auth/Register/UserRegister";
 import InfoSidebar from "./components/Sidebar/InfoSidebar";
@@ -41,6 +42,8 @@ function NavBar({ isLoggedIn }) {
     setAnchorEl(event.currentTarget);
   };
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userType = user ? user.usertype : null;
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -72,9 +75,21 @@ function NavBar({ isLoggedIn }) {
           게시판
         </Button>
         {isLoggedIn ? (
-          <Button color="inherit" component={Link} to="/mypage">
-            마이페이지
-          </Button>
+          <>
+            {userType === "보호소" ? (
+              <Button
+                color="inherit"
+                component={Link}
+                to="/mypage/ShelterMyPage"
+              >
+                보호소 마이페이지
+              </Button>
+            ) : (
+              <Button color="inherit" component={Link} to="/mypage">
+                마이페이지
+              </Button>
+            )}
+          </>
         ) : (
           <>
             <Button color="inherit" onClick={handleOpen}>
@@ -194,6 +209,10 @@ function App() {
                 <Route path="/adoption" element={<AdoptionPage />} />
                 <Route path="/board" element={<BoardPage />} />
                 <Route path="/mypage" element={<MyPage />} />
+                <Route
+                  path="/Mypage/ShelterMyPage"
+                  element={<ShelterMyPage />}
+                />
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/signup" element={<UserRegister />} />
                 <Route

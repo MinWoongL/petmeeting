@@ -24,6 +24,15 @@ function InfoSidebar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const handleMyPageClick = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user.userType === "보호소") {
+      navigate("/mypage/ShelterMypage");
+    } else if (user.userType === "사용자") {
+      navigate("/mypage");
+    }
+  };
+
   const [nicknameInput, setNicknameInput] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
@@ -175,8 +184,7 @@ function InfoSidebar() {
             variant="contained"
             color="primary"
             fullWidth
-            component={Link}
-            to="/mypage"
+            onClick={handleMyPageClick}
           >
             마이페이지
           </Button>

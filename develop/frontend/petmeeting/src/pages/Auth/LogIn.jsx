@@ -145,8 +145,8 @@ export default function Login() {
               onChange={handleUserTypeChange}
               style={{ marginBottom: "15px" }}
             >
-              <ToggleButton value="user">사용자</ToggleButton>
-              <ToggleButton value="shelter">보호소</ToggleButton>
+              <ToggleButton value="사용자">사용자</ToggleButton>
+              <ToggleButton value="보호소">보호소</ToggleButton>
             </ToggleButtonGroup>
 
             <TextField
