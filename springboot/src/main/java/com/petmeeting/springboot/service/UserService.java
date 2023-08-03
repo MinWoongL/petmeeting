@@ -149,7 +149,8 @@ public class UserService {
         refreshToken = refreshToken.substring(7);
 
         Integer userNo = jwtUtils.getUserNoFromJwtToken(refreshToken);
-        Users user = userRepository.findById(userNo).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."));
+        Users user = userRepository.findById(userNo).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."));
 
         if (user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) {
             log.error("[토큰 재발행] 요청받은 RefreshToken과 저장된 RefreshToken 불일치");
@@ -281,18 +282,24 @@ public class UserService {
     /**
      * 마이페이지 정보조회
      * 로그인한 사용자의 정보를 스스로 조회합니다.
-     * @param userNo
      * @param token
      * @return
      */
-    public MypageResDto getUserInMyPage(Integer userNo, String token) {
+    public SignInResDto getUserInMyPage(String token) {
+        Integer userNo = jwtUtils.getUserNo(token);
+
         Users user = userRepository.findById(userNo)
                 .orElseThrow(() -> {
                     log.error("[마이페이지 - 정보조회] 회원을 찾을 수 없습니다.");
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.");
                 });
 
+        if (user instanceof Member) {
+            ((Member) user).setHoldingPoint(chargeRepository.findSumByUserNo(user.getId()).orElse(0)
+                    - donationRepository.findSumByUserNo(user.getId()).orElse(0));
+        }
+
         log.info("[마이페이지 - 정보조회] userId : {}", userNo);
-        return MypageResDto.mypageToDto((Member) user);
+        return SignInResDto.usersToDto(user);
     }
 }

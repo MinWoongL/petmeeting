@@ -126,14 +126,12 @@ public class UserController {
         return ResponseEntity.ok(userService.updateStatus(userNo, adminUpdateReqDto.getIsActivated()));
     }
 
-
     @Operation(
             summary = "마이페이지 정보 조회",
             description = "로그인한 사용자의 마이페이지 정보를 조회합니다."
     )
-    @GetMapping("/{userNo}")
-    public ResponseEntity<MypageResDto> getUserInMyPage(@PathVariable Integer userNo, @RequestHeader(ACCESS_TOKEN) String token) {
-        return ResponseEntity.ok(userService.getUserInMyPage(userNo, token));
+    @GetMapping
+    public ResponseEntity<SignInResDto> getUserInMyPage(@RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(userService.getUserInMyPage(token));
     }
-
 }

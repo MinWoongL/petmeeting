@@ -26,9 +26,7 @@ public class ImageController {
     )
     @GetMapping("/{imageName}")
     public ResponseEntity<Resource> getImage(@PathVariable String imageName, @RequestParam("option") String option) {
-        System.out.println("option = " + option);
-
-        Map<String, Object> returnMap = imageService.getImage(imageName);
+        Map<String, Object> returnMap = imageService.getImage(imageName, option);
         return new ResponseEntity<>((Resource) returnMap.get("resource"), (HttpHeaders)returnMap.get("header"), HttpStatus.OK);
     }
 
@@ -38,9 +36,7 @@ public class ImageController {
     )
     @PostMapping
     public ResponseEntity<String> uploadImage(MultipartFile image, @RequestParam("option") String option) throws IOException {
-        System.out.println("option = " + option);
-
-        String imageName = imageService.uploadImage(image);
+        String imageName = imageService.uploadImage(image, option);
         return ResponseEntity.status(HttpStatus.CREATED).body(imageName);
     }
 
