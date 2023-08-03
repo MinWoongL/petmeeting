@@ -10,7 +10,7 @@ function RankSide() {
       { name: 'Dog 1', likes: 5, image: 'https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2023/05/202307181707536.jpg' },
       { name: 'Dog 2', likes: 2, image: 'https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2023/07/202307251307624.jpg' },
       { name: 'Dog 3', likes: 8, image: 'https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2023/05/202307171707248.jpg' },
-      { name: 'Dog 4', likes: 12, image: '../../assets/images/img_2.jpg' },
+      { name: 'Dog 4', likes: 12, image: 'https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2023/07/202308010708549.jpg' },
     ];
 
     setDogs(fetchedDogs);

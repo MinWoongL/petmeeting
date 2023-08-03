@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux"; // Redux store에서 상태를 가져오기 위한 훅
+import { useSelector, useDispatch } from "react-redux"; // Redux store에서 상태를 가져오기 위한 훅
+import { setshowDevice } from "../../stores/Slices/DeviceSlice";
 import {
   Box,
   Typography,
@@ -12,6 +13,7 @@ import {
 import { useParams } from "react-router-dom";
 
 function BroadCastingView({ timerLimit = 10 }) {
+  const dispatch = useDispatch();
   // 상태 선언 부분
   const [seconds, setSeconds] = useState(timerLimit);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -58,11 +60,13 @@ function BroadCastingView({ timerLimit = 10 }) {
   const handlePlayClick = () => {
     setIsPlaying(true);
     setSeconds(timerLimit);
+    dispatch(setshowDevice(true));
   };
 
   const handleStopClick = () => {
     setIsPlaying(false);
     setSeconds(timerLimit);
+    dispatch(setshowDevice(false));
   };
 
   const handleCloseDialog = () => {
