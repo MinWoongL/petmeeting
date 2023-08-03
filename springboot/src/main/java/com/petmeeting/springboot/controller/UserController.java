@@ -39,6 +39,7 @@ public class UserController {
     ResponseEntity<MessageDto> reIssue(@RequestHeader(REFRESH_TOKEN) String token) {
         return ResponseEntity.status(HttpStatus.OK)
                 .header(ACCESS_TOKEN, userService.reissueToken(token))
+                .header("Access-Control-Expose-Headers", ACCESS_TOKEN)
                 .body(MessageDto.msg("Reissue Success"));
     }
 
@@ -62,7 +63,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Token", JSONSerializer.serializeObject(result.get("token")))
-                .header("Access-Control-Expose-Headers", "token, Content-type")
+                .header("Access-Control-Expose-Headers", "token")
                 .body((SignInResDto) result.get("user"));
     }
 
