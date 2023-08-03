@@ -21,7 +21,7 @@ export default function TokenRefresher() {
         const originalRequest = error.config;
 
         if (sessionStorage.getItem("token") && error.response.status === 400) {
-          console.log("또또 여기 돌고있지");
+          console.log("액세스토큰 재발급");
 
           const tokenData = JSON.parse(sessionStorage.getItem("token"));
           return axios({

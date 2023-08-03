@@ -55,7 +55,6 @@ function InfoSidebar() {
       const config = {
         headers: { AccessToken: `Bearer ${token.accessToken}` },
       };
-      console.log("header야", config.headers);
       const response = await axios.delete(
         "https://i9a203.p.ssafy.io/backapi/api/v1/user/sign-out",
 
@@ -63,7 +62,6 @@ function InfoSidebar() {
           headers: { AccessToken: `Bearer ${token.accessToken}` },
         }
       );
-      console.log("실패하는거지?");
       // If the request is successful, remove the user data and token from local and session storage.
       if (response.status === 200) {
         dispatch(logout());
