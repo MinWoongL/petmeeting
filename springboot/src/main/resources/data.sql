@@ -27,15 +27,15 @@ values
 ('100009', '2', 'true');
 
 insert into shelter
-(user_no, regist_image_path, on_broadcast_title, control_end_time)
+(user_no, regist_image_path, on_broadcast_title, control_end_time, location)
 values
-('100002', '/image/path.jpg', 'testTitle', '1690167170'),
-('100003', '/image/path.jpg', null, '1690167170'),
-('100004', '/image/path.jpg', null, '1690167170'),
-('100005', '/image/path.jpg', null, '1690167170'),
-('100006', '/image/path.jpg', null, '1690167170'),
-('100007', '/image/path.jpg', null, '1690167170'),
-('100008', '/image/path.jpg', null, '1690167170');
+('100002', '/image/path.jpg', 'testTitle', '1690167170', 'test'),
+('100003', '/image/path.jpg', null, '1690167170', 'loca'),
+('100004', '/image/path.jpg', null, '1690167170', 'locat'),
+('100005', '/image/path.jpg', null, '1690167170', 'locati'),
+('100006', '/image/path.jpg', null, '1690167170', null),
+('100007', '/image/path.jpg', null, '1690167170', null),
+('100008', '/image/path.jpg', null, '1690167170', null);
 
 insert into charge
 (charge_no, member_no, tid, charge_value, charge_time)
