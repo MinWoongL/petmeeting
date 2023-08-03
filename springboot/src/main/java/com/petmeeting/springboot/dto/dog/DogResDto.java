@@ -27,7 +27,7 @@ public class DogResDto {
     private Boolean isInoculated;
     private String imagePath;
 
-    public static DogResDto dogToDto(Dog dog){
+    public static DogResDto entityToDto(Dog dog){
         return DogResDto.builder()
                 .dogNo(dog.getDogNo())
                 .name(dog.getName())
