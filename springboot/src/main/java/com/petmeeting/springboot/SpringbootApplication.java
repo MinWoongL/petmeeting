@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @EnableRedisRepositories
+
 public class SpringbootApplication {
 	@Value("${cors.front_url}")
 	private String FRONT_SERVER_URL;
