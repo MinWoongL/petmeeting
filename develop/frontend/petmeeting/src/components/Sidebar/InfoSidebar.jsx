@@ -24,8 +24,9 @@ function InfoSidebar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleMyPageClick = () => {
+  const handleMyPageClick = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
+
     if (user.userType === "보호소") {
       navigate("/mypage/ShelterMypage");
     } else if (user.userType === "사용자") {
@@ -50,7 +51,6 @@ function InfoSidebar() {
     try {
       // This is just an example endpoint and might be different in your application.
       const token = JSON.parse(sessionStorage.getItem("token"));
-      console.log(token.accessToken);
       // Create the header
       const config = {
         headers: { AccessToken: `Bearer ${token.accessToken}` },
