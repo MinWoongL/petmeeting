@@ -67,8 +67,8 @@ public class BroadcastService {
         userRepository.save(member);
 
         log.info("[기기제어 요청] 기기조작 저장. controlUser : {}, remainTime : {}", member.getName(), remainTime);
-        vop.set("controlUser" + shelter.getId(), member.getName(), remainTime, TimeUnit.SECONDS);
-        vop.set("remainTime" + shelter.getId(), String.valueOf(remainTime), remainTime, TimeUnit.SECONDS);
+        vop.set("controlUser" + shelter.getId(), String.valueOf(member.getId()), remainTime, TimeUnit.SECONDS);
+        vop.set("remainTime" + shelter.getId(), String.valueOf(remainTime + System.currentTimeMillis() / 1000L), remainTime, TimeUnit.SECONDS);
 
         Map<String, String> map = new HashMap<>();
         map.put("userId", member.getName());
@@ -162,13 +162,13 @@ public class BroadcastService {
                     .build();
         }
 
-        log.info("[IOT 조작가능 여부 체크] 조작 중인 유저가 있습니다. userName : {}, remainTime : {}", vop.get("controlUser" + shelter.getId()), vop.get("remainTime" + shelter.getId()));
-        String userName = vop.get("controlUser" + shelter.getId());
+        log.info("[IOT 조작가능 여부 체크] 조작 중인 유저가 있습니다. userNo : {}, remainTime : {}", vop.get("controlUser" + shelter.getId()), vop.get("remainTime" + shelter.getId()));
+        String userName = userRepository.findById(Integer.valueOf(vop.get("controlUser" + shelter.getId()))).get().getName();
         Long remainTime = Long.parseLong(vop.get("remainTime" + shelter.getId()));
 
         return BroadcastCheckResDto.builder()
                 .userName(userName)
-                .remainTime(remainTime)
+                .remainTime(remainTime - System.currentTimeMillis() / 1000L)
                 .build();
     }
 }

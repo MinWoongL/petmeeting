@@ -68,7 +68,7 @@ server:
 jwt:
   issuer: petmeetingservice
   secret_key: afd3ad5jf6i23FA89S9DCZ0Xa12sd3qbzxf56Sadvjoupiuy7D5A4F32Zcv14xxvbZ34X32v67QA234d38HG56FbxfDJvcxZFADFzxCV1321
-  access_expiration_ms: 3600000
+  access_expiration_ms: 5000
   refresh_expiration_ms: 2592000000
 
 kakao:
