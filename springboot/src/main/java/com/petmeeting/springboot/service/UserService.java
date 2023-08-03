@@ -11,6 +11,9 @@ import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,6 +39,10 @@ public class UserService {
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
 
+    private final RedisTemplate<String, String> redisTemplate;
+
+    @Value("${jwt.refresh_expiration_ms}")
+    private long refreshExpirationMs;
 
     /**
      * ID 중복체크
@@ -91,12 +99,14 @@ public class UserService {
 
         Token token = jwtUtils.generateAccessAndRefreshTokens(authenticationManager, user.getUserId(), user.getName());
 
-        user.updateRefreshToken(token.getRefreshToken());
-        userRepository.save(user);
+        ValueOperations<String, String> vop = redisTemplate.opsForValue();
+        vop.set(user.getId().toString(), token.getRefreshToken(), refreshExpirationMs, TimeUnit.MILLISECONDS);
+        log.info("[로그인] RefreshToken Redis에 저장");
 
         if (user instanceof Member) {
             ((Member) user).setHoldingPoint(chargeRepository.findSumByUserNo(user.getId()).orElse(0)
                     - donationRepository.findSumByUserNo(user.getId()).orElse(0));
+            log.info("[로그인] Member Point 불러오기");
         }
 
         Map<String, Object> result = new HashMap<>();
@@ -115,8 +125,9 @@ public class UserService {
     public void signOut(String token) {
         Users user = getUserByToken(token);
 
-        user.updateRefreshToken(null);
-        userRepository.save(user);
+        ValueOperations<String, String> vop = redisTemplate.opsForValue();
+        vop.getAndDelete(user.getId().toString());
+        log.info("[로그인] RefreshToken Redis에서 삭제");
 
         log.info("[로그아웃] userId : {}", user.getUserId());
     }
@@ -149,13 +160,21 @@ public class UserService {
         refreshToken = refreshToken.substring(7);
 
         Integer userNo = jwtUtils.getUserNoFromJwtToken(refreshToken);
-        Users user = userRepository.findById(userNo).orElseThrow(()
-                -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."));
 
-        if (user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) {
+        log.info("[토큰 재발행] 사용자의 RefreshToken을 불러옵니다. 만료시간을 갱신합니다.");
+        ValueOperations<String, String> vop = redisTemplate.opsForValue();
+        String redisRefreshToken = vop.getAndExpire(userNo.toString(), refreshExpirationMs, TimeUnit.MILLISECONDS);
+
+        if (redisRefreshToken == null || !redisRefreshToken.equals(refreshToken)) {
             log.error("[토큰 재발행] 요청받은 RefreshToken과 저장된 RefreshToken 불일치");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
         }
+
+        Users user = userRepository.findById(userNo)
+                        .orElseThrow(() -> {
+                            log.error("[토큰 재발행] 사용자를 찾을 수 없습니다.");
+                            return new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.");
+                        });
 
         log.info("[토큰 재발행] AccessToken 재발행 : {}", user.getUserId());
         return jwtUtils.generateAccessToken(authenticationManager, user.getUserId(), user.getName());
