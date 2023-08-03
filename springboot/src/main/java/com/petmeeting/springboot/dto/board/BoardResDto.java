@@ -19,7 +19,7 @@ public class BoardResDto {
     Integer viewCnt;
     Integer likeCnt;
 
-    public BoardResDto entityToDto(Board board) {
+    public static BoardResDto entityToDto(Board board) {
         Member member = board.getMember();
 
         return BoardResDto.builder()

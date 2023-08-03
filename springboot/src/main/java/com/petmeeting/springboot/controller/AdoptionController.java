@@ -41,7 +41,7 @@ public class AdoptionController {
 
     @Operation(
             summary = "입양신청 결과를 수정합니다.",
-            description = "입양신청 수정 결과를 반환합니다. " +
+            description = "입양신청 수정 결과를 반환합니다.\n" +
                     "adoptionStatus가 '대기중'이 아니면 요청을 거부합니다."
     )
     @PutMapping("/{adoptionNo}")
@@ -51,7 +51,7 @@ public class AdoptionController {
 
     @Operation(
             summary = "입양신청을 삭제합니다.",
-            description = "삭제시 'Delete Success'를 반환합니다." +
+            description = "삭제시 'Delete Success'를 반환합니다.\n" +
                     "adoptionStatus가 '채택'이면 요청을 거부합니다."
     )
     @DeleteMapping("/{adoptionNo}")
@@ -62,8 +62,8 @@ public class AdoptionController {
 
     @Operation(
             summary = "입양신청서의 상태를 변경합니다.",
-            description = "유기견의 상태가 '입양완료'로 변경됩니다." +
-                    "작성자의 입양여부가 true로 변경됩니다." +
+            description = "유기견의 상태가 '입양완료'로 변경됩니다.\n" +
+                    "작성자의 입양여부가 true로 변경됩니다.\n" +
                     "해당 유기견의 모든 adoptionStatus가 '미채택'으로 변경됩니다."
     )
     @PutMapping("/status/{adoptionNo}")
@@ -73,8 +73,8 @@ public class AdoptionController {
 
     @Operation(
             summary = "입양신청서 목록 조회",
-            description = "일반회원이 요청할 경우, 해당 회원이 작성한 입양신청서 목록이 나오고," +
-                    "보호소 회원이 요청할 경우, 해당 보호소에 작성된 입양신청서 목록이 반환됩니다." +
+            description = "일반회원이 요청할 경우, 해당 회원이 작성한 입양신청서 목록이 나오고,\n" +
+                    "보호소 회원이 요청할 경우, 해당 보호소에 작성된 입양신청서 목록이 반환됩니다.\n" +
                     "dogNo가 있을 경우 해당 강아지에게 해당되는 정보만 제공됩니다."
     )
     @GetMapping

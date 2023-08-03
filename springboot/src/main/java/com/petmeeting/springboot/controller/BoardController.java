@@ -22,7 +22,8 @@ public class BoardController {
 
     @Operation(
             summary = "입양후기 등록",
-            description = "후기 등록 후 후기글 고유번호를 반환합니다.\n입양하지 않은 회원은 작성할 수 없습니다."
+            description = "후기 등록 후 후기글 고유번호를 반환합니다.\n" +
+                    "입양하지 않은 회원은 작성할 수 없습니다."
     )
     @PostMapping
     public ResponseEntity<BoardCreateResDto> createBoard(@RequestBody BoardCreateReqDto boardCreateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {

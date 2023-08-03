@@ -40,27 +40,29 @@ public class DonateService {
      */
     @Transactional
     public DonateResDto donateToDog(DonateReqDto donateReqDto, String token) {
+        log.info("[후원] 후원 요청 시작");
+
         Integer userNo = jwtUtils.getUserNo(token);
         Integer holdingPoint = chargeRepository.findSumByUserNo(userNo).orElse(0) - donationRepository.findSumByUserNo(userNo).orElse(0);
 
         if (holdingPoint < donateReqDto.getDonationValue()) {
-            log.error("[후원하기] 보유 포인트가 부족합니다. holdingPoint : {}", holdingPoint);
+            log.error("[후원] 보유 포인트가 부족합니다. holdingPoint : {}", holdingPoint);
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "포인트가 부족합니다.");
         }
 
         Member member = memberRepository.findById(userNo)
                 .orElseThrow(() -> {
-                    log.error("[후원하기] 유저를 찾을 수 없습니다. userNo : {}", userNo);
+                    log.error("[후원] 유저를 찾을 수 없습니다. userNo : {}", userNo);
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "회원 정보를 찾을 수 없습니다.");
                 });
 
         Dog dog = dogRepository.findDogByDogNo(donateReqDto.getDogNo())
                 .orElseThrow(() -> {
-                    log.error("[후원하기] 유기견 정보를 찾을 수 없습니다. dogNo : {}", donateReqDto.getDogNo());
+                    log.error("[후원] 유기견 정보를 찾을 수 없습니다. dogNo : {}", donateReqDto.getDogNo());
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "유기견 정보를 찾을 수 없습니다.");
                 });
 
-
+        log.info("[후원] 후원 내역 저장하기");
         Donation donation = Donation.builder()
                 .member(member)
                 .shelter(dog.getShelter())
@@ -71,7 +73,7 @@ public class DonateService {
 
         donationRepository.save(donation);
 
-        log.info("[후원하기] 유기견({}) 에게 {}를 후원했습니다.", dog.getDogNo(), donateReqDto.getDonationValue());
+        log.info("[후원] 후원 완료. 유기견({})에게 {}를 후원했습니다.", dog.getDogNo(), donateReqDto.getDonationValue());
         return DonateResDto.builder()
                 .holdingPoint(holdingPoint - donateReqDto.getDonationValue())
                 .build();
@@ -79,6 +81,8 @@ public class DonateService {
 
     @Transactional
     public List<DonateHistoryResDto> donateHistory(String token) {
+        log.info("[후원기록 조회] 후원기록 조회 요청");
+
         Users user = userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> {
                     log.error("[후원기록 조회] 사용자를 찾을 수 없습니다.");
@@ -88,15 +92,14 @@ public class DonateService {
         if (user instanceof Member) {
             log.info("[후원기록 조회] 사용자의 후원 기록을 조회합니다. userId : {}", user.getUserId());
             return donationRepository.findAllByMember((Member) user).stream()
-                    .map(donation -> {
-                        return DonateHistoryResDto.builder()
-                                .donationNo(donation.getDonationNo())
-                                .dogName(donation.getDog().getName())
-                                .shelterName(donation.getShelter().getName())
-                                .donationValue(donation.getDonateValue())
-                                .donationTime(donation.getDonateTime())
-                                .build();
-                    }).collect(Collectors.toList());
+                    .map(donation -> DonateHistoryResDto.builder()
+                            .donationNo(donation.getDonationNo())
+                            .dogName(donation.getDog().getName())
+                            .shelterName(donation.getShelter().getName())
+                            .donationValue(donation.getDonateValue())
+                            .donationTime(donation.getDonateTime())
+                            .build())
+                    .collect(Collectors.toList());
 
         } else if (user instanceof Shelter) {
             log.info("[후원기록 조회] 보호소의 후원내역을 조회합니다. shelterName : {}", user.getName());
@@ -111,6 +114,7 @@ public class DonateService {
                                 .build();
                     }).collect(Collectors.toList());
         }
+        log.info("[후원기록 조회] token의 유저 정보가 잘못되었습니다.");
         return null;
     }
 }

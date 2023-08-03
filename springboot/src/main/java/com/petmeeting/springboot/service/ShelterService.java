@@ -34,15 +34,16 @@ public class ShelterService {
 
     @Transactional
     public ShelterResDto getShelter(Integer shelterNo) {
-        log.info("[보호소 아이디로 검색] shelterNo : {}", shelterNo);
+        log.info("[보호소 아이디로 검색] 아이디로 검색 요청. shelterNo : {}", shelterNo);
         Shelter shelter = shelterRepository.findById(shelterNo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "보호소를 찾을 수 없습니다."));
 
         if (shelter.getIsDeleted()) {
-            log.error("[보호소 아이디로 검색] Deleted Shelter");
+            log.error("[보호소 아이디로 검색] 탈퇴한 보호소입니다.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "탈퇴한 보호소입니다.");
         }
 
+        log.info("[보호소 아이디로 검색] 검색 결과 반환.");
         return ShelterResDto.builder()
                 .name(shelter.getName())
                 .phoneNumber(shelter.getPhoneNumber())
@@ -82,6 +83,7 @@ public class ShelterService {
     @Transactional
     public List<ShelterResDto> getShelterByCondition(ShelterSearchCondition condition) {
         log.info("[보호소 검색조건으로 검색] condition : {}", condition.toString());
+
         return shelterQueryDslRepository.findByCondition(condition).stream()
                 .map(shelter -> ShelterResDto.builder()
                         .shelterNo(shelter.getId())
@@ -119,7 +121,7 @@ public class ShelterService {
 
     @Transactional
     public void registChat(ChatReqDto chatReqDto, String token) {
-        log.info("[보호소 채팅 등록] 보호소 채팅 등록");
+        log.info("[보호소 채팅 등록] 보호소 채팅 등록 요청");
 
         Shelter shelter = shelterRepository.findById(chatReqDto.getShelterNo())
                 .orElseThrow(() -> {

@@ -49,6 +49,8 @@ public class ChargeService {
      * @return tid, redirect url
      */
     public ChargeReadyResDto ready(ChargeReadyReqDto chargeReadyReqDto, String token) {
+        log.info("[결제요청] 결제페이지 요청 시작");
+
         int userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
 
@@ -75,6 +77,7 @@ public class ChargeService {
         KakaoReadyResDto kakaoReadyResDto = restTemplate
                 .postForObject(KAKAO_READY_URL, requestEntity, KakaoReadyResDto.class);
 
+        log.info("[결제요청] 결제페이지 반환. url : {}", kakaoReadyResDto.getNext_redirect_pc_url());
         return ChargeReadyResDto.builder()
                 .tid(kakaoReadyResDto.getTid())
                 .nextRedirectPcUrl(kakaoReadyResDto.getNext_redirect_pc_url()).build();
@@ -89,6 +92,8 @@ public class ChargeService {
      */
     @Transactional
     public ChargeCheckResDto check(ChargeCheckReqDto chargeCheckReqDto, String token) {
+        log.info("[결제검증] 결제 검증 요청");
+
         int userNo = jwtUtils.getUserNo(token);
         Member member = (Member) userRepository.findById(userNo).get();
 
@@ -105,6 +110,7 @@ public class ChargeService {
         RestTemplate restTemplate = new RestTemplate();
         KakaoApproveResDto kakaoApproveResDto = restTemplate
                 .postForObject("https://kapi.kakao.com/v1/payment/approve", requestEntity, KakaoApproveResDto.class);
+        log.info("[결제검증] 결제 검증 요청 응답받음");
 
         int chargePrice = kakaoApproveResDto.getAmount().getTotal();
         int chargeToken = chargePrice <= 10000 ? 1 : (chargePrice <= 50000 ? 2 : 3); // 토큰 개수를 직접 입력받거나 표를 정해야 함.
@@ -117,11 +123,11 @@ public class ChargeService {
                 .build();
 
         chargeRepository.save(charge);
-
-        log.info("[결제검증] userId : {}, chargePrice : {}, chargeToken : {}", member.getUserId(), chargePrice, chargeToken);
+        log.info("[결제검증] 결제 검증 완료. userId : {}, chargePrice : {}, chargeToken : {}", member.getUserId(), chargePrice, chargeToken);
 
         member.chargeTokens(chargeToken);
         userRepository.save(member);
+        log.info("[결제검증] 토큰 충전 완료. chargeToken : {}", chargeToken);
 
         return ChargeCheckResDto.builder()
                 .price(chargePrice)
@@ -140,10 +146,12 @@ public class ChargeService {
      */
     @Transactional
     public List<ChargeHistoryResDto> getHistory(String token) {
+        log.info("[결제내역 확인] 결제내역 요청");
+
         Member member = (Member) userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "사용자를 찾을 수 없습니다."));
 
-        log.info("[결제내역 확인] userId : {}", member.getUserId());
+        log.info("[결제내역 확인] 결제내역 확인 완료. userId : {}", member.getUserId());
 
         return member.getChargeList().stream()
                 .map(m -> ChargeHistoryResDto.builder()
