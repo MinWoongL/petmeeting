@@ -26,7 +26,7 @@ public class BroadcastController {
     private final BroadcastService broadcastService;
     private final String ACCESS_TOKEN = "AccessToken";
 
-    private final Long CONTROL_TIME_MS = 300000L; // 5분 설정
+    private final Long CONTROL_TIME = 3000L; // 5분 설정
 
     @Operation(
             summary = "SSE 연결",
@@ -45,10 +45,9 @@ public class BroadcastController {
     )
     @PostMapping("/request")
     public ResponseEntity<Map<String, String>> controlRequest(@RequestHeader(ACCESS_TOKEN) String token) {
-        Map<String, String> result = broadcastService.control(token, (System.currentTimeMillis() + CONTROL_TIME_MS) / 1000L);
+        Map<String, String> result = broadcastService.control(token, CONTROL_TIME);
 
-        sseService.sendMessage(result.get("userId"), (System.currentTimeMillis() + CONTROL_TIME_MS) / 1000L);
-
+        sseService.sendMessage(result.get("userId"), CONTROL_TIME);
         return ResponseEntity.ok(result);
     }
 

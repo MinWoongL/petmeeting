@@ -48,9 +48,6 @@ public abstract class Users {
     @Column(name = "image_path")
     private String imagePath;
 
-    @Column(name = "refresh_token", columnDefinition = "text")
-    private String refreshToken;
-
     @PrePersist
     public void prePersist() {
         this.joinDate = joinDate == 0 ? System.currentTimeMillis() / 1000 : joinDate;
@@ -64,10 +61,6 @@ public abstract class Users {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Inquiry> inquiryList;
-
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 
     public void withdraw() {
         this.isDeleted = true;

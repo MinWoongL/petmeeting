@@ -44,7 +44,7 @@ spring:
     ansi:
       enabled: DETECT             # 멀티파일 업로드 지원 여부(default: true)
   redis:
-    host: jdbc:redis://i9a203.p.ssafy.io
+    host: i9a203.p.ssafy.io
     port: 6379
 
 # 파일업로드 경로

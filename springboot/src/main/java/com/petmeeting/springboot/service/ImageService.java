@@ -51,7 +51,7 @@ public class ImageService {
     public Map<String, Object> getImage(String imageName, String option){
         String uploadPath = selectPath(option);
 
-        log.info("[이미지 가져오기 확인] 메서드 실행");
+        log.info("[이미지 가져오기 확인] 메서드 실행. uploadPath : {}", uploadPath);
 
         String imagePath = uploadPath + File.separator + imageName;
         Resource resource = new FileSystemResource(imagePath);

@@ -38,8 +38,6 @@ public class SseService {
      * @param remainTime
      */
     public void sendMessage(String userId, long remainTime) {
-        remainTime = remainTime - (System.currentTimeMillis() / 1000L);
-
         log.info("[SSE 메시지 전송] userId : {}, remainTime : {}", userId, remainTime);
         sseEmitters.sendMessage(userId, remainTime);
     }
