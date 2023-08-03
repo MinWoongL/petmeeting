@@ -19,6 +19,8 @@ public class SseService {
      * @return SseEmitter
      */
     public SseEmitter connect() {
+        log.info("[SSE 등록] SSE 등록 요청");
+
         SseEmitter sseEmitter = new SseEmitter();
         sseEmitters.add(sseEmitter);
 
@@ -29,6 +31,8 @@ public class SseService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        log.info("[SSE 등록] SSE 등록 완료");
         return sseEmitter;
     }
 

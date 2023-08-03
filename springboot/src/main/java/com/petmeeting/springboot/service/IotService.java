@@ -24,38 +24,45 @@ public class IotService {
     private final UserRepository userRepository;
 
     private final RedisTemplate<String, String> redisTemplate;
+
+    /**
+     * 기기조작 명령
+     * 기기조작 명령어와 보호소 고유번호, 요청한 유저의 정보를 받아 Redis에 Command를 저장합니다.
+     * @param iotReqDto
+     * @param shelterNo
+     * @param token
+     */
     public void control(IotReqDto iotReqDto, Integer shelterNo, String token) {
+        log.info("[기기조작] 기기조작 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
 
-        System.out.println("iotReqDto = " + iotReqDto.getCommand() + ", shelterNo = " + shelterNo + ", token = " + token);
         Users user = userRepository.findById(userNo)
                 .orElseThrow(() -> {
-                    log.error("[기기 조작] 조작 요청자를 찾을 수 없습니다.");
+                    log.error("[기기조작] 조작 요청자를 찾을 수 없습니다.");
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.");
                 });
 
-        if (user instanceof Shelter && !userNo.equals(shelterNo)) {
-            log.error("[기기 조작] 자신의 기기만 조작할 수 있습니다.");
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "자신의 방송에서만 기기 조작을 할 수 있습니다.");
-        }
-
-        Integer command = iotReqDto.getCommand();
-
         ValueOperations<String, String> vop = redisTemplate.opsForValue();
-
         String controlUser = vop.get("controlUser" + shelterNo);
         String endTime = vop.get("remainTime" + shelterNo);
 
-        System.out.println("controlUser = " + controlUser);
-        System.out.println("endTime = " + endTime);
-        System.out.println("userNo = " + userNo);
-        System.out.println("shelterNo = " + shelterNo);
-
-        if (controlUser == null || !userNo.equals(Integer.valueOf(controlUser))) {
-            log.error("[기기 조작] 조작이 허용된 사용자만 조작할 수 있습니다.");
+        if (user instanceof Shelter && !userNo.equals(shelterNo)) {
+            log.error("[기기조작] (보호소) 자신의 기기만 조작할 수 있습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "자신의 방송에서만 기기 조작을 할 수 있습니다.");
+        } else if (controlUser == null || !userNo.equals(Integer.valueOf(controlUser))) {
+            log.error("[기기조작] (사용자) 조작이 허용된 사용자만 조작할 수 있습니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "조작이 허용된 사용자만 조작할 수 있습니다.");
         }
 
-        vop.set("iot1_toy", String.valueOf(command), Long.valueOf(endTime) - System.currentTimeMillis() / 1000L, TimeUnit.SECONDS);
+        Integer command = iotReqDto.getCommand();
+        if (user instanceof Shelter) {
+            log.info("[기기조작] (보호소) 기기 조작 명령을 내립니다.");
+            vop.set("iot1_toy", String.valueOf(command), 2, TimeUnit.SECONDS);
+        } else {
+            log.info("[기기조작] (사용자) 기기 조작 명령을 내립니다.");
+            vop.set("iot1_toy", String.valueOf(command), Long.valueOf(endTime) - System.currentTimeMillis() / 1000L, TimeUnit.SECONDS);
+        }
+
     }
 }

@@ -39,6 +39,8 @@ public class BoardService {
      */
     @Transactional
     public BoardCreateResDto createBoard(BoardCreateReqDto boardCreateReqDto, String token) {
+        log.info("[입양 후기 작성] 입양 후기 작성 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
 
@@ -59,7 +61,7 @@ public class BoardService {
 
         boardRepository.save(board);
 
-        log.info("[입양 후기 작성] boardNo : {}", board.getBoardNo());
+        log.info("[입양 후기 작성] 입양 후기 작성 완료. boardNo : {}", board.getBoardNo());
 
         return BoardCreateResDto.builder()
                 .boardNo(board.getBoardNo())
@@ -74,22 +76,24 @@ public class BoardService {
      */
     @Transactional
     public BoardResDto getBoard(Integer boardNo) {
+        log.info("[입양후기 상세] 입양후기 가져오기 시작");
+
         Board board = boardRepository.findById(boardNo)
                 .orElseThrow(() -> {
-                    log.error("[입양후기 가져오기] 입양후기를 찾을 수 없습니다.");
+                    log.error("[입양후기 상세] 입양후기를 찾을 수 없습니다.");
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "입양후기를 찾을 수 없습니다.");
                 });
 
         if (board.getDeletedTime() != null) {
-            log.error("[입양후기 가져오기] 삭제된 게시글입니다.");
+            log.error("[입양후기 상세] 삭제된 게시글입니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "삭제된 게시글입니다.");
         }
-
+        log.info("[입양후기 상세] 입양후기 viewCnt 증가");
         board.increaseViewCnt();
         boardRepository.save(board);
 
-        log.info("[입양후기 가져오기] boardTitle : {}", board.getTitle());
-        return BoardResDto.builder().build().entityToDto(board);
+        log.info("[입양후기 상세] 입양후기 가져오기 완료. boardTitle : {}", board.getTitle());
+        return BoardResDto.entityToDto(board);
     }
 
     /**
@@ -100,19 +104,9 @@ public class BoardService {
      */
     @Transactional
     public List<BoardResDto> getBoardList(BoardSearchCondition searchCondition) {
+        log.info("[입양후기 목록] 조건에 맞는 입양후기 목록을 가져옵니다.");
         return boardQueryDslRepository.findByCondition(searchCondition).stream()
-                .map(board -> {
-                    Member member = board.getMember();
-                    return BoardResDto.builder()
-                            .userNo(member.getId())
-                            .writer(member.getUserId())
-                            .title(board.getTitle())
-                            .content(board.getContent())
-                            .viewCnt(board.getViewCnt())
-                            .createdTime(board.getCreatedTime())
-                            .modifiedTime(board.getModifiedTime())
-                            .build();
-                })
+                .map(board -> BoardResDto.entityToDto(board))
                 .collect(Collectors.toList());
     }
 
@@ -125,6 +119,7 @@ public class BoardService {
      */
     @Transactional
     public BoardResDto updateBoard(Integer boardNo, BoardUpdateReqDto boardUpdateReqDto, String token) {
+        log.info("[입양후기 수정] 입양후기 수정 요청.");
         Integer userNo = jwtUtils.getUserNo(token);
 
         Board board = boardRepository.findById(boardNo)
@@ -146,9 +141,9 @@ public class BoardService {
         board.updateBoard(boardUpdateReqDto);
         boardRepository.save(board);
 
-        log.info("[입양후기 수정] 입양후기 수정 완료 boardId : {}", board.getBoardNo());
+        log.info("[입양후기 수정] 입양후기 수정 완료. boardId : {}", board.getBoardNo());
 
-        return BoardResDto.builder().build().entityToDto(board);
+        return BoardResDto.entityToDto(board);
     }
 
     /**
@@ -159,6 +154,8 @@ public class BoardService {
      */
     @Transactional
     public void deleteBoard(Integer boardNo, String token) {
+        log.info("[입양후기 삭제] 입양후기 삭제 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
 
         Board board = boardRepository.findById(boardNo)
@@ -185,6 +182,8 @@ public class BoardService {
      */
     @Transactional
     public void likeBoard(Integer boardNo, String token) {
+        log.info("[입양후기 좋아요] 입양후기 좋아요 요청");
+
         if (checkLiked(boardNo, token)) {
             log.error("[입양후기 좋아요] 이미 좋아요를 누른 사용자입니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이미 좋아요를 눌렀습니다.");
@@ -212,6 +211,8 @@ public class BoardService {
      */
     @Transactional
     public void dislikeBoard(Integer boardNo, String token) {
+        log.info("[입양후기 좋아요 취소] 입양후기 좋아요 취소 요청");
+
         if (!checkLiked(boardNo, token)) {
             log.error("[입양후기 좋아요 취소] 아직 좋아요를 누르지 않은 사용자입니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "아직 좋아요를 누르지 않았습니다.");
@@ -231,6 +232,8 @@ public class BoardService {
      * @return
      */
     public Boolean checkLiked(Integer boardNo, String token) {
+        log.info("[입양후기 좋아요 체크] 입양후기 좋아요 체크 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
 
         log.info("[입양후기 좋아요 체크] 입양후기 좋아요 체크. boardNo : {}, userNo : {}", boardNo, userNo);

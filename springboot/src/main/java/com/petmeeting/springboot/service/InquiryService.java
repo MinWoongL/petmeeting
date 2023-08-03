@@ -37,6 +37,8 @@ public class InquiryService {
      */
     @Transactional
     public InquiryResDto createInquiry(InquiryReqDto inquiryReqDto, String token) {
+        log.info("[문의게시글 작성] 문의게시글 작성 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo)
                 .orElseThrow(() -> {
@@ -44,6 +46,7 @@ public class InquiryService {
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.");
                 });
 
+        log.info("[문의게시글 작성] 문의게시글 생성.");
         Inquiry inquiry = Inquiry.builder()
                 .user(user)
                 .title(inquiryReqDto.getTitle())
@@ -54,7 +57,7 @@ public class InquiryService {
 
         inquiryRepository.save(inquiry);
 
-        log.info("[문의게시글 작성] 문의게시글 작성. inquiryNo : {}", inquiry.getInquiryNo());
+        log.info("[문의게시글 작성] 문의게시글 작성 완료. inquiryNo : {}", inquiry.getInquiryNo());
         return InquiryResDto.entityToDto(inquiry);
     }
 
@@ -65,6 +68,8 @@ public class InquiryService {
      */
     @Transactional
     public InquiryResDto getInquiry(Integer inquiryNo) {
+        log.info("[문의게시글 상세정보] 문의게시글 상세정보 요청. inquiryNo : {}", inquiryNo);
+
         Inquiry inquiry = inquiryRepository.findById(inquiryNo)
                 .orElseThrow(() -> {
                     log.error("[문의게시글 상세정보] 문의게시글을 찾을 수 없습니다. inquiryNo : {}", inquiryNo);
@@ -76,6 +81,7 @@ public class InquiryService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제된 문의게시글입니다.");
         }
 
+        log.info("[문의게시글 상세정보] 문의게시글 상세정보 반환.");
         return InquiryResDto.entityToDto(inquiry);
     }
 
@@ -99,6 +105,8 @@ public class InquiryService {
      */
     @Transactional
     public void deleteInquiry(Integer inquiryNo, String token) {
+        log.info("[문의게시글 삭제] 문의게시글 삭제 요청.");
+
         Inquiry inquiry = inquiryRepository.findById(inquiryNo)
                 .orElseThrow(() -> {
                     log.error("[문의게시글 삭제] 문의게시글을 찾을 수 없습니다.");
@@ -135,6 +143,8 @@ public class InquiryService {
      */
     @Transactional
     public InquiryResDto updateInquiry(Integer inquiryNo, InquiryReqDto inquiryReqDto, String token) {
+        log.info("[문의게시글 수정] 문의게시글 수정 요청");
+
         Inquiry inquiry = inquiryRepository.findById(inquiryNo)
                 .orElseThrow(() -> {
                     log.error("[문의게시글 수정] 문의게시글을 찾을 수 없습니다.");
@@ -157,7 +167,7 @@ public class InquiryService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "작성자와 수정요청자가 일치하지 않습니다.");
         }
 
-        log.info("[문의게시글 수정] 게시글을 수정합니다. inquiryNo : {}", inquiry.getInquiryNo());
+        log.info("[문의게시글 수정] 문의게시글 수정. inquiryNo : {}", inquiry.getInquiryNo());
         inquiry.update(inquiryReqDto);
         inquiryRepository.save(inquiry);
 

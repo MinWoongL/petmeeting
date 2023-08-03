@@ -39,7 +39,6 @@ spring:
       max-file-size: 10MB           # 파일의 최대 사이즈(default:1MB)
       max-request-size: 10MB        # 요청의 최대 사이즈(default:10MB)
       file-size-threshold: 1MB      # 파일이 메모리에 기록되는 임계값(default:0MB)
-      location: /member             # 업로드된 파일의 임시 저장 공간
   output:
     ansi:
       enabled: DETECT             # 멀티파일 업로드 지원 여부(default: true)
@@ -47,14 +46,11 @@ spring:
     host: i9a203.p.ssafy.io
     port: 6379
 
-# 파일업로드 경로
-comm:
-  uploadPath: /member
 ########################################################################################
 
-logging.level:
-    org.hibernate:
-      sql: debug
+#logging.level:
+#    org.hibernate:
+#      sql: debug
 #      type.descriptor.sql: trace # sql의 데이터까지 보이게
 
 server:
@@ -68,7 +64,7 @@ server:
 jwt:
   issuer: petmeetingservice
   secret_key: afd3ad5jf6i23FA89S9DCZ0Xa12sd3qbzxf56Sadvjoupiuy7D5A4F32Zcv14xxvbZ34X32v67QA234d38HG56FbxfDJvcxZFADFzxCV1321
-  access_expiration_ms: 5000
+  access_expiration_ms: 300000
   refresh_expiration_ms: 2592000000
 
 kakao:
