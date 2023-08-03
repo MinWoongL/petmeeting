@@ -25,7 +25,7 @@ public class AdoptionController {
             description = "등록 성공시 등록된 신청서를 반환합니다."
     )
     @PostMapping
-    public ResponseEntity<AdoptionResDto> registerAdoption(@RequestBody AdoptionCreateReqDto adoptionCreateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<AdoptionResDto> registerAdoption(@RequestBody AdoptionReqDto adoptionCreateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(adoptionService.createAdoption(adoptionCreateReqDto, token));
     }
@@ -35,7 +35,7 @@ public class AdoptionController {
             description = "입양신청서 번호로 입양신청서 세부내용을 조회합니다."
     )
     @GetMapping("/{adoptionNo}")
-    public ResponseEntity<?> getAdoption(@PathVariable Integer adoptionNo, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<AdoptionResDto> getAdoption(@PathVariable Integer adoptionNo, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(adoptionService.getAdoption(adoptionNo, token));
     }
 
@@ -45,7 +45,7 @@ public class AdoptionController {
                     "adoptionStatus가 '대기중'이 아니면 요청을 거부합니다."
     )
     @PutMapping("/{adoptionNo}")
-    public ResponseEntity<?> updateAdoption(@PathVariable Integer adoptionNo, @RequestBody AdoptionUpdateReqDto adoptionUpdateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<AdoptionResDto> updateAdoption(@PathVariable Integer adoptionNo, @RequestBody AdoptionUpdateReqDto adoptionUpdateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(adoptionService.updateAdoption(adoptionNo, adoptionUpdateReqDto, token));
     }
 
