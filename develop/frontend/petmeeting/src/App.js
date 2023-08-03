@@ -142,7 +142,7 @@ function App() {
       <div
         className="theme-yellow"
         style={{
-          minHeight: "120vh",
+          minHeight: "180vh",
           height: "100%",
           backgroundColor: "var(--yellow3)",
           overflowYL: "auto",
@@ -150,7 +150,7 @@ function App() {
       >
         <NavBar isLoggedIn={isLoggedIn} />
 
-        <Grid container spacing={3} style={{ height: "calc(100% - 64px)" }}>
+        <Grid container spacing={2} style={{ height: "calc(100% - 64px)" }}>
           <Hidden smDown>
             {/* 로그인 또는 회원가입 페이지가 아니면 왼쪽 영역을 표시 */}
             {!pageCheck && (
@@ -162,7 +162,7 @@ function App() {
                 {" "}
                 {/* 왼쪽 3칸 */}
                 <Box border={1} borderColor="grey.900" height="100%">
-                  <Grid container direction="row" style={{ height: "100%" }}>
+                  <Grid container direction="column" wrap="nowrap" style={{ height: "100%" }}>
                     <Grid item style={{ flex: 2 }}>
                       <Box
                         border={1}
