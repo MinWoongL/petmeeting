@@ -2,17 +2,12 @@ package com.petmeeting.springboot.dto.dog;
 
 // 유기견 등록할 때 필요한 Dto
 
-import com.petmeeting.springboot.domain.Dog;
-import com.petmeeting.springboot.domain.Shelter;
-import com.petmeeting.springboot.enums.AdoptionAvailability;
-import com.petmeeting.springboot.enums.DogSize;
-import com.petmeeting.springboot.enums.Gender;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class RegisterDogReqDto {
+public class DogReqDto {
     String name;
     String dogSize;
     String gender;

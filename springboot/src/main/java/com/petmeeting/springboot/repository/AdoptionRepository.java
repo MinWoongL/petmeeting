@@ -13,11 +13,7 @@ public interface AdoptionRepository extends JpaRepository<Adoption, Integer> {
     @Query(value = "update adoption set adoption_status = 'ADOPT_FAIL' where dog_no = :dogNo and member_no <> :memberNo", nativeQuery = true)
     Integer updateAdoptionByDog(Integer dogNo, Integer memberNo);
 
-
     @Modifying
     Integer deleteAdoptionByAdoptionNo(Integer adoptionNo);
-
-//    @Query(value = "delete from bookmark_dog where member_no = :memberNo and dog_no = :dogNo", nativeQuery = true)
-
 
 }
