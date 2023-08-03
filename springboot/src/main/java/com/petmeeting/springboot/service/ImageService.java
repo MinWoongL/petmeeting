@@ -1,7 +1,6 @@
 package com.petmeeting.springboot.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -23,12 +22,14 @@ import java.util.UUID;
 @Slf4j
 public class ImageService {
 
-    // application.yml 에 정의된 spring.servlet.multipart.location 속성과 매핑되어 있는 값을 주입받음
-    // 파일 업로드시 파일을 저장할 경로를 지정
-    @Value("${spring.servlet.multipart.location}")
-    private String uploadPath;
+    private final String BOARD_IMAGE_PATH = "/board";
+    private final String MEMBER_IMAGE_PATH = "/member";
+    private final String SHELTER_IMAGE_PATH = "/shelter";
+    private final String REGIST_IMAGE_PATH = "/regist";
+    private final String DOG_IMAGE_PATH = "/dog";
 
-    public String uploadImage(MultipartFile image) throws IOException {
+    public String uploadImage(MultipartFile image, String option) throws IOException {
+        String uploadPath = selectPath(option);
 
         File uploadDir = new File(uploadPath);
 
@@ -38,17 +39,19 @@ public class ImageService {
         }
 
         // 파일 이름을 유니크한 값으로 생성(UUID)
-        String newFileName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
+        String newFileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
 
         image.transferTo(new File(uploadPath, newFileName));
 
+        log.info("[이미지 저장] 이미지 저장 완료. imageName : {}", newFileName);
         // 업로드된 파일의 네임을 문자열로 반환
         return newFileName;
     }
 
-    public Map<String, Object> getImage(String imageName){
+    public Map<String, Object> getImage(String imageName, String option){
+        String uploadPath = selectPath(option);
 
-        log.info("[이미지 가져오기 확인] 메서드 실행");
+        log.info("[이미지 가져오기 확인] 메서드 실행. uploadPath : {}", uploadPath);
 
         String imagePath = uploadPath + File.separator + imageName;
         Resource resource = new FileSystemResource(imagePath);
@@ -74,6 +77,23 @@ public class ImageService {
         returnMap.put("resource", resource);
 
         return returnMap;
+    }
+
+    private String selectPath(String option) {
+
+        if (option.contains("board")) {
+            return BOARD_IMAGE_PATH;
+        } else if (option.contains("member")) {
+            return MEMBER_IMAGE_PATH;
+        } else if (option.contains("shelter")) {
+            return SHELTER_IMAGE_PATH;
+        } else if (option.contains("regist")) {
+            return REGIST_IMAGE_PATH;
+        } else if (option.contains("dog")) {
+            return DOG_IMAGE_PATH;
+        }
+        log.error("[이미지] 유효하지 않은 옵션. option : {}", option);
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "유효하지 않은 option입니다.");
     }
 
 }

@@ -3,7 +3,6 @@ package com.petmeeting.springboot.controller;
 import com.petmeeting.springboot.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,10 +18,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ImageController {
 
-    // application.yml에서 값을 가져옵니다.
-    @Value("${comm.uploadPath}")
-    private String uploadPath;
-
     private final ImageService imageService;
 
     @Operation(
@@ -30,9 +25,8 @@ public class ImageController {
             description = "이미지 네임을 통해 경로에 있는 이미지 파일을 불러옵니다."
     )
     @GetMapping("/{imageName}")
-    public ResponseEntity<Resource> getImage(@PathVariable String imageName) {
-
-        Map<String, Object> returnMap = imageService.getImage(imageName);
+    public ResponseEntity<Resource> getImage(@PathVariable String imageName, @RequestParam("option") String option) {
+        Map<String, Object> returnMap = imageService.getImage(imageName, option);
         return new ResponseEntity<>((Resource) returnMap.get("resource"), (HttpHeaders)returnMap.get("header"), HttpStatus.OK);
     }
 
@@ -41,9 +35,8 @@ public class ImageController {
             description = "이미지 파일을 저장하고 이미지 네임을 반환합니다."
     )
     @PostMapping
-    public ResponseEntity<String> uploadImage(MultipartFile image) throws IOException {
-
-        String imageName = imageService.uploadImage(image);
+    public ResponseEntity<String> uploadImage(MultipartFile image, @RequestParam("option") String option) throws IOException {
+        String imageName = imageService.uploadImage(image, option);
         return ResponseEntity.status(HttpStatus.CREATED).body(imageName);
     }
 

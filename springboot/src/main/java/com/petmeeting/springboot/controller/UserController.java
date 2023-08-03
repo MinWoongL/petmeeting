@@ -39,6 +39,7 @@ public class UserController {
     ResponseEntity<MessageDto> reIssue(@RequestHeader(REFRESH_TOKEN) String token) {
         return ResponseEntity.status(HttpStatus.OK)
                 .header(ACCESS_TOKEN, userService.reissueToken(token))
+                .header("Access-Control-Expose-Headers", ACCESS_TOKEN)
                 .body(MessageDto.msg("Reissue Success"));
     }
 
@@ -62,7 +63,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Token", JSONSerializer.serializeObject(result.get("token")))
-                .header("Access-Control-Expose-Headers", "token, Content-type")
+                .header("Access-Control-Expose-Headers", "token")
                 .body((SignInResDto) result.get("user"));
     }
 
@@ -126,14 +127,12 @@ public class UserController {
         return ResponseEntity.ok(userService.updateStatus(userNo, adminUpdateReqDto.getIsActivated()));
     }
 
-
     @Operation(
             summary = "마이페이지 정보 조회",
             description = "로그인한 사용자의 마이페이지 정보를 조회합니다."
     )
-    @GetMapping("/{userNo}")
-    public ResponseEntity<MypageResDto> getUserInMyPage(@PathVariable Integer userNo, @RequestHeader(ACCESS_TOKEN) String token) {
-        return ResponseEntity.ok(userService.getUserInMyPage(userNo, token));
+    @GetMapping
+    public ResponseEntity<SignInResDto> getUserInMyPage(@RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(userService.getUserInMyPage(token));
     }
-
 }

@@ -41,7 +41,7 @@ public class SignUpReqDto {
                     .joinDate(System.currentTimeMillis() / 1000)
                     .location(location)
                     .siteUrl(siteUrl)
-                    .isActivated(false)
+                    .isActivated(true) // 나중에 false로 바꿔야함
                     .registImagePath(registImagePath)
                     .build();
         }

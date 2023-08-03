@@ -12,6 +12,8 @@ import com.petmeeting.springboot.repository.UserRepository;
 import com.petmeeting.springboot.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -29,21 +32,25 @@ public class BroadcastService {
     private final ShelterRepository shelterRepository;
     private final DogRepository dogRepository;
 
+    private final RedisTemplate<String, String> redisTemplate;
+
     /**
      * 기기 제어 요청을 전달합니다.
      * @param token
-     * @param endTime
+     * @param remainTime
      * @return
      */
     @Transactional
-    public Map<String, String> control(String token, long endTime) {
+    public Map<String, String> control(String token, long remainTime) {
         int userNo = jwtUtils.getUserNo(token);
 
         log.info("[기기제어 요청] 방송 중인 보호소 불러오기");
         Shelter shelter = shelterRepository.findShelterByOnBroadCastTitleNotNull()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "방송 중인 보호소가 없습니다."));
 
-        if (shelter.getControlEndTime() != null && shelter.getControlEndTime() > System.currentTimeMillis() / 1000L) {
+        ValueOperations<String, String> vop = redisTemplate.opsForValue();
+
+        if (vop.get("controlUser" + shelter.getId()) != null) {
             log.error("[기기제어 요청] Already Controlled");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이미 조작 중인 사람이 있습니다");
         }
@@ -59,13 +66,13 @@ public class BroadcastService {
         member.spendToken(1);
         userRepository.save(member);
 
-        log.info("[기기제어 요청] 기기조작 저장");
-        shelter.setControlUser(member.getName(), endTime);
-        shelterRepository.save(shelter);
+        log.info("[기기제어 요청] 기기조작 저장. controlUser : {}, remainTime : {}", member.getName(), remainTime);
+        vop.set("controlUser" + shelter.getId(), String.valueOf(member.getId()), remainTime, TimeUnit.SECONDS);
+        vop.set("remainTime" + shelter.getId(), String.valueOf(remainTime + System.currentTimeMillis() / 1000L), remainTime, TimeUnit.SECONDS);
 
         Map<String, String> map = new HashMap<>();
         map.put("userId", member.getName());
-        map.put("remainTime", String.valueOf(endTime - System.currentTimeMillis() / 1000L));
+        map.put("remainTime", String.valueOf(remainTime));
 
         return map;
     }
@@ -145,8 +152,9 @@ public class BroadcastService {
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "보호소를 찾을 수 없습니다.");
                 });
 
-        Long remainTime = shelter.getControlEndTime() == null ? null : shelter.getControlEndTime() - System.currentTimeMillis() / 1000;
-        if (remainTime == null || remainTime <= 0) {
+        ValueOperations<String, String> vop = redisTemplate.opsForValue();
+
+        if (vop.get("remainTime" + shelter.getId()) == null) {
             log.info("[IOT 조작가능 여부 체크] 조작 중인 유저가 없습니다.");
             return BroadcastCheckResDto.builder()
                     .userName(null)
@@ -154,10 +162,13 @@ public class BroadcastService {
                     .build();
         }
 
-        log.info("[IOT 조작가능 여부 체크] 조작 중인 유저가 있습니다. userName : {}, remainTime : {}", shelter.getControlUserName(), remainTime);
+        log.info("[IOT 조작가능 여부 체크] 조작 중인 유저가 있습니다. userNo : {}, remainTime : {}", vop.get("controlUser" + shelter.getId()), vop.get("remainTime" + shelter.getId()));
+        String userName = userRepository.findById(Integer.valueOf(vop.get("controlUser" + shelter.getId()))).get().getName();
+        Long remainTime = Long.parseLong(vop.get("remainTime" + shelter.getId()));
+
         return BroadcastCheckResDto.builder()
-                .userName(shelter.getControlUserName())
-                .remainTime(remainTime)
+                .userName(userName)
+                .remainTime(remainTime - System.currentTimeMillis() / 1000L)
                 .build();
     }
 }
