@@ -81,15 +81,15 @@ public class ImageService {
 
     private String selectPath(String option) {
 
-        if (option.equals("board")) {
+        if (option.contains("board")) {
             return BOARD_IMAGE_PATH;
-        } else if (option.equals("member")) {
+        } else if (option.contains("member")) {
             return MEMBER_IMAGE_PATH;
-        } else if (option.equals("shelter")) {
+        } else if (option.contains("shelter")) {
             return SHELTER_IMAGE_PATH;
-        } else if (option.equals("regist")) {
+        } else if (option.contains("regist")) {
             return REGIST_IMAGE_PATH;
-        } else if (option.equals("dog")) {
+        } else if (option.contains("dog")) {
             return DOG_IMAGE_PATH;
         }
         log.error("[이미지] 유효하지 않은 옵션. option : {}", option);
