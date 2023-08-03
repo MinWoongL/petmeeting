@@ -18,7 +18,7 @@ public class ReplyResDto {
     Long modifiedTime;
     Integer likeCnt;
 
-    public ReplyResDto entityToDto(Reply reply) {
+    public static ReplyResDto entityToDto(Reply reply) {
         Users user = reply.getUser();
 
         return ReplyResDto.builder()

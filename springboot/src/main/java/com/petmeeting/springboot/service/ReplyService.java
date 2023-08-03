@@ -41,6 +41,8 @@ public class ReplyService {
      */
     @Transactional
     public List<ReplyResDto> createReply(ReplyReqDto replyReqDto, String token) {
+        log.info("[입양후기 댓글 작성] 댓글 작성 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
 
@@ -58,6 +60,7 @@ public class ReplyService {
 
         log.info("[입양후기 댓글 작성] boardNo : {}, replyNo : {}", reply.getBoard().getBoardNo(), reply.getReplyNo());
 
+        log.info("[입양후기 댓글 작성] 댓글 작성 완료");
         return getAllReplyByBoardNo(replyReqDto.getBoardNo());
     }
 
@@ -69,7 +72,10 @@ public class ReplyService {
      */
     @Transactional
     public List<ReplyResDto> getAllReplyByBoardNo(Integer boardNo) {
+        log.info("[입양후기 댓글 리스트 조회] 입양후기 댓글 리스트 조회 요청");
         log.info("[입양후기 댓글 리스트 조회] boardNo : {}번 글의 댓글 리스트 조회", boardNo);
+        log.info("[입양후기 댓글 리스트 조회] 입양후기 댓글 리스트 조회 완료");
+
         return replyRepository.findAllByBoard(boardNo).stream()
                 .map(reply -> ReplyResDto.builder()
                         .replyNo(reply.getReplyNo())
@@ -94,6 +100,8 @@ public class ReplyService {
      */
     @Transactional
     public ReplyResDto updateReply(Integer replyNo, ReplyUpdateReqDto replyUpdateReqDto, String token) {
+        log.info("[입양후기 댓글 수정] 입양후기 댓글 수정 요청");
+
         int userNo = jwtUtils.getUserNo(token);
 
         Reply reply = replyRepository.findById(replyNo)
@@ -116,7 +124,7 @@ public class ReplyService {
         reply.updateReply(replyUpdateReqDto);
         replyRepository.save(reply);
 
-        log.info("[입양후기 댓글 수정] 댓글 수정완료~ ");
+        log.info("[입양후기 댓글 수정] 입양후기 댓글 수정 완료");
 
         return ReplyResDto.builder().build().entityToDto(reply);
     }
@@ -129,6 +137,8 @@ public class ReplyService {
      */
     @Transactional
     public void deleteReply(Integer replyNo, String token) {
+        log.info("[입양후기 댓글 삭제] 입양후기 댓글 삭제 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
 
         Reply reply = replyRepository.findById(replyNo)
@@ -143,7 +153,8 @@ public class ReplyService {
         };
 
         Integer deleteReplyCnt = replyRepository.deleteReplyByReplyNo(replyNo);
-        log.info("[입양후기 댓글 삭제] 댓글 삭제 완료. {}개.", deleteReplyCnt);
+        log.info("[입양후기 댓글 삭제] 댓글 삭제 : {}개", deleteReplyCnt);
+        log.info("[입양후기 댓글 삭제] 입양후기 댓글 삭제 완료");
     }
 
     /**
@@ -154,6 +165,8 @@ public class ReplyService {
      */
     @Transactional
     public void likeReply(Integer replyNo, String token) {
+        log.info("[입양후기 댓글 좋아요] 입양후기 댓글 좋아요 설정 요청");
+
         if(checkLiked(replyNo, token)) {
             log.error("[입양후기 댓글 좋아요] 이미 좋아요를 누른 사용자입니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이미 좋아요를 눌렀습니다.");
@@ -174,12 +187,16 @@ public class ReplyService {
         reply.updateLikeCnt(true);
         replyRepository.save(reply);
 
-        log.info("[입양후기 댓글 좋아요] 좋아요 설정 완료. userNo : {}, replyNo : {}", userNo, replyNo);
+        log.info("[입양후기 댓글 좋아요] 입양후기 댓글 좋아요 userNo : {}, replyNo : {}", userNo, replyNo);
+        log.info("[입양후기 댓글 좋아요] 입양후기 댓글 좋아요 설정 완료");
+
         likeReplyRepository.save(likeReply);
     }
 
     @Transactional
     public void dislikeReply(Integer replyNo, String token) {
+        log.info("[입양후기 댓글 좋아요 취소] 입양후기 댓글 좋아요 취소 요청");
+
         if(!checkLiked(replyNo, token)) {
             log.error("[입양후기 댓글 좋아요 취소] 아직 좋아요를 누르지 않은 사용자입니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "아직 좋아요를 누르지 않았습니다.");
@@ -198,6 +215,8 @@ public class ReplyService {
 
         reply.updateLikeCnt(false);
         replyRepository.save(reply);
+
+        log.info("[입양후기 댓글 좋아요 취소] 입양후기 댓글 좋아요 취소 완료");
     }
 
     /**
@@ -208,9 +227,13 @@ public class ReplyService {
      * @return
      */
     public Boolean checkLiked(Integer replyNo, String token) {
+        log.info("[입양후기 댓글 좋아요 체크] 입양후기 댓글 좋아요 체크 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
 
         log.info("[입양후기 댓글 좋아요 체크] replyNo : {}, userNo : {}", replyNo, userNo);
+        log.info("[입양후기 댓글 좋아요 체크] 입양후기 댓글 좋아요 체크 요청");
+
         return likeReplyRepository.existsLikeReplyByUserNoAndReplyNo(userNo, replyNo);
     }
 

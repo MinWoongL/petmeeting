@@ -43,6 +43,8 @@ public class AdoptionService {
      */
     @Transactional
     public AdoptionResDto createAdoption(AdoptionReqDto adoptionCreateReqDto, String token) {
+        log.info("[입양신청서 작성] 입양신청서 작성 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
 
@@ -75,6 +77,9 @@ public class AdoptionService {
                 .build();
 
         adoptionRepository.save(adoption);
+
+        log.info("[입양신청서 작성] 입양신청서 작성 완료");
+
         return AdoptionResDto.entityToDto(adoption);
     }
 
@@ -87,6 +92,8 @@ public class AdoptionService {
      */
     @Transactional
     public AdoptionResDto getAdoption(Integer adoptionNo, String token) {
+        log.info("[입양신청서 상세조회] 입양신청서 상세조회 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
 
         Adoption adoption = adoptionRepository.findById(adoptionNo)
@@ -101,6 +108,8 @@ public class AdoptionService {
         };
 
         log.info("[입양신청서 상세조회] adoptionNo : {} ", adoptionNo);
+        log.info("[입양신청서 상세조회] 입양신청서 상세조회 완료");
+
         return AdoptionResDto.entityToDto(adoption);
     }
 
@@ -114,6 +123,8 @@ public class AdoptionService {
      */
     @Transactional
     public AdoptionResDto updateAdoption(Integer adoptionNo, AdoptionUpdateReqDto adoptionUpdateReqDto, String token) {
+        log.info("[입양신청서 수정] 입양신청서 수정 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
 
         Adoption adoption = adoptionRepository.findById(adoptionNo)
@@ -136,7 +147,8 @@ public class AdoptionService {
         adoption.updateAdoption(adoptionUpdateReqDto);
         adoptionRepository.save(adoption);
 
-        log.info("[입양신청서 수정] 입양신청서 수정 완료 adoptionNo : {}", adoption.getAdoptionNo());
+        log.info("[입양신청서 수정] 입양신청서 수정 adoptionNo : {}", adoption.getAdoptionNo());
+        log.info("[입양신청서 수정] 입양신청서 수정 완료");
 
         return AdoptionResDto.entityToDto(adoption);
     }
@@ -149,6 +161,8 @@ public class AdoptionService {
      */
     @Transactional
     public void deleteAdoption(Integer adoptionNo, String token) {
+        log.info("[입양신청서 삭제] 입양신청서 삭제 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
 
         Adoption adoption = adoptionRepository.findById(adoptionNo)
@@ -169,7 +183,8 @@ public class AdoptionService {
         };
 
         Integer deleteAdoptionCnt = adoptionRepository.deleteAdoptionByAdoptionNo(adoptionNo);
-        log.info("[입양신청서 삭제] 입양신청서 삭제 완료. {}개", deleteAdoptionCnt);
+        log.info("[입양신청서 삭제] 입양신청서 삭제 {}개", deleteAdoptionCnt);
+        log.info("[입양신청서 작성] 입양신청서 삭제 완료");
     }
 
     /**
@@ -179,6 +194,8 @@ public class AdoptionService {
      */
     @Transactional
     public AdoptionResDto updateAdoptionStatus(Integer adoptionNo, AdoptStatusUpdateReqDto adoptStatusUpdateDto, String token) {
+        log.info("[입양신청서 상태 변경] 입양신청서 상태 변경 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
 
         Adoption adoption = adoptionRepository.findById(adoptionNo)
@@ -210,8 +227,10 @@ public class AdoptionService {
 
             // 해당 유기견에게 할당된 모든 입양신청서의 adoptionStatus가 ADOPT_FAIL(미채택)으로 변경
             adoptionRepository.updateAdoptionByDog(dog.getDogNo(), member.getId());
+            log.info("[입양신청서 상태 변경] 해당 유기견의 입양이 다른 사용자에게 채택되어, 할당된 모든 입양신청서 미채택으로 변경");
         }
 
+        log.info("[입양신청서 상태 변경] 입양신청서 상태 변경 완료");
         return AdoptionResDto.entityToDto(adoption);
     }
 
@@ -226,6 +245,8 @@ public class AdoptionService {
      */
     @Transactional
     public List<AdoptionResDto> findAdoptionByCondition(AdoptionSearchCondition condition, String token) {
+        log.info("[입양신청서 검색] 입양신청서 검색 요청");
+
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo)
                 .orElseThrow(() -> {
@@ -234,6 +255,8 @@ public class AdoptionService {
                 });
 
         log.info("[입양신청서 검색 조건으로 검색] condition : {}", condition.toString());
+
+        log.info("[입양신청서 검색] 입양신청서 검색 완료");
 
         return adoptionQueryDslRepository.findByCondition(condition, user).stream()
                 .map(adoption -> AdoptionResDto.entityToDto(adoption))
