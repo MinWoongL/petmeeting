@@ -58,7 +58,7 @@ public class Reply {
     }
 
     public void updateReply(ReplyUpdateReqDto reqDto) {
-        this.content = reqDto.getContent();
+        this.content = reqDto.getContent() == null ? this.content : reqDto.getContent();
         this.modifiedTime = System.currentTimeMillis() / 1000L;
     }
 

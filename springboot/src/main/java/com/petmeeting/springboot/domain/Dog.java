@@ -1,6 +1,6 @@
 package com.petmeeting.springboot.domain;
 
-import com.petmeeting.springboot.dto.dog.RegisterDogReqDto;
+import com.petmeeting.springboot.dto.dog.DogReqDto;
 import com.petmeeting.springboot.enums.AdoptionAvailability;
 import com.petmeeting.springboot.enums.DogSize;
 import com.petmeeting.springboot.enums.Gender;
@@ -125,7 +125,7 @@ public class Dog {
         }
     }
 
-    public void updateDogInfo(RegisterDogReqDto updateDogReqDto){
+    public void updateDogInfo(DogReqDto updateDogReqDto){
         this.name = updateDogReqDto.getName() == null? this.name : updateDogReqDto.getName();
         this.dogSize = updateDogReqDto.getDogSize() == null? this.dogSize : DogSize.valueOf(updateDogReqDto.getDogSize());
         this.gender = updateDogReqDto.getGender() == null ? gender : Gender.valueOf(updateDogReqDto.getGender());

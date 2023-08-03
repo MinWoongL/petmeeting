@@ -10,7 +10,7 @@ public interface LikeReplyRepository extends JpaRepository<LikeReply, Integer> {
     @Query(value = "select exists(select * from like_reply where user_no = :userNo and reply_no = :replyNo)", nativeQuery = true)
     Boolean existsLikeReplyByUserNoAndReplyNo(Integer userNo, Integer replyNo);
 
-//    @Query(value = "delete from like_reply where user_no = :userNo and reply_no = :replyNo", nativeQuery = true)
+    @Query(value = "delete from like_reply where user_no = :userNo and reply_no = :replyNo", nativeQuery = true)
     @Modifying
     Integer deleteLikeReplyByUserAndReply(Integer userNo, Integer replyNo);
 

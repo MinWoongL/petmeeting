@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,6 +102,7 @@ public class ReplyService {
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.");
                 });
 
+        log.info("[댓글 찾았구]");
         if(reply.getDeletedTime() != null) {
             log.error("[입양후기 댓글 수정] 삭제된 댓글입니다.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제된 댓글입니다.");
@@ -187,8 +187,8 @@ public class ReplyService {
 
         Integer userNo = jwtUtils.getUserNo(token);
 
-        Integer dislikeCnt = likeReplyRepository.deleteLikeReplyByUserAndReply();
-        log.info("[입양후기 댓글 좋아요 취소] 쿼리문 확인하기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!, 취소완료. {}개", dislikeCnt);
+        Integer dislikeCnt = likeReplyRepository.deleteLikeReplyByUserAndReply(userNo, replyNo);
+        log.info("[입양후기 댓글 좋아요 취소] 취소완료. {}개", dislikeCnt);
 
         Reply reply = replyRepository.findById(replyNo)
                 .orElseThrow(() -> {

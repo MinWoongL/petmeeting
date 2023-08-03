@@ -1,6 +1,7 @@
 package com.petmeeting.springboot.controller;
 
 import com.petmeeting.springboot.dto.common.MessageDto;
+import com.petmeeting.springboot.dto.common.ResultDto;
 import com.petmeeting.springboot.dto.dog.*;
 import com.petmeeting.springboot.service.DogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,11 +29,9 @@ public class DogController {
             description = "새로운 유기견을 등록합니다."
     )
     @PostMapping
-    public ResponseEntity<DogResDto> registerDog(@RequestBody RegisterDogReqDto requestDto, @RequestHeader(ACCESS_TOKEN) String token) {
-        Map<String, Object> result = dogService.registerDog(requestDto, token);
-
+    public ResponseEntity<DogResDto> createDog(@RequestBody DogReqDto reqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body((DogResDto) result.get("dog"));
+                .body(dogService.createDog(reqDto, token));
     }
 
     @Operation(
@@ -40,24 +39,19 @@ public class DogController {
             description = "해당 유기견의 보호 상태를 변경합니다. " +
                     "만약 '보호종료', '입양완료'가 되면 해당 유기견의 입양신청서가 모두 '미채택'으로 변경됩니다."
     )
-    @PutMapping("/status/{dogNo}") // 이거 파라미터 어케해야대징
+    @PutMapping("/status/{dogNo}")
 //    @PreAuthorize("hasRole('ROLE_SHELTER')")
-    public ResponseEntity<DogResDtoNotHaveDogNo> updateDogStatus(@PathVariable Integer dogNo, @RequestBody DogStatusUpdateReqDto dogStatusUpdateReqDto, @RequestHeader(ACCESS_TOKEN) String token){
-        Map<String, Object> result = dogService.updateDogStatus(dogNo, dogStatusUpdateReqDto, token);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body((DogResDtoNotHaveDogNo) result.get("dog"));
+    public ResponseEntity<DogResDto> updateDogStatus(@PathVariable Integer dogNo, @RequestBody DogStatusUpdateReqDto reqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(dogService.updateDogStatus(dogNo, reqDto, token));
     }
 
     @Operation(
-            summary = "유기견 상세보기",
-            description = "특정 유기견을 상세보기합니다. 로그인 해야만 권한이 있습니다."
+            summary = "유기견 상세 조회",
+            description = "특정 유기견을 상세 조회합니다. 로그인 해야만 권한이 있습니다."
     )
     @GetMapping("/{dogNo}")
-    public ResponseEntity<DogResDtoNotHaveDogNo> findDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
-        Map<String, Object> result = dogService.findDog(dogNo, token);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body((DogResDtoNotHaveDogNo) result.get("dog"));
+    public ResponseEntity<DogResDto> findDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        return ResponseEntity.ok(dogService.findDog(dogNo, token));
     }
 
     @Operation(
@@ -65,7 +59,7 @@ public class DogController {
             description = "shelter의 번호와 유기견의 보호소가 일치하는 경우에만 수정됩니다."
     )
     @PutMapping("/{dogNo}")
-    public ResponseEntity<DogResDtoNotHaveDogNo> updateDog(@PathVariable Integer dogNo, @RequestBody RegisterDogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<DogResDto> updateDog(@PathVariable Integer dogNo, @RequestBody DogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(dogService.updateDog(dogNo, registerDogReqDto, token));
     }
 
@@ -76,7 +70,6 @@ public class DogController {
     @DeleteMapping("/{dogNo}")
     public ResponseEntity<MessageDto> deleteDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
         dogService.deleteDog(dogNo, token);
-
         return ResponseEntity.ok(MessageDto.msg("Delete Success"));
     }
 
@@ -88,31 +81,32 @@ public class DogController {
     public ResponseEntity<List<DogResDto>> findAllDogByOption
             (@Parameter(description = "option : 'all' / 'random' / 'like' / 'rank'")
              DogSearchCondition condition, @RequestHeader(value = ACCESS_TOKEN, required = false) String token) {
-        // 1. Option : all
-        if(condition.getOption() != null && condition.getOption().toLowerCase().equals("all")){
-            return ResponseEntity.ok(dogService.getAllDog());
-        }
 
-        // 2. Option : Like(로그인한 유저가 좋아요한 목록)
-        if(condition.getOption() != null && condition.getOption().toLowerCase().equals("like")) {
-            if(token == null)  {
-                log.info("[로그인한 유저가 좋아요한 목록 조회] - 로그아웃 상태에선 랜덤으로 조회됩니다.");
-                return ResponseEntity.ok(dogService.getAllDogByRandom());
+        // Option : true
+        if(condition.getOption() != null) {
+            // 1. Option : all
+            if(condition.getOption().toLowerCase().equals("all"))
+                return ResponseEntity.ok(dogService.getAllDog());
+
+            // 2. Option : Like(로그인한 유저가 좋아요한 목록)
+            if(condition.getOption().toLowerCase().equals("like")) {
+                if(token == null)  {
+                    log.info("[로그인한 유저가 좋아요한 목록 조회] - 로그아웃 상태에선 랜덤으로 조회됩니다.");
+                    return ResponseEntity.ok(dogService.getAllDogByRandom());
+                }
+                return ResponseEntity.ok(dogService.getLikeDogList(token));
             }
 
-            return ResponseEntity.ok(dogService.getLikeDogList(token));
+            // 3. Option : random(랜덤 정렬)
+            if(condition.getOption().toLowerCase().equals("random"))
+                return ResponseEntity.ok(dogService.getAllDogByRandom());
+
+            // 4. Option : Rank(좋아요 상위) - 같은 순위일 땐 랜덤
+            if(condition.getOption().toLowerCase().equals("rank"))
+                return ResponseEntity.ok(dogService.getAllDogOrderByRank());
         }
 
-        // 3. Option : random(랜덤 정렬)
-        if(condition.getOption() != null && condition.getOption().toLowerCase().equals("random")) {
-            return ResponseEntity.ok(dogService.getAllDogByRandom());
-        }
-
-        // 4. Option : Rank(좋아요 상위) - 같은 순위일 땐 랜덤
-        if(condition.getOption() != null && condition.getOption().toLowerCase().equals("rank")) {
-            return ResponseEntity.ok(dogService.getAllDogOrderByRank());
-        }
-
+        // Option : false
         return ResponseEntity.ok(dogService.findDogByCondition(condition));
     }
 
@@ -141,9 +135,9 @@ public class DogController {
             description = "유기견 좋아요가 눌려있는지 체크합니다."
     )
     @GetMapping("/like/{dogNo}")
-    public ResponseEntity<Boolean> checkLiked(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token){
-        return ResponseEntity.ok(dogService.checkLiked(dogNo, token));
-    } // Boolean -> ResultDto 로 변경해야함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public ResponseEntity<ResultDto> checkLiked(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token){
+        return ResponseEntity.ok(ResultDto.result(dogService.checkLiked(dogNo, token)));
+    }
 
     @Operation(
             summary = "유기견 찜 목록 조회",
@@ -182,6 +176,5 @@ public class DogController {
     public ResponseEntity<Boolean> checkBookmarkDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(dogService.checkBookmark(dogNo, token));
     }
-
 
 }
