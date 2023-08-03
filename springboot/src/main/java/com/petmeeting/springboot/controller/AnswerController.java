@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/answer")
 public class AnswerController {
-    private final String ACCESS_TOKEN = "AccessToken";
     private final AnswerService answerService;
 
     @Operation(
