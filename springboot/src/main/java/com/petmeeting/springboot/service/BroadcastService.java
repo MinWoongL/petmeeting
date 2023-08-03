@@ -41,12 +41,17 @@ public class BroadcastService {
      * @return
      */
     @Transactional
-    public Map<String, String> control(String token, long remainTime) {
+    public Map<String, String> control(Integer shelterNo, String token, long remainTime) {
         int userNo = jwtUtils.getUserNo(token);
 
         log.info("[기기제어 요청] 방송 중인 보호소 불러오기");
         Shelter shelter = shelterRepository.findShelterByOnBroadCastTitleNotNull()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "방송 중인 보호소가 없습니다."));
+
+        if (!shelter.getId().equals(shelterNo)) {
+            log.error("[기기제어 요청] 방송 중인 보호소가 아닙니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "방송 중인 보호소가 아닙니다.");
+        }
 
         ValueOperations<String, String> vop = redisTemplate.opsForValue();
 

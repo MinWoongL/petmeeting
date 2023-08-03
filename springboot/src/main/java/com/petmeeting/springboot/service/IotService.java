@@ -27,6 +27,7 @@ public class IotService {
     public void control(IotReqDto iotReqDto, Integer shelterNo, String token) {
         Integer userNo = jwtUtils.getUserNo(token);
 
+        System.out.println("iotReqDto = " + iotReqDto.getCommand() + ", shelterNo = " + shelterNo + ", token = " + token);
         Users user = userRepository.findById(userNo)
                 .orElseThrow(() -> {
                     log.error("[기기 조작] 조작 요청자를 찾을 수 없습니다.");
@@ -41,14 +42,20 @@ public class IotService {
         Integer command = iotReqDto.getCommand();
 
         ValueOperations<String, String> vop = redisTemplate.opsForValue();
-        Integer controlUserNo = Integer.valueOf(vop.get("controlUser" + shelterNo));
-        Long endTime = Long.valueOf(vop.get("remainTime" + shelterNo));
 
-        if (controlUserNo == null || !userNo.equals(controlUserNo)) {
+        String controlUser = vop.get("controlUser" + shelterNo);
+        String endTime = vop.get("remainTime" + shelterNo);
+
+        System.out.println("controlUser = " + controlUser);
+        System.out.println("endTime = " + endTime);
+        System.out.println("userNo = " + userNo);
+        System.out.println("shelterNo = " + shelterNo);
+
+        if (controlUser == null || !userNo.equals(Integer.valueOf(controlUser))) {
             log.error("[기기 조작] 조작이 허용된 사용자만 조작할 수 있습니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "조작이 허용된 사용자만 조작할 수 있습니다.");
         }
 
-        vop.set("iot1_toy", String.valueOf(command), endTime - System.currentTimeMillis() / 1000L, TimeUnit.SECONDS);
+        vop.set("iot1_toy", String.valueOf(command), Long.valueOf(endTime) - System.currentTimeMillis() / 1000L, TimeUnit.SECONDS);
     }
 }
