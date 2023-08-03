@@ -80,17 +80,17 @@ public class ImageService {
     }
 
     private String selectPath(String option) {
-        switch (option) {
-            case "board":
-                return BOARD_IMAGE_PATH;
-            case "member":
-                return MEMBER_IMAGE_PATH;
-            case "shelter":
-                return SHELTER_IMAGE_PATH;
-            case "regist":
-                return REGIST_IMAGE_PATH;
-            case "dog":
-                return DOG_IMAGE_PATH;
+
+        if (option.equals("board")) {
+            return BOARD_IMAGE_PATH;
+        } else if (option.equals("member")) {
+            return MEMBER_IMAGE_PATH;
+        } else if (option.equals("shelter")) {
+            return SHELTER_IMAGE_PATH;
+        } else if (option.equals("regist")) {
+            return REGIST_IMAGE_PATH;
+        } else if (option.equals("dog")) {
+            return DOG_IMAGE_PATH;
         }
         log.error("[이미지] 유효하지 않은 옵션. option : {}", option);
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "유효하지 않은 option입니다.");
