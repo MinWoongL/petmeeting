@@ -7,6 +7,8 @@ import ProfileCard from "../../../components/Shelter/ShelterList";
 import DogDetail from "../../../components/Shelter/DogDetail"; // Replace with your actual component
 import DonationRanking from "../../../components/Shelter/DonationRanking"; // Replace with your actual component
 import Button from "@mui/material/Button";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
 
 function ShelterMyPage() {
   const { shelterNo } = useParams();
@@ -14,6 +16,18 @@ function ShelterMyPage() {
   const [view, setView] = useState("dogs"); // The default view is 'dogs'
   const [isEditing, setEditing] = useState(false); // New state to control the editing mode
   const [editData, setEditData] = useState({}); // To store data to be edited
+
+  const [newDog, setNewDog] = useState({});
+
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,6 +101,16 @@ function ShelterMyPage() {
       ) : (
         <DonationRanking shelterNo={shelterNo} /> // Pass the shelterNo to the DonationRanking component
       )}
+
+      {/* 유기견 등록용으로 사용할 버튼 */}
+      <Fab
+        color="primary"
+        aria-label="add"
+        onClick={handleOpen}
+        style={{ position: "fixed", bottom: "20px", right: "20px" }}
+      >
+        <AddIcon />
+      </Fab>
     </div>
   );
 }
