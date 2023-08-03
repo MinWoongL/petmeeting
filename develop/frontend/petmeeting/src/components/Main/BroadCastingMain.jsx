@@ -17,7 +17,7 @@ function BroadCastingMain() {
   const [videoDescriptions, setVideoDescriptions] = useState({})
 
   // 라이브 스트리밍 채널 ID
-  const liveBroadcasts = [{id: "BZcu8MK_jfo"}, {id: "zwVAKBO8rJM"}, {id: "q4hKVXL_L1g"}]
+  const liveBroadcasts = [{id: "BZcu8MK_jfo"}, {id: "zwVAKBO8rJM"}, {id: "uqkhMBJ9yrs"}]
 
   useEffect(()=> {
     const API_KEY = "AIzaSyB1Wdv8X-6SZJFgtNRh-JD1VkeLjTNCFKc"
