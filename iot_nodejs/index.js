@@ -2,7 +2,7 @@
 const redis = require('redis');
 const client = redis.createClient({
     socket: {
-        host: 'localhost',
+        host: 'i9a203.p.ssafy.io',
         port: '6379'
     },
     username: '',
