@@ -77,6 +77,7 @@ public class UserServiceImpl implements UserService {
 
         signUpReqDto.setPassword(encodingPass(signUpReqDto.getPassword()));
         Users user = signUpReqDto.toEntity();
+        userRepository.save(user);
 
         log.info("[회원가입] 회원가입 완료. userId : {}", user.getUserId());
     }
