@@ -28,8 +28,8 @@ public class DogQueryDslRepository {
                             containsName(condition.getName()),
                             sameDogSize(condition.getDogSize()),
                             notContainsShelter())
-                    .limit(condition.getMax() == 0 ? 10 : condition.getMax())
-                    .offset(condition.getOffset() == null ? 1 : condition.getOffset()) // 0이 아니라 null이여야 정상작동
+                    .limit((condition.getMax() == null || condition.getMax() == 0) ? 10 : condition.getMax())
+                    .offset((condition.getOffset() == null || condition.getOffset() == 0) ? 1 : condition.getOffset()) // 0이 아니라 null이여야 정상작동
                     .fetch();
         }
 
@@ -38,8 +38,8 @@ public class DogQueryDslRepository {
                         containsName(condition.getName()),
                         sameDogSize(condition.getDogSize()),
                         containsShelter(condition.getShelterNo()))
-                .limit(condition.getMax() == 0 ? 10 : condition.getMax())
-                .offset(condition.getOffset() == null ? 1 : condition.getOffset())
+                .limit((condition.getMax() == null || condition.getMax() == 0) ? 10 : condition.getMax())
+                .offset((condition.getOffset() == null || condition.getOffset() == 0) ? 1 : condition.getOffset())
                 .fetch();
     }
 
