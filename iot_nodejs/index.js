@@ -8,8 +8,13 @@ const client = redis.createClient({
     username: '',
     password: ''
 });
-
-client.on('error', err => console.log('Redis Server Error', err));
+client.on('connect', () => {
+    console.info('Redis connected!');
+});
+client.on('error', (err) => {
+    console.log('Redis Server Error', err)
+});
+client.connect().then();
 
 // express
 const express = require('express');
