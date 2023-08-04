@@ -84,7 +84,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private String selectPath(String option) {
-        log.info("[이미지 Path 선택] 이미지 path 선택");
+        log.info("[이미지 Path 선택] 이미지 path 선택. option : {}", option);
 
         if (option.contains("board")) {
             return BOARD_IMAGE_PATH;
