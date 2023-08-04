@@ -32,7 +32,7 @@ app.get('/:iot_command', async (req, res) => {
 });
 
 app.get('/default', async (req, res) => {
-    console.log('GET /' + req.params.iot_command);
+    console.log('DEFAULT /' + req.params.iot_command);
     res_value = client.get('iot1_toy', (err, reply) => {
         console.log(reply);
     });
@@ -41,6 +41,7 @@ app.get('/default', async (req, res) => {
         console.log(reply);
     });
     res.send(res_value);
+    console.log('END');
 });
 
 app.listen(PORT, () => console.log('Listening on port', PORT));
