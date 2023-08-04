@@ -27,7 +27,19 @@ app.get('/:iot_command', async (req, res) => {
     console.log('GET /' + req.params.iot_command);
     res_value = client.get('iot' + req.params.iot_command, (err, reply) => {
         console.log(reply);
-    })
+    });
+    res.send(res_value);
+});
+
+app.get('/default', async (req, res) => {
+    console.log('GET /' + req.params.iot_command);
+    res_value = client.get('iot1_toy', (err, reply) => {
+        console.log(reply);
+    });
+    res_value = client.set('iot1_toy', '5');
+    res_value = client.get('iot1_toy', (err, reply) => {
+        console.log(reply);
+    });
     res.send(res_value);
 });
 
