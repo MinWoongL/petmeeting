@@ -15,4 +15,4 @@ RUN npm install
 EXPOSE 3010
 
 # npm start 스크립트 실행
-CMD ["npm", "start"]
+CMD ["node", "index.js"]
