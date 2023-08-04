@@ -24,6 +24,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MainPage from "./pages/MainPage";
 import ShelterPage from "./pages/Shelter";
 import ShelterDetailPage from "./pages/ShelterDetail";
+import RegisterDog from "./pages/RegisterDog";
 import AdoptionPage from "./pages/Adoption";
 import BoardPage from "./pages/Board";
 import MyPage from "./pages/MyPage";
@@ -162,7 +163,12 @@ function App() {
                 {" "}
                 {/* 왼쪽 3칸 */}
                 <Box border={1} borderColor="grey.900" height="100%">
-                  <Grid container direction="column" wrap="nowrap" style={{ height: "100%" }}>
+                  <Grid
+                    container
+                    direction="column"
+                    wrap="nowrap"
+                    style={{ height: "100%" }}
+                  >
                     <Grid item style={{ flex: 2 }}>
                       <Box
                         border={1}
@@ -204,6 +210,8 @@ function App() {
             >
               <Routes>
                 <Route path="/" exact element={<MainPage />} />
+
+                <Route path="/register-dog" element={<RegisterDog />} />
                 <Route path="/shelter" element={<ShelterPage />} />
                 <Route
                   path="/shelter/:shelterNo"

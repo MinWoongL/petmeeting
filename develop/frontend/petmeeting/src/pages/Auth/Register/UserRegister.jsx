@@ -89,9 +89,8 @@ export default function SignUp() {
         postData
       );
 
-      console.log("Signup successful:", response.data);
-
       if (response.status === 201) {
+        console.log("회원가입 성공!");
         const userId = data.get("userId");
         const password = data.get("password");
 
@@ -118,6 +117,7 @@ export default function SignUp() {
 
           // console.log("axios 로직에서 터지나?1");
           if (loginResponse.status === 200) {
+            console.log("로그인 성공!");
             dispatch(
               login({
                 userId: loginResponse.data.name,
@@ -151,7 +151,7 @@ export default function SignUp() {
             console.log("Login failed");
           }
         } catch (error) {
-          console.error("회원가입 했으나 로그인 실패:", error);
+          console.error("에러 발생 : ", error);
         }
       }
     } catch (error) {

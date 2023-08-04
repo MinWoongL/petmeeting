@@ -97,7 +97,14 @@ function ShelterMyPage() {
         </Button>
       </div>
       {view === "dogs" ? (
-        <DogDetail shelterNo={shelterNo} /> // Pass the shelterNo to the DogList component
+        <div>
+          <DogDetail shelterNo={shelterNo} />
+          <Link to="/register-dog">
+            <Button variant="contained" color="primary">
+              Register New Dog
+            </Button>
+          </Link>
+        </div>
       ) : (
         <DonationRanking shelterNo={shelterNo} /> // Pass the shelterNo to the DonationRanking component
       )}
