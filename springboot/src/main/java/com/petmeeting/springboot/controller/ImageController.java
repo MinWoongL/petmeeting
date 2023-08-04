@@ -39,5 +39,4 @@ public class ImageController {
         String imageName = imageService.uploadImage(image, option);
         return ResponseEntity.status(HttpStatus.CREATED).body(imageName);
     }
-
 }
