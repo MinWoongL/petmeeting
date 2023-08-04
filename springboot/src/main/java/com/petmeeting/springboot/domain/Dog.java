@@ -127,14 +127,14 @@ public class Dog {
 
     public void updateDogInfo(DogReqDto updateDogReqDto){
         this.name = updateDogReqDto.getName() == null? this.name : updateDogReqDto.getName();
-        this.dogSize = updateDogReqDto.getDogSize() == null? this.dogSize : DogSize.valueOf(updateDogReqDto.getDogSize());
-        this.gender = updateDogReqDto.getGender() == null ? gender : Gender.valueOf(updateDogReqDto.getGender());
+        this.dogSize = updateDogReqDto.getDogSize() == null? this.dogSize : DogSize.getSize(updateDogReqDto.getDogSize());
+        this.gender = updateDogReqDto.getGender() == null ? gender : Gender.getGender(updateDogReqDto.getGender());
         this.weight = updateDogReqDto.getWeight() == null ? weight : updateDogReqDto.getWeight();
         this.age = updateDogReqDto.getAge() == null ? age : updateDogReqDto.getAge();
         this.personality = updateDogReqDto.getPersonality() == null ? personality : updateDogReqDto.getPersonality();
         this.protectionStartDate = updateDogReqDto.getProtectionStartDate() == null ? protectionStartDate : updateDogReqDto.getProtectionStartDate();
         this.protectionEndDate = updateDogReqDto.getProtectionEndDate() == null ? protectionEndDate : updateDogReqDto.getProtectionEndDate();
-        this.adoptionAvailability = updateDogReqDto.getAdoptionAvailability() == null ? adoptionAvailability : AdoptionAvailability.valueOf(updateDogReqDto.getAdoptionAvailability());
+        this.adoptionAvailability = updateDogReqDto.getAdoptionAvailability() == null ? adoptionAvailability : AdoptionAvailability.getAvailability(updateDogReqDto.getAdoptionAvailability());
         this.currentStatus = updateDogReqDto.getCurrentStatus() == null ? currentStatus : updateDogReqDto.getCurrentStatus();
         this.dogSpecies = updateDogReqDto.getDogSpecies() == null ? dogSpecies : updateDogReqDto.getDogSpecies();
         this.reasonAbandonment = updateDogReqDto.getReasonAbandonment() == null ? reasonAbandonment : updateDogReqDto.getReasonAbandonment();

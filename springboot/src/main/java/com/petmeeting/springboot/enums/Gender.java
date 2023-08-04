@@ -14,4 +14,10 @@ public enum Gender {
         this.value = value;
     }
 
+    public static Gender getGender(String value) {
+        if (value.equals("F"))
+            return FEMALE;
+        else
+            return MALE;
+    }
 }
