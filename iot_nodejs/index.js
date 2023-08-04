@@ -19,6 +19,7 @@ const app = express();
 const PORT = process.env.PORT || 3010;
 
 app.get('/:iot_command', async (req, res) => {
+    console.log(req.params.iot_command);
     res_value = client.get('iot' + req.params.iot_command, (err, reply) => {
         console.log(reply);
     })
