@@ -2,7 +2,10 @@ package com.petmeeting.springboot.controller;
 
 import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.dto.common.ResultDto;
-import com.petmeeting.springboot.dto.dog.*;
+import com.petmeeting.springboot.dto.dog.DogReqDto;
+import com.petmeeting.springboot.dto.dog.DogResDto;
+import com.petmeeting.springboot.dto.dog.DogSearchCondition;
+import com.petmeeting.springboot.dto.dog.DogStatusUpdateReqDto;
 import com.petmeeting.springboot.service.DogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
