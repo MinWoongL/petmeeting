@@ -30,7 +30,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public String uploadImage(MultipartFile image, String option) throws IOException {
-        log.info("[이미징 업로드] 이미지 업로드 요청");
+        log.info("[이미징 업로드] 이미지 업로드 요청. image : {}", image);
 
         String uploadPath = selectPath(option);
 
