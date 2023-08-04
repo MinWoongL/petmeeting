@@ -2,9 +2,12 @@
 FROM node:14
 # 경로 설정하기
 WORKDIR /app
+
+COPY package.json .
+COPY .env .
 # 명령어 실행 (의존성 설치)
 RUN npm install
-
+COPY . .
 # 각각의 명령어들은 한줄 한줄씩 캐싱되어 실행된다.
 # package.json의 내용은 자주 바뀌진 않을 거지만
 # 소스 코드는 자주 바뀌는데
