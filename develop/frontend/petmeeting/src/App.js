@@ -26,7 +26,10 @@ import ShelterPage from "./pages/Shelter";
 import ShelterDetailPage from "./pages/ShelterDetail";
 import RegisterDog from "./pages/RegisterDog";
 import AdoptionPage from "./pages/Adoption";
-import BoardPage from "./pages/Board";
+import AdoptionReviewBoard from './pages/Board/AdoptionReviewBoard'
+import InquiryBoard from './pages/Board/InquiryBoard';
+import UsageGuide from './pages/Board/UsageGuide';
+
 import MyPage from "./pages/MyPage";
 import ShelterMyPage from "./pages/MyPage/ShelterMyPage/ShelterMyPage";
 import LogIn from "./pages/Auth/LogIn";
@@ -40,7 +43,9 @@ import TokenRefresher from "./apis/refresher";
 
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl2, setAnchorEl2] = useState(null);
 
+  // 로그인 토글 기능
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -50,6 +55,15 @@ function NavBar({ isLoggedIn }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  // 게시글 토글 기능
+  const handleOpenBoard = (event) => {
+    setAnchorEl2(event.currentTarget);
+  };
+  const handleCloseBoard = () => {
+    setAnchorEl2(null);
+  };
+  
   return (
     <AppBar
       position="static"
@@ -75,9 +89,26 @@ function NavBar({ isLoggedIn }) {
         <Button color="inherit" component={Link} to="/adoption">
           입양하기
         </Button>
-        <Button color="inherit" component={Link} to="/board">
-          게시판
-        </Button>
+        <>
+            <Button color="inherit" onClick={handleOpenBoard}>
+              게시판
+            </Button>
+            <Menu
+              anchorEl={anchorEl2}
+              open={Boolean(anchorEl2)}
+              onClose={handleCloseBoard}
+            >
+              <MenuItem onClick={handleCloseBoard} component={Link} to="/board/adoption-review">
+                입양후기
+              </MenuItem>
+              <MenuItem onClick={handleCloseBoard} component={Link} to="/board/inquiry">
+                문의게시판
+              </MenuItem>
+              <MenuItem onClick={handleCloseBoard} component={Link} to="/board/usage-guide">
+                이용방법
+              </MenuItem>
+            </Menu>
+          </>
         {isLoggedIn ? (
           <>
             {userType === "보호소" ? (
@@ -218,7 +249,11 @@ function App() {
                   element={<ShelterDetailPage />}
                 />
                 <Route path="/adoption" element={<AdoptionPage />} />
-                <Route path="/board" element={<BoardPage />} />
+                
+                <Route path="/board/adoption-review" element={<AdoptionReviewBoard />} />
+                <Route path="/board/inquiry" element={<InquiryBoard />} />
+                <Route path="/board/usage-guide" element={<UsageGuide />} />
+                
                 <Route path="/mypage" element={<MyPage />} />
                 <Route
                   path="/Mypage/ShelterMyPage"
@@ -230,6 +265,7 @@ function App() {
                   path="/broadcasting/:broadcastId"
                   element={<BroadCastingPage />}
                 ></Route>
+
               </Routes>
             </Box>
           </Grid>
