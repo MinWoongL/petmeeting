@@ -1,7 +1,7 @@
 # 가져올 이미지를 정의
 FROM node:14
 # 경로 설정하기
-WORKDIR /
+WORKDIR /app
 # 명령어 실행 (의존성 설치)
 RUN npm install
 
