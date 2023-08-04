@@ -80,7 +80,7 @@ function BroadCastingMain() {
   return (
     <Box className="container" sx={{ mt: 1 }} style={{ maxWidth: '932px' }}>
       <Typography variant="h6" gutterBottom className="heading">
-        Live Broadcast Previews
+        Live Broadcast Previews - test
       </Typography>
       <Swiper
         effect={'coverflow'}
