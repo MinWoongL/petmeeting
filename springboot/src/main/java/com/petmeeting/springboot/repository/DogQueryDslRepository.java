@@ -26,7 +26,7 @@ public class DogQueryDslRepository {
             return jpaQueryFactory.selectFrom(dog)
                     .where(dog.isDeleted.eq(false),
                             containsName(condition.getName()),
-                            sameDogSize(DogSize.valueOf(condition.getDogSize())),
+                            sameDogSize(condition.getDogSize()),
                             notContainsShelter())
                     .limit(condition.getMax() == 0 ? 10 : condition.getMax())
                     .offset(condition.getOffset() == null ? 1 : condition.getOffset()) // 0이 아니라 null이여야 정상작동
@@ -36,7 +36,7 @@ public class DogQueryDslRepository {
         return jpaQueryFactory.selectFrom(dog)
                 .where(dog.isDeleted.eq(false),
                         containsName(condition.getName()),
-                        sameDogSize(DogSize.valueOf(condition.getDogSize())),
+                        sameDogSize(condition.getDogSize()),
                         containsShelter(condition.getShelterNo()))
                 .limit(condition.getMax() == 0 ? 10 : condition.getMax())
                 .offset(condition.getOffset() == null ? 1 : condition.getOffset())
@@ -52,11 +52,11 @@ public class DogQueryDslRepository {
                 .or(dog.name.endsWith(name));
     }
 
-    private BooleanExpression sameDogSize(DogSize size) {
+    private BooleanExpression sameDogSize(String size) {
         if(size == null)
             return null;
 
-        return dog.dogSize.eq(size);
+        return dog.dogSize.eq(DogSize.getSize(size));
     }
 
     /**
@@ -77,28 +77,4 @@ public class DogQueryDslRepository {
     private BooleanExpression notContainsShelter(){
         return dog.adoptionAvailability.eq(AdoptionAvailability.ADOPT_POSSIBLE);
        }
-
-
-
-
-
-
-    //    /**
-//     * 보호소 번호를 검색하면 해당 보호소의 모든 유기견이 조회된다.(입양상태 무관)
-//     * 보호소 번호가 null이면 입양 가능한 유기견만 조회된다.
-//     * @param shelterNo
-//     * @return
-//     */
-//    private BooleanExpression containsShelterNo(Integer shelterNo) {
-//        // 보호소 번호가 없으면
-//        if(shelterNo == 0 || shelterNo == null) {
-//            // 입양 가능한 강아지만 나온다.
-//            return dog.adoptionAvailability.eq(AdoptionAvailability.ADOPT_POSSIBLE);
-//        }
-//
-//        // 보호소 번호가 있으면
-//        // 같은 보호소번호를 가진 모든 강아지 검색
-//        return dog.shelter.id.eq(shelterNo);
-//       }
-
 }
