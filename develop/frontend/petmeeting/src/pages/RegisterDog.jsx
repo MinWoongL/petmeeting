@@ -10,6 +10,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
+import ImageUploadButton from "../components/Button/ImageUploadButton";
 
 const RegisterDog = () => {
   const [form, setForm] = useState({
@@ -35,7 +36,7 @@ const RegisterDog = () => {
     try {
       console.log("이거 들어왔는데 404야?");
       const response = await axios.post(
-        "https://i9a203.p.ssafy.io/backapi/api/v1/dogs",
+        "https://i9a203.p.ssafy.io/backapi/api/v1/dog",
         form
       );
 
@@ -210,6 +211,7 @@ const RegisterDog = () => {
             }
             label="Is Inoculated"
           />
+          <ImageUploadButton option="dog" />
           <Button type="submit" fullWidth variant="contained" color="primary">
             Register
           </Button>
