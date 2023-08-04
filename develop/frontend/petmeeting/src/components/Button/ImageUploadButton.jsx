@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import axios from "axios";
 import { config } from "../../static/config";
 
-function ImageUploadButton({ option }) {
+function ImageUploadButton({ option, setImagePath }) {
   const [selectedImage, setSelectedImage] = useState();
   const [uploadStatus, setUploadStatus] = useState("");
 
-  const handleImageUpload = async () => {
+  const handleImageUpload = async (e) => {
+    e.preventDefault();
     if (!selectedImage) {
-      alert("Please select an image to upload");
+      alert("강아지 사진을 선택해주세요");
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", selectedImage);
+    formData.append("image", selectedImage);
 
     try {
       setUploadStatus("Uploading...");
@@ -25,7 +26,9 @@ function ImageUploadButton({ option }) {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      console.log("이미지 업로드 성공?");
+      console.log("이미지 업로드 성공?", response);
+      setImagePath(response.data);
+
       setUploadStatus("Upload successful!");
     } catch (err) {
       console.error(err);
@@ -40,7 +43,7 @@ function ImageUploadButton({ option }) {
   return (
     <div>
       <input type="file" onChange={handleImageChange} accept="image/*" />
-      <button onClick={handleImageUpload}>이미지 업로드</button>
+      <button onClick={(e) => handleImageUpload(e)}>이미지 업로드</button>
       <p>{uploadStatus}</p>
     </div>
   );

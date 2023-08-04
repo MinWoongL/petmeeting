@@ -32,7 +32,7 @@ function ShelterDetailPage() {
         <button onClick={() => setView("dogs")}>강아지 목록</button>
         <button onClick={() => setView("donations")}>후원 랭킹</button>
       </div>
-      {view === "dogs" ? (
+      {view == "dogs" ? (
         <DogDetail shelterNo={shelterNo} /> // Pass the shelterNo to the DogList component
       ) : (
         <DonationRanking shelterNo={shelterNo} /> // Pass the shelterNo to the DonationRanking component

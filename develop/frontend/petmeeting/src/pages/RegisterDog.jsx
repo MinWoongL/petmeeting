@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -29,21 +29,52 @@ const RegisterDog = () => {
     isInoculated: false,
     imagePath: "",
   });
+  const [imagePath, setImagePath] = useState("");
+  useEffect(() => {
+    setForm((prevForm) => ({ ...prevForm, imagePath }));
+  }, [imagePath]);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    let submitForm = { ...form };
+    if (submitForm.protectionStartDate) {
+      submitForm.protectionStartDate = new Date(
+        submitForm.protectionStartDate
+      ).getTime();
+    }
+    if (submitForm.protectionEndDate) {
+      submitForm.protectionEndDate = new Date(
+        submitForm.protectionEndDate
+      ).getTime();
+    }
+
+    const token = JSON.parse(sessionStorage.getItem("token"));
+    // Create the header
+    const config = {
+      headers: { AccessToken: `Bearer ${token.accessToken}` },
+    };
     try {
-      console.log("이거 들어왔는데 404야?");
+      console.log("레지스터도그 실행");
+      let jjinForm = { ...submitForm };
+      jjinForm.imagePath = `${form.imagePath}`;
+      console.log(form.imagePath, "이건 이미지패스");
+      console.log(jjinForm, "이건 찐폼");
       const response = await axios.post(
         "https://i9a203.p.ssafy.io/backapi/api/v1/dog",
-        form
+
+        jjinForm,
+        config
       );
 
-      if (response.status === 200) {
+      if (response.status === 201) {
+        console.log("갈거지?");
         navigate(-1);
+        console.log("성공했는데 네비게이트 안됨...?");
       }
     } catch (error) {
+      console.log(error.data);
       console.error("Failed to register the dog:", error);
     }
   };
@@ -190,16 +221,11 @@ const RegisterDog = () => {
             value={form.reasonAbandonment}
             onChange={handleChange}
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            label="Image Path"
-            name="imagePath"
-            value={form.imagePath}
-            onChange={handleChange}
-          />
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body1">
+              Image Path: {form.imagePath}
+            </Typography>
+          </Box>
           <FormControlLabel
             control={
               <Checkbox
@@ -211,7 +237,7 @@ const RegisterDog = () => {
             }
             label="Is Inoculated"
           />
-          <ImageUploadButton option="dog" />
+          <ImageUploadButton option="dog" setImagePath={setImagePath} />
           <Button type="submit" fullWidth variant="contained" color="primary">
             Register
           </Button>

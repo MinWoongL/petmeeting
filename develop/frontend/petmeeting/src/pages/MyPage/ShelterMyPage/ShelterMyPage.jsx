@@ -16,6 +16,7 @@ function ShelterMyPage() {
   const [view, setView] = useState("dogs"); // The default view is 'dogs'
   const [isEditing, setEditing] = useState(false); // New state to control the editing mode
   const [editData, setEditData] = useState({}); // To store data to be edited
+  const [userNo, setUserNo] = useState(null);
 
   const [newDog, setNewDog] = useState({});
 
@@ -42,7 +43,7 @@ function ShelterMyPage() {
           }
         );
         const userNo = response.data.userNo; // Assuming userNo is in the response data
-
+        setUserNo(userNo);
         axios
           .get(`https://i9a203.p.ssafy.io/backapi/api/v1/shelter/${userNo}`) // using userNo instead of shelterNo
           .then((res) => {
@@ -98,7 +99,7 @@ function ShelterMyPage() {
       </div>
       {view === "dogs" ? (
         <div>
-          <DogDetail shelterNo={shelterNo} />
+          <DogDetail shelterNo={userNo} />
           <Link to="/register-dog">
             <Button variant="contained" color="primary">
               Register New Dog
@@ -106,7 +107,7 @@ function ShelterMyPage() {
           </Link>
         </div>
       ) : (
-        <DonationRanking shelterNo={shelterNo} /> // Pass the shelterNo to the DonationRanking component
+        <DonationRanking shelterNo={userNo} /> // Pass the shelterNo to the DonationRanking component
       )}
 
       {/* 유기견 등록용으로 사용할 버튼 */}
