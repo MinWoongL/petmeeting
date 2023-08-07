@@ -50,7 +50,7 @@ public class ChargeServiceImpl implements ChargeService {
      */
     @Override
     public ChargeReadyResDto ready(ChargeReadyReqDto chargeReadyReqDto, String token) {
-        log.info("[결제요청] 결제페이지 요청 시작");
+        log.info("[결제요청] 결제페이지 요청 시작. token : {}, {}", token, chargeReadyReqDto.toString());
 
         int userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
@@ -94,7 +94,7 @@ public class ChargeServiceImpl implements ChargeService {
     @Override
     @Transactional
     public ChargeCheckResDto check(ChargeCheckReqDto chargeCheckReqDto, String token) {
-        log.info("[결제검증] 결제 검증 요청");
+        log.info("[결제검증] 결제 검증 요청. token : {}, {}", token, chargeCheckReqDto.toString());
 
         int userNo = jwtUtils.getUserNo(token);
         Member member = (Member) userRepository.findById(userNo).get();
@@ -149,7 +149,7 @@ public class ChargeServiceImpl implements ChargeService {
     @Override
     @Transactional
     public List<ChargeHistoryResDto> getHistory(String token) {
-        log.info("[결제내역 확인] 결제내역 요청");
+        log.info("[결제내역 확인] 결제내역 요청. token : {}", token);
 
         Member member = (Member) userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "사용자를 찾을 수 없습니다."));
