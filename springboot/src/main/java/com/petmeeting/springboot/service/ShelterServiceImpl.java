@@ -109,7 +109,7 @@ public class ShelterServiceImpl implements ShelterService {
      */
     @Transactional
     public List<ChatResDto> getChatList(Integer shelterNo) {
-        log.info("[보호소 채팅목록] 채팅목록 불러오기");
+        log.info("[보호소 채팅목록] 채팅목록 불러오기. shelterNo : {]", shelterNo);
 
         return chatRepository.findChatByShelterNo(shelterNo).stream()
                 .map(chat -> {
@@ -126,7 +126,7 @@ public class ShelterServiceImpl implements ShelterService {
 
     @Transactional
     public void registChat(ChatReqDto chatReqDto, String token) {
-        log.info("[보호소 채팅 등록] 보호소 채팅 등록 요청");
+        log.info("[보호소 채팅 등록] 보호소 채팅 등록 요청. {}, token : {}", chatReqDto.toString(), token);
 
         Shelter shelter = shelterRepository.findById(chatReqDto.getShelterNo())
                 .orElseThrow(() -> {

@@ -41,7 +41,7 @@ public class DonateServiceImpl implements DonateService {
     @Override
     @Transactional
     public DonateResDto donateToDog(DonateReqDto donateReqDto, String token) {
-        log.info("[후원] 후원 요청 시작");
+        log.info("[후원] 후원 요청 시작. token : {}, {}", token, donateReqDto.toString());
 
         Integer userNo = jwtUtils.getUserNo(token);
         Integer holdingPoint = chargeRepository.findSumByUserNo(userNo).orElse(0) - donationRepository.findSumByUserNo(userNo).orElse(0);
@@ -83,7 +83,7 @@ public class DonateServiceImpl implements DonateService {
     @Override
     @Transactional
     public List<DonateHistoryResDto> donateHistory(String token) {
-        log.info("[후원기록 조회] 후원기록 조회 요청");
+        log.info("[후원기록 조회] 후원기록 조회 요청. token : {}", token);
 
         Users user = userRepository.findById(jwtUtils.getUserNo(token))
                 .orElseThrow(() -> {
