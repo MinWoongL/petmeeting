@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, TextField, Input } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -16,13 +18,22 @@ export default function AdoptionReviewDetail() {
   const [isLiked, setIsLiked] = useState(false);
 
   const accessToken = JSON.parse(sessionStorage.getItem("token")).accessToken;
-  const updateUrl = "/board/adoption-review/md/" + boardNo;
+
+  // 입양후기 수정을 위한 값
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedContent, setEditedContent] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const [editedDate, setEditedDate] = useState(null);
 
   useEffect(() => {
     // 게시글 정보 가져오기
     axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/board/` + boardNo)
       .then((response) => {
         setSelectedReview(response.data);
+        setEditedTitle(response.data.title);
+        setEditedContent(response.data.content);
       });
 
     // 좋아요 체크
@@ -49,8 +60,8 @@ export default function AdoptionReviewDetail() {
   let date =
     "작성 시간 : " + formatDateTime(selectedReview.createdTime * 1000);
 
-  if (selectedReview.updatedTime) {
-    date = "수정 시간 : " + formatDateTime(selectedReview.updatedTime * 1000);
+  if (selectedReview.modifiedTime) {
+    date = "작성 시간 : " + formatDateTime(selectedReview.modifiedTime * 1000) + " (수정됨)";
   }
 
   // 로그인된 사용자와 게시물 작성자를 비교하여 수정 및 삭제 버튼을 표시 여부 결정
@@ -85,14 +96,27 @@ export default function AdoptionReviewDetail() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            padding: "10px 0 0 0",
+            marginBottom: "8px"
           }}
         >
-          <Typography variant="h6" gutterBottom>
-            {selectedReview.title}
-          </Typography>
-          <Typography variant="body2">
-            조회수: {selectedReview.viewCnt}
-          </Typography>
+          {isEditing ? (
+            <TextField
+              fullWidth
+              label="제목"
+              value={editedTitle}
+              onChange={(event) => setEditedTitle(event.target.value)}
+            />
+          ) : (
+            <>
+              <Typography variant="h6" gutterBottom>
+                {selectedReview.title}
+              </Typography>
+              <Typography variant="body2">
+                조회수: {selectedReview.viewCnt}
+              </Typography>
+            </>
+          )}
         </Box>
 
         {/* 사진 */}
@@ -102,66 +126,128 @@ export default function AdoptionReviewDetail() {
           style={{ width: "100%", maxHeight: "400px", objectFit: "cover" }}
         />
 
-        {/* 생성날짜와 좋아요 개수 */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mt: 1,
-          }}
-        >
-          <Typography variant="body2">{date}</Typography>
-          {selectedReview.likeCnt === 0 && (
-            <Typography variant="body2">
-              첫 좋아요를 눌러주세요
-            </Typography>
-          )}
-          {selectedReview.likeCnt !== 0 && (
-            <Typography variant="body2">
-              좋아요 {selectedReview.likeCnt}개
-            </Typography>
-          )}
-        </Box>
-
-        {/* 좋아요 버튼 */}
-        {!isLiked && (
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-            <Button onClick={() => likeBoard(boardNo)} startIcon={<FavoriteIcon />} color="primary" variant="outlined">
-              좋아요
-            </Button>
-          </Box>
-        )}
-        {isLiked && (
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-            <Button onClick={() => dislikeBoard(boardNo)} startIcon={<FavoriteIcon />} color="error" variant="outlined">
-              좋아요 취소
-            </Button>
-          </Box>
-        )}
-
         {/* 내용 */}
-        <Box sx={{ mt: 2, maxHeight: "100px", overflowY: "auto" }}>
-          <Typography variant="body1" sx={{ wordWrap: "break-word" }}>
-            {selectedReview.content}
-          </Typography>
+        <Box>
+          {isEditing ? (
+            <>
+              {/* 이미지 업로드 */}
+              <input type="file" accept=".jpg, .jpeg, .png, .gif" 
+              onChange={(event) => setSelectedFile(event.target)}/>
+
+              {/* 내용 수정하는 곳 */}
+              <TextField
+                fullWidth
+                multiline
+                label="내용"
+                value={editedContent}
+                onChange={(event) => setEditedContent(event.target.value)}
+                sx={{ wordWrap: "break-word", mt: 2, maxHeight: "200px", overflowY: "auto", padding: "10px 0 0 0"}}
+              />
+            </>
+          ) : (
+            <>
+              {/* 생성날짜와 좋아요 개수 */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mt: 1,
+                }}
+              >
+                {editedDate ?
+                  <Typography variant="body2">{editedDate}</Typography> :
+                  <Typography variant="body2">{date}</Typography>
+                }
+                {selectedReview.likeCnt === 0 && (
+                  <Typography variant="body2">
+                    첫 좋아요를 눌러주세요
+                  </Typography>
+                )}
+                {selectedReview.likeCnt !== 0 && (
+                  <Typography variant="body2">
+                    좋아요 {selectedReview.likeCnt}개
+                  </Typography>
+                )}
+              </Box>
+
+              {/* 좋아요 버튼 */}
+              {!isLiked && (
+                <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+                  <Button onClick={() => likeBoard(boardNo)} startIcon={<FavoriteIcon />} color="primary" variant="outlined">
+                    좋아요
+                  </Button>
+                </Box>
+              )}
+              {isLiked && (
+                <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+                  <Button onClick={() => dislikeBoard(boardNo)} startIcon={<FavoriteIcon />} color="error" variant="outlined">
+                    좋아요 취소
+                  </Button>
+                </Box>
+              )}
+              <Typography variant="body1" sx={{ wordWrap: "break-word", mt: 2, maxHeight: "100px", overflowY: "auto", padding: "10px 0 0 0" }}>
+                {selectedReview.content.split('\n').map((line, index) => (
+                  <React.Fragment key={index}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))}
+              </Typography>
+
+            </>
+
+          )}
         </Box>
 
         {/* 수정 및 삭제 버튼 */}
         {isEditable && (
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-            <Button
-              startIcon={<EditIcon />}
-              color="primary"
-              href={updateUrl}
-              variant="outlined"
-              sx={{ mr: 1 }}
-            >
-              수정
-            </Button>
-            <Button startIcon={<DeleteIcon />} color="error" variant="outlined">
-              삭제
-            </Button>
+            {isEditing ? (
+              <>
+                <Button
+                  startIcon={<SaveIcon />}
+                  color="primary"
+                  variant="outlined"
+                  sx={{ mr: 1 }}
+                  onClick={() => updateBoard(boardNo, editedTitle, editedContent, selectedFile)}
+                >
+                  저장
+                </Button>
+                <Button
+                  startIcon={<CancelIcon />}
+                  color="error"
+                  variant="outlined"
+                  onClick={() => {
+                    setIsEditing(false)
+                    setEditedContent(selectedReview.content)
+                    setEditedTitle(selectedReview.title)
+                  }}
+                >
+                  취소
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  startIcon={<EditIcon />}
+                  color="primary"
+                  variant="outlined"
+                  sx={{ mr: 1 }}
+                  onClick={() => setIsEditing(true)}
+                >
+                  수정
+                </Button>
+                <Button
+                  startIcon={<DeleteIcon />}
+                  color="error"
+                  variant="outlined"
+                  onClick={() => deleteBoard(boardNo)}
+                >
+                  삭제
+                </Button>
+              </>
+            )}
           </Box>
         )}
 
@@ -178,6 +264,7 @@ export default function AdoptionReviewDetail() {
       </Box>
     </Box>
   );
+
   function likeBoard(boardNo) {
     axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/board/like/" + boardNo,
       {},
@@ -186,7 +273,6 @@ export default function AdoptionReviewDetail() {
           "AccessToken": "Bearer " + accessToken
         }
       }).then((response) => {
-        console.log(response.data.msg);
         setIsLiked(true);
         selectedReview.likeCnt++;
       })
@@ -199,10 +285,61 @@ export default function AdoptionReviewDetail() {
           "AccessToken": "Bearer " + accessToken
         }
       }).then((response) => {
-        console.log(response.data.msg);
         setIsLiked(false);
         selectedReview.likeCnt--;
       })
+  }
+
+  function deleteBoard(boardNo) {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      axios.delete("https://i9a203.p.ssafy.io/backapi/api/v1/board/" + boardNo,
+        {
+          headers: {
+            "AccessToken": "Bearer " + accessToken
+          }
+        }).then((response) => {
+          alert(response.data.msg);
+          window.location.href = "/board/adoption-review"
+        })
+    }
+  }
+
+  async function updateBoard(boardNo, editedTitle, editedContent, imageFile) {
+    if (window.confirm("변경된 내용을 저장하시겠습니까?")) {
+      let imagePath = null;
+
+      if(imageFile) {
+        const formData = new FormData();
+        formData.append("image", imageFile.files[0]); 
+
+        await axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/image?option=board", formData,
+        {
+          headers: {
+            "AccessToken": "Bearer " + accessToken,
+            "Content-Type": "multipart/form-data",
+          }
+        }).then((response) => {
+          imagePath = response.data;
+        })
+      }
+
+      await axios.put("https://i9a203.p.ssafy.io/backapi/api/v1/board/" + boardNo,
+        {
+          title: editedTitle,
+          content: editedContent,
+          imagePath: imagePath
+        },
+        {
+          headers: {
+            "AccessToken": "Bearer " + accessToken
+          }
+        }).then((response) => {
+          setIsEditing(false);
+          setSelectedReview(response.data);
+        }).then(() => {
+          setEditedDate("작성 시간 : " + formatDateTime(selectedReview.modifiedTime * 1000) + " (수정됨)");
+        })
+    }
   }
 
   function formatDateTime(timestamp) {
