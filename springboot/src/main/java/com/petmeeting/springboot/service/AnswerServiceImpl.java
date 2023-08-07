@@ -28,7 +28,7 @@ public class AnswerServiceImpl implements AnswerService {
      */
     @Override
     public AnswerResDto createAnswer(AnswerReqDto answerReqDto) {
-        log.info("[문의게시글 답변 작성] 문의게시글 답변 작성 요청");
+        log.info("[문의게시글 답변 작성] 문의게시글 답변 작성 요청. {}", answerReqDto.toString());
 
         Inquiry inquiry = inquiryRepository.findById(answerReqDto.getInquiryNo())
                 .orElseThrow(() -> {
@@ -61,7 +61,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public void deleteAnswer(Integer answerNo) {
-        log.info("[문의게시글 답변 삭제] 문의게시글 답변 삭제 요청");
+        log.info("[문의게시글 답변 삭제] 문의게시글 답변 삭제 요청. answerNo : {}", answerNo);
         Answer answer = answerRepository.findById(answerNo)
                         .orElseThrow(() -> {
                             log.error("[문의게시글 답변 삭제] 답변을 찾을 수 없습니다.");
@@ -83,7 +83,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public AnswerResDto getAnswer(Integer inquiryNo) {
-        log.info("[문의게시글 답변 상세] 문의게시글 답변 상세 요청");
+        log.info("[문의게시글 답변 상세] 문의게시글 답변 상세 요청. inquiryNo : {}", inquiryNo);
         Answer answer = answerRepository.findByInquiry_InquiryNo(inquiryNo).get();
 
         if (answer == null) {

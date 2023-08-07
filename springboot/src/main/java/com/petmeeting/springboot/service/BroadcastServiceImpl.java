@@ -43,7 +43,7 @@ public class BroadcastServiceImpl implements BroadcastService {
     @Override
     @Transactional
     public Map<String, String> control(Integer shelterNo, String token, long remainTime) {
-        log.info("[기기제어권] 기기제어권 요청");
+        log.info("[기기제어권] 기기제어권 요청. shelterNo : {}, token : {}, remainTime : {}", shelterNo, token, remainTime);
         int userNo = jwtUtils.getUserNo(token);
 
         log.info("[기기제어권] 방송 중인 보호소 불러오기");
@@ -120,7 +120,7 @@ public class BroadcastServiceImpl implements BroadcastService {
     @Override
     @Transactional
     public void startBroadcast(BroadcastReqDto broadcastReqDto, String token) {
-        log.info("[방송 시작] 방송 시작 요청");
+        log.info("[방송 시작] 방송 시작 요청. token : {}, {}", token, broadcastReqDto.toString());
         Integer userNo = jwtUtils.getUserNo(token);
 
         Shelter shelter = shelterRepository.findById(userNo)
@@ -148,7 +148,7 @@ public class BroadcastServiceImpl implements BroadcastService {
     @Override
     @Transactional
     public void stopBroadcast(String token) {
-        log.info("[방송 종료] 방송 종료 요청");
+        log.info("[방송 종료] 방송 종료 요청. token : {}", token);
         Integer shelterNo = jwtUtils.getUserNo(token);
 
         Shelter shelter = shelterRepository.findById(shelterNo)
@@ -172,7 +172,7 @@ public class BroadcastServiceImpl implements BroadcastService {
 
     @Override
     public BroadcastCheckResDto checkControlUser(Integer shelterNo) {
-        log.info("[IOT 조작가능 여부 체크] IOT 조작가능 여부 체크 요청");
+        log.info("[IOT 조작가능 여부 체크] IOT 조작가능 여부 체크 요청. shelterNo : {}", shelterNo);
 
         Shelter shelter = shelterRepository.findById(shelterNo)
                 .orElseThrow(() -> {

@@ -18,7 +18,7 @@ public class InquiryQueryDslRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     public List<Inquiry> findByCondition(InquirySearchCondition inquirySearchCondition) {
-        if (inquirySearchCondition.getOption() != null && inquirySearchCondition.getOption().equals("all")) {
+        if (inquirySearchCondition.getOption() != null && inquirySearchCondition.getOption().contains("all")) {
             return jpaQueryFactory.selectFrom(inquiry)
                     .where(inquiry.deletedTime.isNull(),
                             containsTitle(inquirySearchCondition.getTitle()))
