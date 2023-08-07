@@ -108,6 +108,7 @@ export default function SignUp() {
           });
 
           const newUser = {
+            userNo: loginResponse.data.userNo,
             name: loginResponse.data.name,
             userType: userType, // Add userType
           };
