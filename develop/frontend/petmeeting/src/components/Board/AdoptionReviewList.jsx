@@ -56,8 +56,7 @@ function AdoptionReviewList(props) {
   }
 
   const imageUrl = "https://i9a203.p.ssafy.io/backapi/api/v1/image/" + props.board.imagePath + "?option=board"
-  console.log(props.board)
-
+  
   return (
     <div
       style={adoptionReviewListStyle}
