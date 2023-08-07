@@ -84,6 +84,7 @@ export default function Login() {
 
         // Create new user object
         const newUser = {
+          userNo: response.data.userNo,
           name: response.data.name,
           userType: userType, // Add userType
         };
