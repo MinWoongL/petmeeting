@@ -14,6 +14,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import { config } from "../../static/config";
 import { Link } from "react-router-dom";
 import LikeButton from "../Button/DogLikeButton";
+import BookmarkButton from "../Button/DogBookmarkButton";
 
 const DogDetail = ({ shelterNo }) => {
   const [dogData, setDogData] = useState(null);
@@ -76,9 +77,10 @@ const DogDetail = ({ shelterNo }) => {
                 <CardActions disableSpacing>
                   <LikeButton dogNo={dog.dogNo} />{" "}
                   {/* LikeButton 컴포넌트 사용 */}
-                  <IconButton aria-label="share">
+                  <BookmarkButton dogNo={dog.dogNo}>
+                    {" "}
                     <ShareIcon />
-                  </IconButton>
+                  </BookmarkButton>
                 </CardActions>
               </Card>
             </Link>
