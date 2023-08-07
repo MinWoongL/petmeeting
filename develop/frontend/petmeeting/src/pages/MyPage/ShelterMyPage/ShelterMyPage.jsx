@@ -16,6 +16,11 @@ function ShelterMyPage() {
   const [view, setView] = useState("dogs"); // The default view is 'dogs'
   const [isEditing, setEditing] = useState(false); // New state to control the editing mode
   const [editData, setEditData] = useState({}); // To store data to be edited
+  const [userNo, setUserNo] = useState(null);
+
+  const handleProfileUpdate = (updatedProfile) => {
+    setShelterData(updatedProfile);
+  };
 
   const [newDog, setNewDog] = useState({});
 
@@ -23,6 +28,13 @@ function ShelterMyPage() {
 
   const handleOpen = () => {
     setOpen(true);
+  };
+
+  const handleChange = (field, value) => {
+    setEditData({
+      ...editData,
+      [field]: value,
+    });
   };
 
   const handleClose = () => {
@@ -35,19 +47,20 @@ function ShelterMyPage() {
       const token = JSON.parse(sessionStorage.getItem("token"));
 
       try {
+        //  유저 토큰 던져서 유저 번호 받아오기
         const response = await axios.get(
           "https://i9a203.p.ssafy.io/backapi/api/v1/user",
           {
             headers: { AccessToken: `Bearer ${token.accessToken}` },
           }
         );
-        const userNo = response.data.userNo; // Assuming userNo is in the response data
-
+        const userNo = response.data.userNo;
+        setUserNo(userNo);
         axios
           .get(`https://i9a203.p.ssafy.io/backapi/api/v1/shelter/${userNo}`) // using userNo instead of shelterNo
           .then((res) => {
             setShelterData(res.data);
-            console.log(res);
+            console.log(res.data, "쉘터 데이터임");
           })
           .catch((err) => {
             console.log("API get요청 제대로 못받아왔음");
@@ -88,18 +101,29 @@ function ShelterMyPage() {
 
   return (
     <div>
-      <ProfileCard profile={shelterData} isEditing={isEditing} />
+      <ProfileCard
+        profile={shelterData}
+        isEditing={isEditing}
+        onChange={handleChange}
+      />
       <div>
         <button onClick={() => setView("dogs")}>강아지 목록</button>
         <button onClick={() => setView("donations")}>후원 랭킹</button>
-        <Button variant="outlined" onClick={() => setEditing(!isEditing)}>
+        <Button variant="outlined" onClick={handleEdit}>
           {isEditing ? "Save" : "Edit"}
         </Button>
       </div>
       {view === "dogs" ? (
-        <DogDetail shelterNo={shelterNo} /> // Pass the shelterNo to the DogList component
+        <div>
+          <DogDetail shelterNo={userNo} />
+          <Link to="/register-dog">
+            <Button variant="contained" color="primary">
+              유기견 등록하기
+            </Button>
+          </Link>
+        </div>
       ) : (
-        <DonationRanking shelterNo={shelterNo} /> // Pass the shelterNo to the DonationRanking component
+        <DonationRanking shelterNo={userNo} /> // Pass the shelterNo to the DonationRanking component
       )}
 
       {/* 유기견 등록용으로 사용할 버튼 */}
