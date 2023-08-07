@@ -26,9 +26,10 @@ import ShelterPage from "./pages/Shelter";
 import ShelterDetailPage from "./pages/ShelterDetail";
 import RegisterDog from "./pages/RegisterDog";
 import AdoptionPage from "./pages/Adoption";
-import AdoptionReviewBoard from './pages/Board/AdoptionReviewBoard'
-import InquiryBoard from './pages/Board/InquiryBoard';
-import UsageGuide from './pages/Board/UsageGuide';
+import AdoptionReviewBoard from "./pages/Board/AdoptionReviewBoard";
+import InquiryBoard from "./pages/Board/InquiryBoard";
+import UsageGuide from "./pages/Board/UsageGuide";
+import DogDetailPage from "./pages/DogDetailPage";
 
 import MyPage from "./pages/MyPage";
 import ShelterMyPage from "./pages/MyPage/ShelterMyPage/ShelterMyPage";
@@ -64,7 +65,7 @@ function NavBar({ isLoggedIn }) {
   const handleCloseBoard = () => {
     setAnchorEl2(null);
   };
-  
+
   return (
     <AppBar
       position="static"
@@ -91,25 +92,37 @@ function NavBar({ isLoggedIn }) {
           입양하기
         </Button>
         <>
-            <Button color="inherit" onClick={handleOpenBoard}>
-              게시판
-            </Button>
-            <Menu
-              anchorEl={anchorEl2}
-              open={Boolean(anchorEl2)}
-              onClose={handleCloseBoard}
+          <Button color="inherit" onClick={handleOpenBoard}>
+            게시판
+          </Button>
+          <Menu
+            anchorEl={anchorEl2}
+            open={Boolean(anchorEl2)}
+            onClose={handleCloseBoard}
+          >
+            <MenuItem
+              onClick={handleCloseBoard}
+              component={Link}
+              to="/board/adoption-review"
             >
-              <MenuItem onClick={handleCloseBoard} component={Link} to="/board/adoption-review">
-                입양후기
-              </MenuItem>
-              <MenuItem onClick={handleCloseBoard} component={Link} to="/board/inquiry">
-                문의게시판
-              </MenuItem>
-              <MenuItem onClick={handleCloseBoard} component={Link} to="/board/usage-guide">
-                이용방법
-              </MenuItem>
-            </Menu>
-          </>
+              입양후기
+            </MenuItem>
+            <MenuItem
+              onClick={handleCloseBoard}
+              component={Link}
+              to="/board/inquiry"
+            >
+              문의게시판
+            </MenuItem>
+            <MenuItem
+              onClick={handleCloseBoard}
+              component={Link}
+              to="/board/usage-guide"
+            >
+              이용방법
+            </MenuItem>
+          </Menu>
+        </>
         {isLoggedIn ? (
           <>
             {userType === "보호소" ? (
@@ -250,11 +263,14 @@ function App() {
                   element={<ShelterDetailPage />}
                 />
                 <Route path="/adoption" element={<AdoptionPage />} />
-                
-                <Route path="/board/adoption-review" element={<AdoptionReviewBoard />} />
+
+                <Route
+                  path="/board/adoption-review"
+                  element={<AdoptionReviewBoard />}
+                />
                 <Route path="/board/inquiry" element={<InquiryBoard />} />
                 <Route path="/board/usage-guide" element={<UsageGuide />} />
-                
+
                 <Route path="/mypage" element={<MyPage />} />
                 <Route
                   path="/Mypage/ShelterMyPage"
@@ -262,6 +278,7 @@ function App() {
                 />
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/signup" element={<UserRegister />} />
+                <Route path="/dog/:dogId" element={<DogDetailPage />} />
                 <Route
                   path="/broadcasting/:broadcastId"
                   element={<BroadCastingPage />}
