@@ -44,7 +44,7 @@ public class AdoptionServiceImpl implements AdoptionService {
     @Override
     @Transactional
     public AdoptionResDto createAdoption(AdoptionReqDto adoptionCreateReqDto, String token) {
-        log.info("[입양신청서 작성] 입양신청서 작성 요청");
+        log.info("[입양신청서 작성] 입양신청서 작성 요청, {}", adoptionCreateReqDto.toString());
 
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
@@ -94,7 +94,7 @@ public class AdoptionServiceImpl implements AdoptionService {
     @Override
     @Transactional
     public AdoptionResDto getAdoption(Integer adoptionNo, String token) {
-        log.info("[입양신청서 상세조회] 입양신청서 상세조회 요청");
+        log.info("[입양신청서 상세조회] 입양신청서 상세조회 요청, adoptionNo : {}, token : {}", adoptionNo, token);
 
         Integer userNo = jwtUtils.getUserNo(token);
 
@@ -126,7 +126,7 @@ public class AdoptionServiceImpl implements AdoptionService {
     @Override
     @Transactional
     public AdoptionResDto updateAdoption(Integer adoptionNo, AdoptionUpdateReqDto adoptionUpdateReqDto, String token) {
-        log.info("[입양신청서 수정] 입양신청서 수정 요청");
+        log.info("[입양신청서 수정] 입양신청서 수정 요청, adoptionNo : {}, token : {}, {}", adoptionNo, token, adoptionUpdateReqDto.toString());
 
         Integer userNo = jwtUtils.getUserNo(token);
 
@@ -165,7 +165,7 @@ public class AdoptionServiceImpl implements AdoptionService {
     @Override
     @Transactional
     public void deleteAdoption(Integer adoptionNo, String token) {
-        log.info("[입양신청서 삭제] 입양신청서 삭제 요청");
+        log.info("[입양신청서 삭제] 입양신청서 삭제 요청. adoptionNo : {}, token : {}", adoptionNo, token);
 
         Integer userNo = jwtUtils.getUserNo(token);
 
@@ -199,7 +199,7 @@ public class AdoptionServiceImpl implements AdoptionService {
     @Override
     @Transactional
     public AdoptionResDto updateAdoptionStatus(Integer adoptionNo, AdoptStatusUpdateReqDto adoptStatusUpdateDto, String token) {
-        log.info("[입양신청서 상태 변경] 입양신청서 상태 변경 요청");
+        log.info("[입양신청서 상태 변경] 입양신청서 상태 변경 요청. adoptionNo : {}, token : {}, {}", adoptionNo, token, adoptStatusUpdateDto.toString());
 
         Integer userNo = jwtUtils.getUserNo(token);
 
@@ -251,7 +251,7 @@ public class AdoptionServiceImpl implements AdoptionService {
     @Override
     @Transactional
     public List<AdoptionResDto> findAdoptionByCondition(AdoptionSearchCondition condition, String token) {
-        log.info("[입양신청서 검색] 입양신청서 검색 요청");
+        log.info("[입양신청서 검색] 입양신청서 검색 요청. token : {}, {}", token, condition.toString());
 
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo)

@@ -39,7 +39,7 @@ public class DogServiceImpl implements DogService {
     @Override
     @Transactional
     public DogResDto createDog(DogReqDto registerDogReqDto, String token) {
-        log.info("[유기견 등록] 유기견 등록 요청");
+        log.info("[유기견 등록] 유기견 등록 요청. token : {}, {}", token, registerDogReqDto.toString());
 
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
@@ -85,7 +85,7 @@ public class DogServiceImpl implements DogService {
     @Override
     @Transactional
     public DogResDto findDog(Integer dogNo, String token) {
-        log.info("[유기견 상세 조회] 유기견 상세 조회 요청");
+        log.info("[유기견 상세 조회] 유기견 상세 조회 요청. dogNo : {}, token : {}", dogNo, token);
 
         Integer userNo = jwtUtils.getUserNo(token);
 
@@ -110,7 +110,7 @@ public class DogServiceImpl implements DogService {
     @Override
     @Transactional
     public DogResDto updateDogStatus(Integer dogNo, DogStatusUpdateReqDto dogStatusUpdateReqDto, String token){
-        log.info("[유기견 상태 변경] 유기견 상태 변경 요청");
+        log.info("[유기견 상태 변경] 유기견 상태 변경 요청. dogNo : {}, token : {}, {]", dogNo, token, dogStatusUpdateReqDto.toString());
 
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
@@ -155,7 +155,7 @@ public class DogServiceImpl implements DogService {
     @Override
     @Transactional
     public DogResDto updateDog(Integer dogNo, DogReqDto registerDogReqDto, String token) {
-        log.info("[유기견 수정] 유기견 수정 요청");
+        log.info("[유기견 수정] 유기견 수정 요청. dogNo : {}, token : {}, {}", dogNo, token, registerDogReqDto.toString());
 
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
@@ -192,7 +192,7 @@ public class DogServiceImpl implements DogService {
     @Override
     @Transactional
     public void deleteDog(Integer dogNo, String token) {
-        log.info("[유기견 삭제] 유기견 삭제 요청");
+        log.info("[유기견 삭제] 유기견 삭제 요청. dogNo : {}, token : {}", dogNo, token);
 
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
@@ -287,7 +287,7 @@ public class DogServiceImpl implements DogService {
     @Override
     @Transactional
     public void likeDog(Integer dogNo, String token) {
-        log.info("[유기견 좋아요] 유기견 좋아요 요청");
+        log.info("[유기견 좋아요] 유기견 좋아요 요청. dogNo : {}, token : {}", dogNo, token);
 
         if(checkLiked(dogNo, token)) {
             log.error("[유기견 좋아요] 이미 좋아요를 누른 사용자입니다.");
@@ -324,7 +324,7 @@ public class DogServiceImpl implements DogService {
     @Override
     @Transactional
     public void dislikeDog(Integer dogNo, String token) {
-        log.info("[유기견 좋아요 취소] 유기견 좋아요 취소 요청");
+        log.info("[유기견 좋아요 취소] 유기견 좋아요 취소 요청. dogNo : {}, token : {}", dogNo, token);
 
         if(!checkLiked(dogNo, token)) {
             log.error("[유기견 좋아요 취소] 아직 좋아요를 누르지 않은 사용자입니다. ");
@@ -353,7 +353,7 @@ public class DogServiceImpl implements DogService {
      */
     @Override
     public Boolean checkLiked(Integer dogNo, String token){
-        log.info("[유기견 좋아요 체크] 유기견 좋아요 체크 요청");
+        log.info("[유기견 좋아요 체크] 유기견 좋아요 체크 요청. dogNo : {}, token : {}");
 
         Integer userNo = jwtUtils.getUserNo(token);
 
