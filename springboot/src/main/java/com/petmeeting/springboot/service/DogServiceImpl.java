@@ -66,6 +66,7 @@ public class DogServiceImpl implements DogService {
                 .dogSpecies(registerDogReqDto.getDogSpecies())
                 .reasonAbandonment(registerDogReqDto.getReasonAbandonment())
                 .isInoculated(registerDogReqDto.getIsInoculated())
+                .imagePath(registerDogReqDto.getImagePath())
                 .build();
 
         dogRepository.save(dog);
