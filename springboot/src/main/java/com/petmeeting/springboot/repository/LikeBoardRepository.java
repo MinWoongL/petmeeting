@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface LikeBoardRepository extends JpaRepository<LikeBoard, Integer> {
 
     @Query(value = "select exists (select * from like_board where board_no = :boardNo and user_no = :userNo)", nativeQuery = true)
-    Boolean existsLikeBoardByUserNoAndBoardNo(Integer userNo, Integer boardNo);
+    Integer existsLikeBoardByUserNoAndBoardNo(Integer userNo, Integer boardNo);
 
     @Modifying
     @Query(value = "delete from like_board where board_no = :boardNo and user_no = :userNo", nativeQuery = true)
