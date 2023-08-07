@@ -29,7 +29,7 @@ function InfoSidebar() {
 
     if (user.userType === "보호소") {
       navigate("/mypage/ShelterMypage");
-    } else if (user.userType === "사용자") {
+    } else if (user.userType === "사용자" || user.userType === "user") {
       navigate("/mypage");
     }
   };
