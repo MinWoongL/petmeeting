@@ -402,7 +402,7 @@ public class DogServiceImpl implements DogService {
     @Override
     @Transactional
     public void unbookmarkDog(Integer dogNo, String token) {
-        log.info("[유기견 찜 취소] 유기견 찜 취소 요청");
+        log.info("[유기견 찜 취소] 유기견 찜 취소 요청. dogNo : {}, token : {}", dogNo, token);
 
         if(!checkBookmark(dogNo, token)) {
             log.error("[유기견 찜 취소] 아직 찜을 누르지 않은 사용자입니다.");
@@ -425,7 +425,7 @@ public class DogServiceImpl implements DogService {
      */
     @Override
     public Boolean checkBookmark(Integer dogNo, String token) {
-        log.info("[유기견 찜 체크] 유기견 찜 체크 요청");
+        log.info("[유기견 찜 체크] 유기견 찜 체크 요청. dogNo : {}, token : {}", dogNo, token);
 
         Integer userNo = jwtUtils.getUserNo(token);
 
@@ -442,7 +442,7 @@ public class DogServiceImpl implements DogService {
      */
     @Override
     public List<DogResDto> getBookmarkDogList(String token) {
-        log.info("[유기견 찜 리스트 조회] 로그인한 사용자의 유기견 찜 리스트 전체조회 요청");
+        log.info("[유기견 찜 리스트 조회] 로그인한 사용자의 유기견 찜 리스트 전체조회 요청. token : {}", token);
         Integer userNo = jwtUtils.getUserNo(token);
 
         log.info("[유기견 찜 리스트 조회] 로그인한 사용자의 유기견 찜 리스트 전체조회 완료");
@@ -460,7 +460,7 @@ public class DogServiceImpl implements DogService {
      */
     @Override
     public List<DogResDto> getLikeDogList(String token) {
-        log.info("[유기견 좋아요 리스트 조회] 로그인한 사용자의 유기견 좋아요 리스트 전체조회 요청");
+        log.info("[유기견 좋아요 리스트 조회] 로그인한 사용자의 유기견 좋아요 리스트 전체조회 요청. token : {}", token);
         Integer userNo = jwtUtils.getUserNo(token);
 
         log.info("[유기견 좋아요 리스트 조회] 로그인한 사용자의 유기견 좋아요 리스트 전체조회 완료");

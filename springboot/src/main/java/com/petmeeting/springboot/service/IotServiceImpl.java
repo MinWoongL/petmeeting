@@ -34,7 +34,7 @@ public class IotServiceImpl implements IotService {
      */
     @Override
     public void control(IotReqDto iotReqDto, Integer shelterNo, String token) {
-        log.info("[기기조작] 기기조작 요청");
+        log.info("[기기조작] 기기조작 요청. {}, shelterNo : {}, token : {}", iotReqDto.toString(), shelterNo, token);
 
         Integer userNo = jwtUtils.getUserNo(token);
 

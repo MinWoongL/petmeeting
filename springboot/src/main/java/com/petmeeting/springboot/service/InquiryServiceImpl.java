@@ -38,7 +38,7 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public InquiryResDto createInquiry(InquiryReqDto inquiryReqDto, String token) {
-        log.info("[문의게시글 작성] 문의게시글 작성 요청");
+        log.info("[문의게시글 작성] 문의게시글 작성 요청. token : {}, {}", inquiryReqDto.toString());
 
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo)
@@ -95,7 +95,7 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public List<InquiryResDto> searchInquiry(InquirySearchCondition inquirySearchCondition) {
-        log.info("[문의게시글 검색] 검색조건에 따라 게시글 검색");
+        log.info("[문의게시글 검색] 검색조건에 따라 게시글 검색. {}", inquirySearchCondition.toString());
         return inquiryQueryDslRepository.findByCondition(inquirySearchCondition).stream()
                 .map(inquiry -> InquiryResDto.entityToDto(inquiry))
                 .collect(Collectors.toList());
@@ -109,7 +109,7 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public void deleteInquiry(Integer inquiryNo, String token) {
-        log.info("[문의게시글 삭제] 문의게시글 삭제 요청.");
+        log.info("[문의게시글 삭제] 문의게시글 삭제 요청. inquiryNo : {}, token : {}", inquiryNo, token);
 
         Inquiry inquiry = inquiryRepository.findById(inquiryNo)
                 .orElseThrow(() -> {
@@ -148,7 +148,7 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public InquiryResDto updateInquiry(Integer inquiryNo, InquiryReqDto inquiryReqDto, String token) {
-        log.info("[문의게시글 수정] 문의게시글 수정 요청");
+        log.info("[문의게시글 수정] 문의게시글 수정 요청. inquiryNo : {}, token : {}, {]", inquiryNo, token, inquiryReqDto.toString());
 
         Inquiry inquiry = inquiryRepository.findById(inquiryNo)
                 .orElseThrow(() -> {
