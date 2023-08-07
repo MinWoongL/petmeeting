@@ -237,6 +237,6 @@ public class BoardServiceImpl implements BoardService {
         Integer userNo = jwtUtils.getUserNo(token);
 
         log.info("[입양후기 좋아요 체크] 입양후기 좋아요 체크. boardNo : {}, userNo : {}", boardNo, userNo);
-        return likeBoardRepository.existsLikeBoardByUserNoAndBoardNo(userNo, boardNo);
+        return likeBoardRepository.existsLikeBoardByUserNoAndBoardNo(userNo, boardNo) > 0 ? true : false;
     }
 }
