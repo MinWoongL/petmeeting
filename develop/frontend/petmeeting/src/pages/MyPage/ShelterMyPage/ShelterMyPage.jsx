@@ -105,6 +105,8 @@ function ShelterMyPage() {
         profile={shelterData}
         isEditing={isEditing}
         onChange={handleChange}
+        onUpdate={handleProfileUpdate} // 새로운 prop을 추가합니다.
+        showEditButton={true}
       />
       <div>
         <button onClick={() => setView("dogs")}>강아지 목록</button>

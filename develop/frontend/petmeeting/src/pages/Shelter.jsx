@@ -10,6 +10,8 @@ import {
 import { Link } from "react-router-dom";
 import { Table, TableBody, TableContainer } from "@mui/material";
 
+import Pagination from "@mui/material/Pagination";
+
 function DataTable() {
   const [tableData, setTableData] = useState([]);
 
@@ -58,8 +60,18 @@ function DataTable() {
     useSortBy,
     usePagination
   );
-
-  const { getTableProps, page, prepareRow } = tableInstance;
+  const {
+    getTableProps,
+    page,
+    prepareRow,
+    canPreviousPage,
+    canNextPage,
+    nextPage,
+    previousPage,
+    gotoPage,
+    pageCount, // 전체 페이지 수
+    state: { pageIndex }, // 현재 페이지 인덱스
+  } = tableInstance;
 
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
@@ -74,12 +86,19 @@ function DataTable() {
                 style={{ textDecoration: "none" }}
                 key={i}
               >
-                <ProfileCard profile={row.original} />
+                <ProfileCard profile={row.original} showEditButton={false} />
               </Link>
             );
           })}
         </TableBody>
       </Table>
+      <Pagination
+        count={pageCount} // 전체 페이지 수
+        page={pageIndex + 1} // 현재 페이지 (0-based 인덱스이므로 +1)
+        onChange={(event, value) => {
+          gotoPage(value - 1); // 선택한 페이지로 이동 (0-based 인덱스이므로 -1)
+        }}
+      />
     </TableContainer>
   );
 }
