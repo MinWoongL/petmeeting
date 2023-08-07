@@ -8,7 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 
-export default function AdoptionReviewDetail() {
+export default function AdoptionReviewUpdate() {
   const { boardNo } = useParams();
   const userNo = JSON.parse(localStorage.getItem("user")).userNo;
 
@@ -16,7 +16,6 @@ export default function AdoptionReviewDetail() {
   const [isLiked, setIsLiked] = useState(false);
 
   const accessToken = JSON.parse(sessionStorage.getItem("token")).accessToken;
-  const updateUrl = "/board/adoption-review/md/" + boardNo;
 
   useEffect(() => {
     // 게시글 정보 가져오기
@@ -67,7 +66,7 @@ export default function AdoptionReviewDetail() {
       }}
     >
       <Typography variant="h5" gutterBottom>
-        입양후기 상세보기
+        입양후기 수정하기
       </Typography>
 
       <Box
@@ -153,7 +152,6 @@ export default function AdoptionReviewDetail() {
             <Button
               startIcon={<EditIcon />}
               color="primary"
-              href={updateUrl}
               variant="outlined"
               sx={{ mr: 1 }}
             >

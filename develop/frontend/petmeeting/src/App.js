@@ -42,6 +42,7 @@ import "./styles/base.css";
 
 import TokenRefresher from "./apis/refresher";
 import AdoptionReviewMain from "./components/Board/AdoptionReviewMain";
+import AdoptionReviewUpdate from "./components/Board/AdoptionReviewUpdate";
 
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -286,6 +287,10 @@ function App() {
                 <Route
                   path="/board/adoption-review/:boardNo" // URL 파라미터를 사용하는 경로로 변경
                   element={<AdoptionReviewMain />} // AdoptionReviewMain 컴포넌트 렌더링
+                />
+                <Route
+                  path="/board/adoption-review/md/:boardNo"
+                  element={<AdoptionReviewUpdate />}
                 />
               </Routes>
             </Box>
