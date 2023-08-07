@@ -31,7 +31,7 @@ import InquiryBoard from "./pages/Board/InquiryBoard";
 import UsageGuide from "./pages/Board/UsageGuide";
 import DogDetailPage from "./pages/DogDetailPage";
 
-import MyPage from "./pages/MyPage";
+import UserDetail from "./pages/MyPage/UserMyPage/UserDetail";
 import ShelterMyPage from "./pages/MyPage/ShelterMyPage/ShelterMyPage";
 import LogIn from "./pages/Auth/LogIn";
 import UserRegister from "./pages/Auth/Register/UserRegister";
@@ -272,7 +272,7 @@ function App() {
                 <Route path="/board/inquiry" element={<InquiryBoard />} />
                 <Route path="/board/usage-guide" element={<UsageGuide />} />
 
-                <Route path="/mypage" element={<MyPage />} />
+                <Route path="/mypage" element={<UserDetail />} />
                 <Route
                   path="/Mypage/ShelterMyPage"
                   element={<ShelterMyPage />}
