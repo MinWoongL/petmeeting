@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @Builder
 public class BoardResDto {
+    Integer boardNo;
     String title;
     String content;
     Integer userNo;
@@ -23,6 +24,7 @@ public class BoardResDto {
         Member member = board.getMember();
 
         return BoardResDto.builder()
+                .boardNo(board.getBoardNo())
                 .title(board.getTitle())
                 .content(board.getContent())
                 .userNo(member.getId())
