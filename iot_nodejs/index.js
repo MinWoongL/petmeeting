@@ -33,14 +33,10 @@ app.get('/iot/:iot_command', async (req, res) => {
 
 app.get('/default', async (req, res) => {
     console.log('DEFAULT /' + req.params.iot_command);
-    res_value = client.get('iot1_toy', (err, reply) => {
-        console.log(reply);
-    });
+    res_value = client.get('iot1_toy');
     console.log('initinal value: ' + res_value);
-    res_value = client.set('iot1_toy', '5');
-    res_value = client.get('iot1_toy', (err, reply) => {
-        console.log(reply);
-    });
+    res_value = await client.set('iot1_toy', '5');
+    res_value = await client.get('iot1_toy');
     console.log('changed value: ' + res_value);
     res.send(res_value);
     console.log('END');
