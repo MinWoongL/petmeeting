@@ -57,10 +57,10 @@ const RegisterDog = () => {
     };
     try {
       console.log("레지스터도그 실행");
+      console.log(submitForm);
       let jjinForm = { ...submitForm };
       jjinForm.imagePath = `${form.imagePath}`;
-      console.log(form.imagePath, "이건 이미지패스");
-      console.log(jjinForm, "이건 찐폼");
+
       const response = await axios.post(
         "https://i9a203.p.ssafy.io/backapi/api/v1/dog",
 
@@ -93,7 +93,7 @@ const RegisterDog = () => {
     <Container component="main" maxWidth="xs">
       <Box sx={{ mt: 8, mb: 2 }}>
         <Typography component="h1" variant="h5">
-          Register Dog
+          유기견 등록하기
         </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
@@ -239,7 +239,7 @@ const RegisterDog = () => {
           />
           <ImageUploadButton option="dog" setImagePath={setImagePath} />
           <Button type="submit" fullWidth variant="contained" color="primary">
-            Register
+            등록하기
           </Button>
         </form>
       </Box>

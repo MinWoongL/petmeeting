@@ -26,6 +26,13 @@ function ShelterMyPage() {
     setOpen(true);
   };
 
+  const handleChange = (field, value) => {
+    setEditData({
+      ...editData,
+      [field]: value,
+    });
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -36,19 +43,20 @@ function ShelterMyPage() {
       const token = JSON.parse(sessionStorage.getItem("token"));
 
       try {
+        //  유저 토큰 던져서 유저 번호 받아오기
         const response = await axios.get(
           "https://i9a203.p.ssafy.io/backapi/api/v1/user",
           {
             headers: { AccessToken: `Bearer ${token.accessToken}` },
           }
         );
-        const userNo = response.data.userNo; // Assuming userNo is in the response data
+        const userNo = response.data.userNo;
         setUserNo(userNo);
         axios
           .get(`https://i9a203.p.ssafy.io/backapi/api/v1/shelter/${userNo}`) // using userNo instead of shelterNo
           .then((res) => {
             setShelterData(res.data);
-            console.log(res);
+            console.log(res.data, "쉘터 데이터임");
           })
           .catch((err) => {
             console.log("API get요청 제대로 못받아왔음");
@@ -89,11 +97,15 @@ function ShelterMyPage() {
 
   return (
     <div>
-      <ProfileCard profile={shelterData} isEditing={isEditing} />
+      <ProfileCard
+        profile={shelterData}
+        isEditing={isEditing}
+        onChange={handleChange}
+      />
       <div>
         <button onClick={() => setView("dogs")}>강아지 목록</button>
         <button onClick={() => setView("donations")}>후원 랭킹</button>
-        <Button variant="outlined" onClick={() => setEditing(!isEditing)}>
+        <Button variant="outlined" onClick={handleEdit}>
           {isEditing ? "Save" : "Edit"}
         </Button>
       </div>
@@ -102,7 +114,7 @@ function ShelterMyPage() {
           <DogDetail shelterNo={userNo} />
           <Link to="/register-dog">
             <Button variant="contained" color="primary">
-              Register New Dog
+              유기견 등록하기
             </Button>
           </Link>
         </div>
