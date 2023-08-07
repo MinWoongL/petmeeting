@@ -358,7 +358,7 @@ public class DogServiceImpl implements DogService {
         Integer userNo = jwtUtils.getUserNo(token);
 
         log.info("[유기견 좋아요 체크] 유기견 좋아요 체크 완료");
-        return likeDogRepository.existsLikeDogByMemberNoAndDogNo(userNo, dogNo);
+        return likeDogRepository.existsLikeDogByMemberNoAndDogNo(userNo, dogNo) > 0 ? true : false;
     }
 
     /**
@@ -431,7 +431,7 @@ public class DogServiceImpl implements DogService {
 
         log.info("[유기견 찜 체크] dogNo : {}, userNo : {}", dogNo, userNo);
         log.info("[유기견 찜 체크] 유기견 찜 체크 완료");
-        return bookmarkDogRepository.existsBookmarkDogByMemberNoAndDogNo(userNo, dogNo);
+        return bookmarkDogRepository.existsBookmarkDogByMemberNoAndDogNo(userNo, dogNo) > 0 ? true : false;
     }
 
     /**
