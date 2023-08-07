@@ -36,10 +36,12 @@ app.get('/default', async (req, res) => {
     res_value = client.get('iot1_toy', (err, reply) => {
         console.log(reply);
     });
+    console.log('initinal value: ' + res_value);
     res_value = client.set('iot1_toy', '5');
     res_value = client.get('iot1_toy', (err, reply) => {
         console.log(reply);
     });
+    console.log('changed value: ' + res_value);
     res.send(res_value);
     console.log('END');
 });
