@@ -18,6 +18,10 @@ function ShelterMyPage() {
   const [editData, setEditData] = useState({}); // To store data to be edited
   const [userNo, setUserNo] = useState(null);
 
+  const handleProfileUpdate = (updatedProfile) => {
+    setShelterData(updatedProfile);
+  };
+
   const [newDog, setNewDog] = useState({});
 
   const [open, setOpen] = useState(false);
