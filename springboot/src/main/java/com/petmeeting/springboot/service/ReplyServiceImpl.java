@@ -42,7 +42,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     @Transactional
     public List<ReplyResDto> createReply(ReplyReqDto replyReqDto, String token) {
-        log.info("[입양후기 댓글 작성] 댓글 작성 요청");
+        log.info("[입양후기 댓글 작성] 댓글 작성 요청. {}, token : {}", replyReqDto.toString(), token);
 
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
@@ -103,7 +103,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     @Transactional
     public ReplyResDto updateReply(Integer replyNo, ReplyUpdateReqDto replyUpdateReqDto, String token) {
-        log.info("[입양후기 댓글 수정] 입양후기 댓글 수정 요청");
+        log.info("[입양후기 댓글 수정] 입양후기 댓글 수정 요청. replyNo : {}, token : {}, {}", replyNo, token, replyUpdateReqDto.toString());
 
         int userNo = jwtUtils.getUserNo(token);
 
@@ -141,7 +141,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     @Transactional
     public void deleteReply(Integer replyNo, String token) {
-        log.info("[입양후기 댓글 삭제] 입양후기 댓글 삭제 요청");
+        log.info("[입양후기 댓글 삭제] 입양후기 댓글 삭제 요청. replyNo : {], token : {}", replyNo, token);
 
         Integer userNo = jwtUtils.getUserNo(token);
 
@@ -170,7 +170,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     @Transactional
     public void likeReply(Integer replyNo, String token) {
-        log.info("[입양후기 댓글 좋아요] 입양후기 댓글 좋아요 설정 요청");
+        log.info("[입양후기 댓글 좋아요] 입양후기 댓글 좋아요 설정 요청. replyNo : {}, token : {}", replyNo, token);
 
         if(checkLiked(replyNo, token)) {
             log.error("[입양후기 댓글 좋아요] 이미 좋아요를 누른 사용자입니다.");
@@ -200,7 +200,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     @Transactional
     public void dislikeReply(Integer replyNo, String token) {
-        log.info("[입양후기 댓글 좋아요 취소] 입양후기 댓글 좋아요 취소 요청");
+        log.info("[입양후기 댓글 좋아요 취소] 입양후기 댓글 좋아요 취소 요청. replyNo : {}, token : {}", replyNo, token);
 
         if(!checkLiked(replyNo, token)) {
             log.error("[입양후기 댓글 좋아요 취소] 아직 좋아요를 누르지 않은 사용자입니다.");
@@ -233,7 +233,7 @@ public class ReplyServiceImpl implements ReplyService {
      */
     @Override
     public Boolean checkLiked(Integer replyNo, String token) {
-        log.info("[입양후기 댓글 좋아요 체크] 입양후기 댓글 좋아요 체크 요청");
+        log.info("[입양후기 댓글 좋아요 체크] 입양후기 댓글 좋아요 체크 요청. replyNo : {}, token : {}", replyNo, token);
 
         Integer userNo = jwtUtils.getUserNo(token);
 

@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void signUp(SignUpReqDto signUpReqDto) {
-        log.info("[회원가입] 회원가입 요청");
+        log.info("[회원가입] 회원가입 요청. {}", signUpReqDto.toString());
 
         if (!check(signUpReqDto.getUserId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("%s와 중복된 ID가 존재합니다", signUpReqDto.getUserId()));
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Map<String, Object> signIn(SignInReqDto signInReqDto) {
-        log.info("[로그인] 로그인 요청");
+        log.info("[로그인] 로그인 요청. {}", signInReqDto.toString());
 
         Users user = userRepository.findUsersByUserId(signInReqDto.getUserId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "가입되지 않은 사용자입니다."));
@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void signOut(String token) {
-        log.info("[로그아웃] 로그아웃 요청");
+        log.info("[로그아웃] 로그아웃 요청. token : {}", token);
         Users user = getUserByToken(token);
 
         log.info("[로그아웃] RefreshToken Redis에서 삭제");
@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void withdraw(String token) {
-        log.info("[회원탈퇴] 회원탈퇴 요청");
+        log.info("[회원탈퇴] 회원탈퇴 요청. token : {}", token);
         Users user = getUserByToken(token);
 
         user.withdraw();
@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String reissueToken(String refreshToken) {
-        log.info("[토큰 재발행] 토큰 재발행 요청");
+        log.info("[토큰 재발행] 토큰 재발행 요청. refreshToken : {}", refreshToken);
 
         if (!refreshToken.startsWith("Bearer ")) {
             log.error("[토큰 재발행] Prefix Error");
@@ -205,7 +205,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserResDto updateUser(UserUpdateReqDto updateReqDto, String token) {
-        log.info("[유저 정보 수정] 유저 정보 수정 요청");
+        log.info("[유저 정보 수정] 유저 정보 수정 요청. {}, token : {}", updateReqDto.toString(), token);
 
         Users user = getUserByToken(token);
 
@@ -283,7 +283,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<AdminUserResDto> getUserList(String option) {
-        log.info("[관리자 - 유저목록] 유저 목록 요청");
+        log.info("[관리자 - 유저목록] 유저 목록 요청. option : {}", option);
 
         if (option == null || option.equals("all")) {
             return userRepository.findAll().stream()
@@ -313,7 +313,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public AdminUserResDto updateStatus(Integer userNo, Boolean isActivated) {
-        log.info("[관리자 - 사용자 상태 변경] 사용자 상태 변경 요청");
+        log.info("[관리자 - 사용자 상태 변경] 사용자 상태 변경 요청. userNo : {}, isActivated : {}", userNo, isActivated);
 
         Users user = userRepository.findById(userNo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."));
@@ -334,7 +334,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public SignInResDto getUserInMyPage(String token) {
-        log.info("[마이페이지 - 정보조회] 정보조회 요청");
+        log.info("[마이페이지 - 정보조회] 정보조회 요청. token : {}", token);
 
         Integer userNo = jwtUtils.getUserNo(token);
 
