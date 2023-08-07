@@ -25,15 +25,13 @@ const PORT = process.env.PORT || 3010;
 
 app.get('/iot/:iot_command', async (req, res) => {
     console.log('GET /' + req.params.iot_command);
-    res_value = client.get('iot' + req.params.iot_command, (err, reply) => {
-        console.log(reply);
-    });
+    res_value = await client.get('iot' + req.params.iot_command);
     res.send(res_value);
 });
 
 app.get('/default', async (req, res) => {
     console.log('DEFAULT /' + req.params.iot_command);
-    res_value = client.get('iot1_toy');
+    res_value = await client.get('iot1_toy');
     console.log('initinal value: ' + res_value);
     res_value = await client.set('iot1_toy', '5');
     res_value = await client.get('iot1_toy');
