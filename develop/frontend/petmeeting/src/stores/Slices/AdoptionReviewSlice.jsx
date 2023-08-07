@@ -1,19 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  // 필요한 값들 넣기  
+  adoptionReview: []
 };
 
 const adoptionReviewSlice = createSlice({
-  name: 'adoptionReview',
+  name: "adoptionReview",
   initialState,
   reducers: {
-    
-    // setshowDevice: (state, action) => {
-    //   state.showDevice = action.payload
-    // }
+    setAdoptionReview: (state, action) => {
+      state.adoptionReview = action.payload
+    }
   }
 });
 
-// export const { 액션 이름 } = adoptionReviewSlice.actions;
+export const { setAdoptionReview } = adoptionReviewSlice.actions;
 export default adoptionReviewSlice.reducer;

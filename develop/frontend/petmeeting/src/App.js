@@ -40,6 +40,7 @@ import BroadCastingPage from "./pages/BroadCasting";
 import "./styles/base.css";
 
 import TokenRefresher from "./apis/refresher";
+import AdoptionReviewMain from "./components/Board/AdoptionReviewMain";
 
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -265,7 +266,10 @@ function App() {
                   path="/broadcasting/:broadcastId"
                   element={<BroadCastingPage />}
                 ></Route>
-
+                <Route
+                  path="/board/adoption-review/:boardNo" // URL 파라미터를 사용하는 경로로 변경
+                  element={<AdoptionReviewMain />} // AdoptionReviewMain 컴포넌트 렌더링
+                />
               </Routes>
             </Box>
           </Grid>
