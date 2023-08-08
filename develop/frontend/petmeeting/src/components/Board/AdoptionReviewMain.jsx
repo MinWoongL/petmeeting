@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { Box, Typography, Button, TextField, Input } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SaveIcon from "@mui/icons-material/Save";
@@ -113,7 +112,7 @@ export default function AdoptionReviewDetail() {
                 {selectedReview.title}
               </Typography>
               <Typography variant="body2">
-                조회수: {selectedReview.viewCnt}
+                조회수: {Math.round(selectedReview.viewCnt / 2)}
               </Typography>
             </>
           )}
