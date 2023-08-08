@@ -1,4 +1,5 @@
 import { Box, Typography, Grid, Button } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add"
 import React, { useEffect, useState } from "react";
 import ReviewList from '../../components/Board/AdoptionReviewList';
 import { setAdoptionReview } from "../../stores/Slices/AdoptionReviewSlice";
@@ -6,11 +7,11 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-function AdoptionReviewBoard() {
+export default function AdoptionReviewBoard() {
   const dispatch = useDispatch();
 
   const adoptionReview = useSelector(state => state.adoptionReview.adoptionReview);
-  
+
   const itemsPerPage = 9; // 한 페이지에 보여줄 아이템 개수
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,13 +19,13 @@ function AdoptionReviewBoard() {
 
   useEffect(() => {
     try {
-      axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/board`, 
-      {
-        option: 'all'
-      }).then(response => {
-        dispatch(setAdoptionReview(response.data));
-      });
-    } catch(error) {
+      axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/board`,
+        {
+          option: 'all'
+        }).then(response => {
+          dispatch(setAdoptionReview(response.data));
+        });
+    } catch (error) {
       console.log("에러 발생 : " + error);
     }
   }, []);
@@ -41,6 +42,20 @@ function AdoptionReviewBoard() {
       <Typography variant="h5" gutterBottom>
         입양후기
       </Typography>
+
+      {/* 입양후기 작성 버튼 */}
+      <Box sx={{
+        display: "flex",
+        justifyContent: "flex-end", // 오른쪽 정렬
+        marginBottom: "10px", // 아래 여백 추가
+        width: "96%"
+      }}>
+        <Link to={`/board/adoption-review/cr`}>
+          <Button startIcon={<AddIcon />} color="primary" variant="outlined">
+            입양후기 작성
+          </Button>
+        </Link>
+      </Box>
 
       <Grid container spacing={1}>
         {/* 입양후기 리스트 */}
@@ -67,5 +82,3 @@ function AdoptionReviewBoard() {
     </Box>
   )
 }
-
-export default AdoptionReviewBoard;
