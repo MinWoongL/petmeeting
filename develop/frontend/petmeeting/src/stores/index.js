@@ -5,6 +5,7 @@ import dogReducer from './Slices/DogSlice'
 import reviewReducer from './Slices/ReviewSlice'
 import DeviceSlice from './Slices/DeviceSlice';
 import AdoptionReviewSlice from './Slices/AdoptionReviewSlice';
+import sessionSlice from './Slices/sessionSlice';
 
 const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
     dogs: dogReducer,
     reviews: reviewReducer,
     device: DeviceSlice,
-    adoptionReview: AdoptionReviewSlice
+    adoptionReview: AdoptionReviewSlice,
+    session: sessionSlice
   }
 });
 

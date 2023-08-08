@@ -12,20 +12,47 @@ import {
   Paper
 } from "@mui/material";
 import { useParams } from "react-router-dom";
+import UserVideoComponent from './OpenVidu/UserVideoComponent'
 
-function BroadCastingView({ timerLimit = 20 }) {
+function BroadCastingView({ timerLimit = 20, isLiveSession = false, token }) {
   const dispatch = useDispatch();
 
   const [seconds, setSeconds] = useState(timerLimit);
   const [isPlaying, setIsPlaying] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [confirmDialog, setConfirmDialog] = useState(false);  // 중간 확인 창 상태
+  const [confirmDialog, setConfirmDialog] = useState(false);
   const { broadcastId } = useParams();
   const liveStreamId = broadcastId;
 
   const currentUser = useSelector((state) => state.user);
   const isLoggedIn = currentUser.isLoggedIn;
   const currentUserId = currentUser.userId;
+
+  const sessionInstance2 = useSelector(state => state.session.sessionInstance)
+  const subscribers2 = useSelector(state => state.session.subscribers)
+  const [subscribers, setSubscribers] = useState([]);
+
+
+  useEffect(() => {
+    if (isLiveSession && token) {
+        console.log('문제없는상태')
+        console.log('isLiveSession', isLiveSession)
+        console.log('받은token:',token)
+        console.log('session받아온거:', sessionInstance2)
+        const sessionInstance = sessionInstance2
+        
+        sessionInstance.on('streamCreated', (event) => {
+            const subscriber = sessionInstance.subscribe(event.stream, 'myVideoContainer');
+            setSubscribers(prevSubscribers => [...prevSubscribers, subscriber]);
+        });
+
+        
+    } else {
+      console.log('문제있는상태')
+      console.log('isLiveSession', isLiveSession)
+      console.log('받은token:',token)
+    }
+  }, [isLiveSession, token]);
 
   useEffect(() => {
     let interval;
@@ -107,7 +134,14 @@ function BroadCastingView({ timerLimit = 20 }) {
       </Box>
 
       <Box sx={{ mt: 3, display: "flex", justifyContent: "center", border: "1px solid gray", height: 400, borderRadius: "8px", overflow: "hidden" }}>
-        <iframe width="100%" height="100%" src={"https://www.youtube.com/embed/" + liveStreamId + "?autoplay=1&mute=1"} title="Live Stream" allowFullScreen></iframe>
+          {isLiveSession ? (
+              // <div id="myVideoContainer" style={{ width: '100%', height: '100%' }}></div>
+              <div id="myVideoContainer" className="col-md-6">
+                <UserVideoComponent style={{ width: '100%', height: '100%' }} streamManager={subscribers2[0]} />
+              </div>
+          ) : (
+              <iframe width="100%" height="100%" src={"https://www.youtube.com/embed/" + liveStreamId + "?autoplay=1&mute=1"} title="Live Stream" allowFullScreen></iframe>
+          )}
       </Box>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
