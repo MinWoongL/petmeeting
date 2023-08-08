@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography, Button, TextField } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Link } from "react-router-dom"; // 추가
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setAdoptionReview } from "../../stores/Slices/AdoptionReviewSlice";
@@ -10,8 +11,9 @@ export default function AdoptionReviewCreate() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const accessToken = JSON.parse(sessionStorage.getItem("token")).accessToken;
+  const accessToken = JSON.parse(sessionStorage.getItem("token"))?.accessToken;
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -21,8 +23,13 @@ export default function AdoptionReviewCreate() {
     setContent(event.target.value);
   };
 
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!window.confirm("게시글을 등록하시겠습니까?")) return;
 
     if (!title || !content) {
       alert("제목과 내용을 입력해주세요.");
@@ -30,28 +37,46 @@ export default function AdoptionReviewCreate() {
     }
 
     try {
-      const response = await axios.post(
-        "https://i9a203.p.ssafy.io/backapi/api/v1/board",
-        {
-          title: title,
-          content: content,
-        },
+      let imagePath = null; // default image 경로 넣어주면 좋을 듯
+      
+      if(selectedFile) {
+        const formData = new FormData();
+        formData.append("image", selectedFile);
+
+        await axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/image?option=board", formData,
         {
           headers: {
             "AccessToken": "Bearer " + accessToken,
-          },
-        }
-      );
-
-      if (response.status === 201) {
-        alert("게시글이 등록되었습니다.");
-        setTitle("");
-        setContent("");
-        dispatch(setAdoptionReview(response.data));
+            "Content-Type": "multipart/form-data",
+          }
+        }).then((response) => {
+          imagePath = response.data;
+        });
       }
+
+      await axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/board",
+      {
+        title: title,
+        content: content,
+        imagePath: imagePath
+      },
+      {
+        headers: {
+          "AccessToken": "Bearer " + accessToken
+        }
+      }).then((response) => {
+        window.location.href="/board/adoption-review/" + response.data.boardNo;
+      })
+
     } catch (error) {
       console.log("에러 발생: " + error);
     }
+  };
+
+  const handleCancel = () => {
+    setTitle("");
+    setContent("");
+    setSelectedFile(null);
   };
 
   return (
@@ -96,22 +121,51 @@ export default function AdoptionReviewCreate() {
             onChange={handleContentChange}
             sx={{
               wordWrap: "break-word",
-              maxHeight: "200px",
+              maxHeight: "400px",
               overflowY: "auto",
-              padding: "10px 0 0 0",
+              margin: "20px 0 20px 0"
             }}
           />
-
-          {/* 게시 버튼 */}
-          <Button
-            type="submit"
-            startIcon={<ArrowBackIcon />}
-            color="primary"
-            variant="outlined"
-            sx={{ mt: 2 }}
+          {/* 버튼들 모음 */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between", // 버튼들을 양 끝에 배치
+              alignItems: "center", // 세로 중앙 정렬
+              marginBottom: "16px", // 아래 여백 추가
+            }}
           >
-            게시
-          </Button>
+            {/* 이미지 업로드 */}
+            <input
+              type="file"
+              accept=".jpg, .jpeg, .png, .gif"
+              onChange={handleFileChange}
+            />
+
+            {/* 게시 및 취소 버튼 */}
+            <Box>
+              <Button
+                type="submit"
+                startIcon={<ArrowBackIcon />}
+                color="primary"
+                variant="outlined"
+                sx={{ mr: 2 }}
+              >
+                게시
+              </Button>
+              <Button
+                component={Link} // Link 컴포넌트로 변경
+                to="/board/adoption-review" // 목록 페이지 경로 설정
+                startIcon={<ArrowBackIcon />}
+                color="secondary"
+                variant="outlined"
+                onClick={handleCancel}
+              >
+                취소
+              </Button>
+            </Box>
+          </Box>
+
         </form>
       </Box>
     </Box>
