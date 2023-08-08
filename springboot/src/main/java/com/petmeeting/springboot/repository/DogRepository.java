@@ -12,7 +12,7 @@ public interface DogRepository extends JpaRepository<Dog, Integer> {
 
     Optional<Dog> findDogByDogNo(Integer dogNo);
 
-    List<Dog> findDogByIsDeletedFalse();
+    List<Dog> findDogByIsDeletedFalseAndAdoptionAvailability_AdoptPossible();
 
     // 로그인 사용자의 유기견 찜 리스트 조회
     @Query(value = "select * from dog where dog_no in (" +

@@ -245,7 +245,7 @@ public class DogServiceImpl implements DogService {
     public List<DogResDto> getAllDog() {
         log.info("[유기견 전체 검색] 유기견 전체 검색");
 
-        return dogRepository.findDogByIsDeletedFalse().stream()
+        return dogRepository.findDogByIsDeletedFalseAndAdoptionAvailability_AdoptPossible().stream()
                 .map(dog -> DogResDto.entityToDto(dog))
                 .collect(Collectors.toList());
     }
