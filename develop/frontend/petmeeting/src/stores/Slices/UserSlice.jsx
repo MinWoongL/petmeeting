@@ -9,6 +9,7 @@ const initialState = {
   password: "",
   points: 0,
   isLoggedIn: false,
+  isAdopted: false,
 };
 
 // id : member
@@ -24,6 +25,7 @@ const userSlice = createSlice({
       // state.password = action.payload.password;
       // state.points = action.payload.points;
       state.isLoggedIn = true;
+      state.isAdopted = action.payload.adopted;
     },
     logout: (state) => {
       // axios 때려서 로그아웃 api 호출하기

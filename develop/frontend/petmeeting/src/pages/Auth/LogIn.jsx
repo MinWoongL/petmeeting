@@ -87,6 +87,7 @@ export default function Login() {
           userNo: response.data.userNo,
           name: response.data.name,
           userType: userType, // Add userType
+          isAdopted: response.data.adopted,
         };
 
         // Save the new user object to localStorage
