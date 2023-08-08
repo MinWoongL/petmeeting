@@ -27,6 +27,7 @@ public class AdoptionQueryDslRepository {
                         containsDogNo(condition.getDogNo()))
                 .limit(condition.getMax() == 0 ? 10 : condition.getMax())
                 .offset(condition.getOffset() == null ? 1 : condition.getOffset())
+                .orderBy(adoption.adoptionNo.desc())
                 .fetch();
     }
 

@@ -24,6 +24,7 @@ public class BoardQueryDslRepository {
                         option(condition))
                 .limit(condition.getMax() == null ? 10 : condition.getMax())
                 .offset(condition.calculateOffset())
+                .orderBy(board.boardNo.desc())
                 .fetch();
     }
 

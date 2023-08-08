@@ -29,9 +29,9 @@ public class InquiryQueryDslRepository {
         return jpaQueryFactory.selectFrom(inquiry)
                 .where(inquiry.deletedTime.isNull(),
                         containsTitle(inquirySearchCondition.getTitle()))
-                .orderBy(inquiry.createdTime.desc())
                 .limit(inquirySearchCondition.getMax())
                 .offset(inquirySearchCondition.getOffset())
+                .orderBy(inquiry.createdTime.desc())
                 .fetch();
     }
 

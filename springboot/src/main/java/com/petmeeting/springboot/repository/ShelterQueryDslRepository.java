@@ -24,6 +24,7 @@ public class ShelterQueryDslRepository {
                         containsLocation(condition.getLocation()))
                 .limit(condition.getMax() == null ? 10 : condition.getMax())
                 .offset(condition.getOffset() == null ? 0 : condition.getOffset())
+                .orderBy(shelter.id.desc())
                 .fetch();
     }
 
