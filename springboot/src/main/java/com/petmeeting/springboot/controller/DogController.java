@@ -87,11 +87,11 @@ public class DogController {
         // Option : true
         if(condition.getOption() != null) {
             // 1. Option : all
-            if(condition.getOption().toLowerCase().equals("all"))
+            if(condition.getOption().toLowerCase().contains("all"))
                 return ResponseEntity.ok(dogService.getAllDog());
 
             // 2. Option : Like(로그인한 유저가 좋아요한 목록)
-            if(condition.getOption().toLowerCase().equals("like")) {
+            if(condition.getOption().toLowerCase().contains("like")) {
                 if(token == null)  {
                     log.info("[로그인한 유저가 좋아요한 목록 조회] - 로그아웃 상태에선 랜덤으로 조회됩니다.");
                     return ResponseEntity.ok(dogService.getAllDogByRandom());
@@ -100,11 +100,11 @@ public class DogController {
             }
 
             // 3. Option : random(랜덤 정렬)
-            if(condition.getOption().toLowerCase().equals("random"))
+            if(condition.getOption().toLowerCase().contains("random"))
                 return ResponseEntity.ok(dogService.getAllDogByRandom());
 
             // 4. Option : Rank(좋아요 상위) - 같은 순위일 땐 랜덤
-            if(condition.getOption().toLowerCase().equals("rank"))
+            if(condition.getOption().toLowerCase().contains("rank"))
                 return ResponseEntity.ok(dogService.getAllDogOrderByRank());
         }
 
