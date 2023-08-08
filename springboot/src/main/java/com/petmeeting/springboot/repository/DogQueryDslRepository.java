@@ -22,7 +22,7 @@ public class DogQueryDslRepository {
     public List<Dog> findByCondition(DogSearchCondition condition) {
         Integer shelterNo = condition.getShelterNo();
 
-        if(shelterNo == 0 || shelterNo == null) {
+        if(shelterNo == null || shelterNo == 0) {
             return jpaQueryFactory.selectFrom(dog)
                     .where(dog.isDeleted.eq(false),
                             containsName(condition.getName()),
