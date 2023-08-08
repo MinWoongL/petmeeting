@@ -55,6 +55,13 @@ public class ChargeServiceImpl implements ChargeService {
         int userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();
 
+        Integer selectPoint = Integer.parseInt(chargeReadyReqDto.getSelectPoint());
+        Integer selectToken = 0;
+
+        if(selectPoint <= 5000) selectToken = 1;
+        else if (selectPoint <= 10000) selectToken = 2;
+        else selectToken = 3;
+
         log.info("[결제요청] userId : {} / price : {}", user.getUserId(), chargeReadyReqDto.getSelectPoint());
 
         MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
@@ -63,7 +70,7 @@ public class ChargeServiceImpl implements ChargeService {
         requestParams.add("partner_order_id", "PetMeeting");
         requestParams.add("partner_user_id", user.getUserId());
         requestParams.add("item_name", chargeReadyReqDto.getSelectPoint() + "포인트 + "
-                + chargeReadyReqDto.getSelectToken() + "토큰 충전하기");
+                + selectToken + "토큰 충전하기");
         requestParams.add("quantity", "1");
         requestParams.add("total_amount", chargeReadyReqDto.getSelectPoint());
         requestParams.add("tax_free_amount", "0");

@@ -5,7 +5,6 @@ import lombok.*;
 @Data
 public class ChargeReadyReqDto {
     private String selectPoint;
-    private String selectToken;
     private String approvalUrl;
     private String cancelUrl;
     private String failUrl;
