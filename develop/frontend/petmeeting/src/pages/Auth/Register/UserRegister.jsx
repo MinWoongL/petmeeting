@@ -248,24 +248,37 @@ export default function SignUp() {
                   <ToggleButton value="보호소">보호소</ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="userId"
-                  label="아이디"
-                  name="userId"
-                  autoComplete="username"
-                />
-                <Button
-                  onClick={() =>
-                    handleUserIdCheck(document.getElementById("userId").value)
-                  }
-                  variant="contained"
-                  color="primary"
-                >
-                  아이디 중복확인
-                </Button>
+              <Grid container spacing={2}>
+                <Grid item container xs={12} alignItems="center">
+                  <Grid item xs={8}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="userId"
+                      label="아이디"
+                      name="userId"
+                      autoComplete="username"
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button
+                      onClick={() =>
+                        handleUserIdCheck(
+                          document.getElementById("userId").value
+                        )
+                      }
+                      variant="contained"
+                      color="primary"
+                      sx={{
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      중복확인
+                    </Button>
+                  </Grid>
+                </Grid>
                 {userIdAvailable === false && (
                   <Typography variant="body2" color="error">
                     아이디가 이미 사용 중입니다.
