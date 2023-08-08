@@ -28,7 +28,7 @@ const UserLikeDog = ({ shelterNo }) => {
     console.log(shelterNo, "쉘터넘 엑시오스");
     const token = sessionStorage.getItem("token");
     axios
-      .get(`${config.baseURL}/api/v1/dog?option=like`, {
+      .get(`${config.baseURL}/api/v1/dog/likes`, {
         headers: {
           accessToken: `Bearer ${JSON.parse(token).accessToken}`,
         },
