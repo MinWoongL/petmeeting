@@ -53,12 +53,45 @@ export default function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [userType, setUserType] = React.useState("사용자");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [passwordError, setPasswordError] = React.useState(false);
+  const [userIdAvailable, setUserIdAvailable] = React.useState(null);
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value);
+    setPasswordError(event.target.value !== password);
+  };
+
   const handleChange = (event) => {
     setUserType(event.target.value);
   };
   const handleUserTypeChange = (event, newUserType) => {
     setUserType(newUserType);
   };
+
+  const handleUserIdCheck = async (userId) => {
+    try {
+      const response = await axios.get(
+        `https://i9a203.p.ssafy.io/backapi/api/v1/user/check/${userId}`
+      );
+      console.log(response.data.result);
+
+      if (!response.data.result) {
+        setUserIdAvailable(true);
+      } else {
+        setUserIdAvailable(false);
+      }
+    } catch (error) {
+      console.log("중복!");
+      setUserIdAvailable(false);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.target);
@@ -205,6 +238,20 @@ export default function SignUp() {
                   name="userId"
                   autoComplete="username"
                 />
+                <Button
+                  onClick={() =>
+                    handleUserIdCheck(document.getElementById("userId").value)
+                  }
+                  variant="contained"
+                  color="primary"
+                >
+                  아이디 중복확인
+                </Button>
+                {userIdAvailable === false && (
+                  <Typography variant="body2" color="error">
+                    아이디가 이미 사용 중입니다.
+                  </Typography>
+                )}
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -214,9 +261,26 @@ export default function SignUp() {
                   label="비밀번호"
                   type="password"
                   id="password"
+                  onChange={handlePasswordChange}
                   autoComplete="new-password"
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label="비밀번호 확인"
+                  type="password"
+                  id="confirmPassword"
+                  onChange={handleConfirmPasswordChange}
+                  error={passwordError}
+                  helperText={
+                    passwordError ? "비밀번호가 일치하지 않습니다." : ""
+                  }
+                />
+              </Grid>
+
               <Grid item xs={12}>
                 <TextField
                   required
