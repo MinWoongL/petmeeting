@@ -5,6 +5,7 @@ import { setInquiry } from "../../stores/Slices/InquirySlice";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import InquiryList from '../../components/Board/InquiryList';
+import AddIcon from "@mui/icons-material/Add"
 
 
 function InquiryBoard() {
