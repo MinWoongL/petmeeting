@@ -17,7 +17,6 @@ public interface DogService {
     List<DogResDto> getAllDog();
     List<DogResDto> getAllDogOrderByRank();
     List<DogResDto> getAllDogByRandom();
-    List<DogResDto> getLikeDogList(String token);
     void likeDog(Integer dogNo, String token);
     void dislikeDog(Integer dogNo, String token);
     Boolean checkLiked(Integer dogNo, String token);
