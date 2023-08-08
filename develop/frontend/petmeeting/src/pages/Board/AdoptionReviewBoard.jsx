@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 export default function AdoptionReviewBoard() {
   const dispatch = useDispatch();
 
+  const isAdopted = JSON.parse(localStorage.getItem("user"))?.isAdopted;
   const adoptionReview = useSelector(state => state.adoptionReview.adoptionReview);
 
   const itemsPerPage = 9; // 한 페이지에 보여줄 아이템 개수
@@ -50,11 +51,18 @@ export default function AdoptionReviewBoard() {
         marginBottom: "10px", // 아래 여백 추가
         width: "96%"
       }}>
-        <Link to={`/board/adoption-review/cr`}>
-          <Button startIcon={<AddIcon />} color="primary" variant="outlined">
-            입양후기 작성
-          </Button>
-        </Link>
+        {isAdopted ? (
+          <Link to={`/board/adoption-review/cr`}>
+            <Button startIcon={<AddIcon />} color="primary" variant="outlined">
+              입양후기 작성
+            </Button>
+          </Link>
+        ) : (
+          <Box>
+            
+          </Box>
+        )}
+        
       </Box>
 
       <Grid container spacing={1}>

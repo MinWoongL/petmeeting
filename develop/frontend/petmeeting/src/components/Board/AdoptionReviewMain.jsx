@@ -11,12 +11,12 @@ import axios from "axios";
 
 export default function AdoptionReviewDetail() {
   const { boardNo } = useParams();
-  const userNo = JSON.parse(localStorage.getItem("user")).userNo;
+  const userNo = JSON.parse(localStorage.getItem("user"))?.userNo;
 
   const [selectedReview, setSelectedReview] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
 
-  const accessToken = JSON.parse(sessionStorage.getItem("token")).accessToken;
+  const accessToken = JSON.parse(sessionStorage.getItem("token"))?.accessToken;
 
   // 입양후기 수정을 위한 값
   const [isEditing, setIsEditing] = useState(false);
@@ -35,6 +35,7 @@ export default function AdoptionReviewDetail() {
         setEditedContent(response.data.content);
       });
 
+    if(accessToken) {
     // 좋아요 체크
     axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/board/like/` + boardNo,
       {
@@ -45,6 +46,7 @@ export default function AdoptionReviewDetail() {
       .then(response => {
         setIsLiked(response.data.result);
       })
+    }
   }, []);
 
   if (!selectedReview) {
@@ -265,6 +267,11 @@ export default function AdoptionReviewDetail() {
   );
 
   function likeBoard(boardNo) {
+    if(!accessToken) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/board/like/" + boardNo,
       {},
       {
@@ -278,6 +285,11 @@ export default function AdoptionReviewDetail() {
   }
 
   function dislikeBoard(boardNo) {
+    if(!accessToken) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     axios.delete("https://i9a203.p.ssafy.io/backapi/api/v1/board/like/" + boardNo,
       {
         headers: {
