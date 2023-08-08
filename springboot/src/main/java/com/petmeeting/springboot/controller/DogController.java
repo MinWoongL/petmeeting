@@ -155,7 +155,7 @@ public class DogController {
             description = "로그인한 유저가 좋아요한 유기견 목록을 조회합니다."
     )
     @GetMapping("/likes")
-    public ResponseEntity<List<DogResDto>> getLikedDogList(@RequestHeader(ACCESS_TOKEN) String token) {
+    public ResponseEntity<List<DogResDto>> getLikeDogList(@RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(dogService.getLikeDogList(token)); // 메서드 이름 맞춤
     }
 
