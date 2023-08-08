@@ -4,7 +4,9 @@ import com.petmeeting.springboot.domain.Dog;
 import com.petmeeting.springboot.dto.dog.DogSearchCondition;
 import com.petmeeting.springboot.enums.AdoptionAvailability;
 import com.petmeeting.springboot.enums.DogSize;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.EnumPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -27,7 +29,8 @@ public class DogQueryDslRepository {
                     .where(dog.isDeleted.eq(false),
                             containsName(condition.getName()),
                             sameDogSize(condition.getDogSize()),
-                            notContainsShelter())
+                            notContainsShelter(),
+                            isAdoptable(dog.adoptionAvailability))
                     .limit((condition.getMax() == null || condition.getMax() == 0) ? 10 : condition.getMax())
                     .offset((condition.getOffset() == null || condition.getOffset() == 0) ? 1 : condition.getOffset()) // 0이 아니라 null이여야 정상작동
                     .orderBy(dog.dogNo.desc())
@@ -43,6 +46,10 @@ public class DogQueryDslRepository {
                 .offset((condition.getOffset() == null || condition.getOffset() == 0) ? 1 : condition.getOffset())
                 .orderBy(dog.dogNo.desc())
                 .fetch();
+    }
+
+    private BooleanExpression isAdoptable(EnumPath<AdoptionAvailability> adoptionAvailability) {
+        return adoptionAvailability.eq(AdoptionAvailability.ADOPT_POSSIBLE);
     }
 
     private BooleanExpression containsName(String name) {
