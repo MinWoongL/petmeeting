@@ -191,6 +191,9 @@ function App() {
 
   const backgroundColor = pageCheck ? "var(--yellow1)" : "var(--yellow2)";
 
+  const shelterNoMatch = location.pathname.match(/\/shelter\/(\d+)/);
+  const shelterNo = shelterNoMatch ? shelterNoMatch[1] : null;
+
   return (
     <>
       <div
@@ -243,8 +246,8 @@ function App() {
                           borderRadius: "8px",
                         }}
                       >
-                        {isShelterDetailPage ? (
-                          <ChatSidebar />
+                        {shelterNo ? (
+                          <ChatSidebar shelterNo={shelterNo} />
                         ) : (
                           <RankSystemSidebar />
                         )}
