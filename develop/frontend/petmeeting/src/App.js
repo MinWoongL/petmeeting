@@ -300,7 +300,7 @@ function App() {
                   element={<InquiryCreate />}
                 />
                 <Route
-                  path="/board/inquiry/:boardNo"
+                  path="/board/inquiry/:inquiryNo"
                   element={<InquiryMain />}
                 />
               </Routes>

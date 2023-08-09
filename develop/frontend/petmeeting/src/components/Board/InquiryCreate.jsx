@@ -44,7 +44,7 @@ export default function InquiryCreate() {
           "AccessToken": "Bearer " + accessToken
         }
       }).then((response) => {
-        window.location.href="/board/inquiry/" + response.data.boardNo;
+        window.location.href="/board/inquiry/" + response.data.inquiryNo;
       })
 
     } catch (error) {

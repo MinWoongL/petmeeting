@@ -76,11 +76,11 @@ function InquiryBoard() {
       <Grid container spacing={1}>
         {/* 문의게시판 리스트 */}
         <Grid container item spacing={2} sx={{ marginLeft: 2, marginRight: 2 }}>
-          {inquiry.slice(startIndex, endIndex).map((board, idx) => (
+          {inquiry.slice(startIndex, endIndex).map((inquiry, idx) => (
             <Grid item key={idx} xs={12} sm={6} md={4}>
               {/* Link 컴포넌트를 사용하여 페이지 이동 */}
-              <Link to={`/board/inquiry/${board.boardNo}`}>
-                <InquiryList board={board} />
+              <Link to={`/board/inquiry/${inquiry.inquiryNo}`}>
+                <InquiryList inquiry={inquiry} />
               </Link>
             </Grid>
           ))}

@@ -9,7 +9,8 @@ function InquiryList(props) {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
-            <div>{props.board.title}</div>
+            <div>{props.inquiry.title}</div>
+            {/*props.board.title*/}
         </div>
     )
 }
