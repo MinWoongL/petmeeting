@@ -37,6 +37,8 @@ import LogIn from "./pages/Auth/LogIn";
 import UserRegister from "./pages/Auth/Register/UserRegister";
 import InfoSidebar from "./components/Sidebar/InfoSidebar";
 import RankSystemSidebar from "./components/Sidebar/RankSystemSidebar";
+import ChatSidebar from "./components/Sidebar/ChatSidebar";
+
 import BroadCastingPage from "./pages/BroadCasting";
 import "./styles/base.css";
 
@@ -44,7 +46,7 @@ import TokenRefresher from "./apis/refresher";
 import AdoptionReviewMain from "./components/Board/AdoptionReviewMain";
 import AdoptionReviewCreate from "./components/Board/AdoptionReviewCreate";
 
-import ApplicationForm from "./components/Adoption/ApplicationForm";  
+import ApplicationForm from "./components/Adoption/ApplicationForm";
 
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -171,6 +173,9 @@ function App() {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
+  // 현재 경로가 보호소 상세 페이지인지 확인
+  const isShelterDetailPage = location.pathname.startsWith("/shelter/");
+
   useEffect(() => {
     const token = sessionStorage.getItem("token");
 
@@ -227,6 +232,7 @@ function App() {
                         <InfoSidebar />
                       </Box>
                     </Grid>
+
                     <Grid item style={{ flex: 3 }} sx={{ mt: 2 }}>
                       <Box
                         border={1}
@@ -237,7 +243,11 @@ function App() {
                           borderRadius: "8px",
                         }}
                       >
-                        <RankSystemSidebar />
+                        {isShelterDetailPage ? (
+                          <ChatSidebar />
+                        ) : (
+                          <RankSystemSidebar />
+                        )}
                       </Box>
                     </Grid>
                   </Grid>
@@ -294,10 +304,7 @@ function App() {
                   path="/board/adoption-review/cr"
                   element={<AdoptionReviewCreate />}
                 />
-                <Route 
-                  path="/adoption/form"
-                  element={<ApplicationForm />}
-                />
+                <Route path="/adoption/form" element={<ApplicationForm />} />
               </Routes>
             </Box>
           </Grid>

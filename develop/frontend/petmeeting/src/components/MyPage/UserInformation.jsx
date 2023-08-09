@@ -7,26 +7,40 @@ import {
   Button,
   TextField,
 } from "@mui/material";
+import axios from "axios";
 
 const UserInformation = ({
   profile,
-  isEditing,
-  onChange,
+
   onUpdate,
   showEditButton = true,
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState(profile);
-
+  const token = JSON.parse(sessionStorage.getItem("token"));
   const handleEdit = () => {
     setEditData(profile); // 편집 시작 시 현재 프로필을 editData로 복사
-    onChange(true); // 편집 모드로 전환
-  };
+    setIsEditing(true); // 편집 모드로 전환
+  }; // 편집 모드로 전환
 
-  const handleSave = () => {
-    if (typeof onUpdate === "function") {
-      onUpdate(editData); // 부모 컴포넌트에 업데이트 된 데이터를 전달
+  const handleSave = async () => {
+    try {
+      console.log(editData, "에딧데이터임");
+      const response = await axios.put(
+        `https://i9a203.p.ssafy.io/backapi/api/v1/user`,
+        editData,
+        { headers: { AccessToken: `Bearer ${token.accessToken}` } }
+      );
+
+      // 서버 응답을 기반으로 상태 업데이트
+      if (typeof onUpdate === "function") {
+        onUpdate(response.data);
+      }
+
+      setIsEditing(false); // 편집 모드 종료
+    } catch (error) {
+      console.error("Failed to update user data:", error);
     }
-    onChange(false); // 편집 모드 종료
   };
 
   const handleChange = (field, value) => {
@@ -54,13 +68,6 @@ const UserInformation = ({
                   label="Phone Number"
                   value={editData.phoneNumber}
                   onChange={(e) => handleChange("phoneNumber", e.target.value)}
-                />
-              </Box>
-              <Box>
-                <TextField
-                  label="Location"
-                  value={editData.location}
-                  onChange={(e) => handleChange("location", e.target.value)}
                 />
               </Box>
               <Box>
@@ -95,14 +102,14 @@ const UserInformation = ({
                 color="text.secondary"
                 component="div"
               >
-                지역: {profile.location}
+                보유 포인트: {profile.holdingPoint}
               </Typography>
               <Typography
                 variant="body2"
                 color="text.secondary"
                 component="div"
               >
-                이메일: {profile.email}
+                보유 멍코인: {profile.holdingToken}
               </Typography>
             </>
           )}
