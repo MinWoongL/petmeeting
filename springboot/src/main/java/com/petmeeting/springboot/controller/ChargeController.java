@@ -20,7 +20,7 @@ public class ChargeController {
             summary = "결제페이지 요청",
             description = "사용자와 금액, 성공 및 취소, 실패 시 url을 보내면 tid와 결제창 주소를 반환합니다."
     )
-    @GetMapping("/ready")
+    @PostMapping("/ready")
     public ResponseEntity<ChargeReadyResDto> readyToCharge(@RequestBody ChargeReadyReqDto chargeReadyReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(chargeService.ready(chargeReadyReqDto, token));
     }
