@@ -39,6 +39,12 @@ function ChatSidebar({ shelterNo }) {
       });
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleChatSubmit();
+    }
+  };
+
   useEffect(() => {
     fetchChats();
   }, [shelterNo]);
@@ -67,6 +73,7 @@ function ChatSidebar({ shelterNo }) {
         label="새 채팅"
         value={newChat}
         onChange={(e) => setNewChat(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <Button onClick={handleChatSubmit} variant="contained" color="primary">
         전송
