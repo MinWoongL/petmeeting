@@ -7,77 +7,37 @@ import UserLikeDog from "../../../components/MyPage/UserLikeDog";
 
 function UserProfilePage() {
   const [userData, setUserData] = useState(null);
-  const [isEditing, setEditing] = useState(false);
-  const [editData, setEditData] = useState({});
-  const [view, setView] = useState("info");
-  const token = JSON.parse(sessionStorage.getItem("token"));
 
-  const handleChange = (field, value) => {
-    setEditData({
-      ...editData,
-      [field]: value,
-    });
-  };
+  const [view, setView] = useState("like");
+  const token = JSON.parse(sessionStorage.getItem("token"));
 
   const handleUpdate = (updatedData) => {
     setUserData(updatedData);
   };
 
-  const handleEditButtonClick = () => {
-    if (isEditing) {
-      handleEdit();
-    } else {
-      setEditData(userData);
-    }
-    setEditing(!isEditing);
-  };
-
   useEffect(() => {
+    console.log(userData);
     axios
       .get(`https://i9a203.p.ssafy.io/backapi/api/v1/user`, {
         headers: { AccessToken: `Bearer ${token.accessToken}` },
       })
       .then((res) => {
-        setUserData(res.data);
+        handleUpdate(res.data);
+        console.log(res.data, "마이페이지 정보 겟받아옴");
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  const handleEdit = async () => {
-    if (isEditing) {
-      try {
-        await axios.put(
-          `https://i9a203.p.ssafy.io/backapi/api/v1/user`,
-          editData,
-          { headers: { AccessToken: `Bearer ${token.accessToken}` } }
-        );
-        setUserData(editData);
-      } catch (error) {
-        console.error("Failed to update user data:", error);
-      }
-    } else {
-      setEditData(userData);
-    }
-    setEditing(!isEditing);
-  };
-
   if (!userData) return <div>Loading...</div>;
 
   return (
     <div>
-      <UserInformation
-        profile={userData}
-        isEditing={isEditing}
-        onChange={handleChange}
-        onUpdate={handleUpdate}
-      />
+      <UserInformation profile={userData} onUpdate={handleUpdate} />
+
       <div>
-        <Button variant="outlined" onClick={handleEditButtonClick}>
-          {isEditing ? "Save" : "Edit"}
-        </Button>
-        <Button onClick={() => setView("like")}>좋아하는 개 보기</Button>
+        <Button onClick={() => setView("like")}>좋아요 한 개 보기</Button>
         <Button onClick={() => setView("bookmark")}>북마크한 개 보기</Button>
       </div>
       {view === "like" ? (
