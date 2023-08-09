@@ -45,6 +45,9 @@ public class Adoption {
     @Column(name = "age", nullable = false)
     private Integer age;
 
+    @Column(name = "phone_number", length = 20, nullable = false)
+    private String phoneNumber;
+
     @Column(name = "call_time", length = 255, nullable = false)
     private String callTime;
 
@@ -83,6 +86,7 @@ public class Adoption {
         this.name = reqDto.getName() == null ? this.name : reqDto.getName();
         this.gender = reqDto.getGender() == null ? this.gender : Gender.valueOf(reqDto.getGender());
         this.age = reqDto.getAge() == null ? this.age : reqDto.getAge();
+        this.phoneNumber = reqDto.getPhoneNumber() == null ? this.phoneNumber : reqDto.getPhoneNumber();
         this.callTime = reqDto.getCallTime() == null ? this.callTime : reqDto.getCallTime();
         this.residence = reqDto.getResidence() == null ? residence : reqDto.getResidence();
         this.job = reqDto.getJob() == null ? job : reqDto.getJob();

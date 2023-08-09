@@ -13,6 +13,7 @@ public class AdoptionReqDto {
     String gender;
     Integer age;
     String callTime;
+    String phoneNumber;
     String residence;
     String job;
     Boolean petExperience;

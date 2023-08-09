@@ -69,6 +69,7 @@ public class AdoptionServiceImpl implements AdoptionService {
                 .name(adoptionCreateReqDto.getName())
                 .gender(Gender.valueOf(adoptionCreateReqDto.getGender()))
                 .age(adoptionCreateReqDto.getAge())
+                .phoneNumber(adoptionCreateReqDto.getPhoneNumber())
                 .callTime(adoptionCreateReqDto.getCallTime())
                 .residence(adoptionCreateReqDto.getResidence())
                 .job(adoptionCreateReqDto.getJob())

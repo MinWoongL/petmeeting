@@ -15,6 +15,7 @@ public class AdoptionResDto {
     String name;
     String gender;
     Integer age;
+    String phoneNumber;
     String callTime;
     String residence;
     String job;
@@ -31,6 +32,7 @@ public class AdoptionResDto {
                 .name(adoption.getName())
                 .gender(adoption.getGender().getValue())
                 .age(adoption.getAge())
+                .phoneNumber(adoption.getPhoneNumber())
                 .callTime(adoption.getCallTime())
                 .residence(adoption.getResidence())
                 .job(adoption.getJob())

@@ -12,6 +12,7 @@ public class AdoptionUpdateReqDto {
     Integer age;
     String callTime;
     String residence;
+    String phoneNumber;
     String job;
     Boolean petExperience;
     String additional;
