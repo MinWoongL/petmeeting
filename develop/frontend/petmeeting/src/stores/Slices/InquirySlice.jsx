@@ -7,7 +7,7 @@ const initialState = {
 const inquirySlice = createSlice({
     name: "inquiry",
     initialState,
-    reducer: {
+    reducers: {
         setInquiry: (state, action) => {
             state.inquiry = action.payload
         }
