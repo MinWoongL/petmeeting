@@ -34,7 +34,7 @@ app.get('/:iot_command', async (req, res) => {
     }
 });
 
-app.get('*', async (req, res) => {
+app.get('*', (req, res) => {
     console.log('DEFAULT GET: ' + req.originalUrl);
     res.send('8');
 });
