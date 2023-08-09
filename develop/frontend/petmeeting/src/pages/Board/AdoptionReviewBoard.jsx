@@ -40,9 +40,9 @@ export default function AdoptionReviewBoard() {
 
   return (
     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Typography variant="h5" gutterBottom>
+      <h1>
         입양후기
-      </Typography>
+      </h1>
 
       {/* 입양후기 작성 버튼 */}
       <Box sx={{
