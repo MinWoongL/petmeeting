@@ -21,7 +21,6 @@ export default function InquiryMain() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
-
   const [editedDate, setEditedDate] = useState(null);
 
   useEffect(() => {
@@ -32,7 +31,7 @@ export default function InquiryMain() {
         setEditedTitle(response.data.title);
         setEditedContent(response.data.content);
       });
-    })
+    }, inquiryNo);
 
   if (!selectedInquiry) {
     return <div>게시글을 찾을 수 없습니다.</div>;
@@ -72,7 +71,7 @@ export default function InquiryMain() {
           maxWidth: "800px",
         }}
       >
-        {/* 제목과 조회수 */}
+        {/* 제목 */}
         <Box
           sx={{
             display: "flex",
@@ -114,7 +113,7 @@ export default function InquiryMain() {
             </>
           ) : (
             <>
-              {/* 생성날짜와 좋아요 개수 */}
+              {/* 생성날짜 */}
               <Box
                 sx={{
                   display: "flex",
@@ -217,8 +216,9 @@ export default function InquiryMain() {
             "AccessToken": "Bearer " + accessToken
           }
         }).then((response) => {
+            window.location.href = "/board/inquiry"
           alert(response.data.msg);
-          window.location.href = "/board/inquiry"
+
         })
     }
   }
