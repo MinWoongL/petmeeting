@@ -30,6 +30,7 @@ import AdoptionReviewBoard from "./pages/Board/AdoptionReviewBoard";
 import InquiryBoard from "./pages/Board/InquiryBoard";
 import UsageGuide from "./pages/Board/UsageGuide";
 import DogDetailPage from "./pages/DogDetailPage";
+import PaymentSuccess from "./pages/PaymentSuccessPage";
 
 import UserDetail from "./pages/MyPage/UserMyPage/UserDetail";
 import ShelterMyPage from "./pages/MyPage/ShelterMyPage/ShelterMyPage";
@@ -322,7 +323,7 @@ function App() {
                 />
 
                 <Route path="/adoption/form" element={<ApplicationForm />} />
-
+                <Route path="/payment/success" element={<PaymentSuccess />}/>
               </Routes>
             </Box>
           </Grid>
