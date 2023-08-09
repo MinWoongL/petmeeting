@@ -1,20 +1,37 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 export default function ApplicationForm() {
   const [formData, setFormData] = useState({
     name: "",
     gender: "",
     age: "",
+    phoneNumber: "",
     callTime: "",
     residence: "",
     job: "",
     petExperience: "",
     additional: "",
   });
+  
+  const accessToken = JSON.parse(sessionStorage.getItem("token"))?.accessToken;
+
+  if(!accessToken) {
+    alert("로그인이 필요합니다.");
+    window.history.back();
+  }
 
   const [selectedShelter, setSelectedShelter] = useState("");
   const [selectedDog, setSelectedDog] = useState("");
   const [shelterList, setShelterList] = useState([]);
+  const [dogList, setDogList] = useState([]);
+
+  useState(() => {
+    axios.get("https://i9a203.p.ssafy.io/backapi/api/v1/shelter?option=all")
+      .then((response) => {
+        setShelterList(response.data);
+      })
+  })
 
   const formContainerStyle = {
     display: "flex",
@@ -27,7 +44,7 @@ export default function ApplicationForm() {
     border: "1px solid #ccc",
     padding: "20px",
     width: "400px",
-    height: "780px",
+    height: "840px",
     margin: "10px",
     borderRadius: "5px",
   };
@@ -68,13 +85,18 @@ export default function ApplicationForm() {
     });
   };
 
-  const handleShelterChange = (event) => {
+  const handleShelterChange = async (event) => {
     const selectedValue = event.target.value;
-    setSelectedShelter(selectedValue);
-    setSelectedDog(""); // 보호소 선택 변경 시 강아지 선택 초기화
+    await setSelectedShelter(selectedValue);
+    setSelectedDog("");
 
     if (selectedValue === "") {
-      setSelectedDog(""); // 보호소를 선택하지 않았을 때 강아지 선택 초기화
+      setSelectedDog("");
+    } else {
+      await axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/dog?shelterNo=${selectedShelter}`)
+      .then((response) => {
+        setDogList(response.data);
+      })
     }
   };
 
@@ -86,10 +108,39 @@ export default function ApplicationForm() {
     window.history.back();
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // TODO: 폼 데이터를 서버로 전송하는 로직을 추가하세요
-    console.log("Form data submitted:", formData);
+
+    const formData = {
+      dogNo: selectedDog,
+      additional: event.target.additional.value,
+      age: event.target.age.value,
+      phoneNumber: event.target.phoneNumber.value,
+      callTime: event.target.callTime.value,
+      gender: event.target.gender.value,
+      job: event.target.job.value,
+      name: event.target.name.value,
+      petExperience: event.target.petExperience.value,
+      residence: event.target.residence.value
+    };
+  
+    for (const key in formData) {
+      if (formData[key] === null || formData[key].trim() === "") {
+        alert("모든 항목을 입력해주세요.");
+        return;
+      }
+    }
+    
+    await axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/adoption", 
+    formData,
+    {
+      headers: {
+        "AccessToken": "Bearer " + accessToken
+      }
+    }).then((response) => {
+      // 입양신청 목록으로 이동시켜야함!!!
+      console.log(response.data);
+    })
   };
 
   return (
@@ -107,7 +158,7 @@ export default function ApplicationForm() {
             >
               <option value="">선택</option>
               {shelterList.map((shelter) => (
-                <option key={shelter.id} value={shelter.id}>
+                <option key={shelter.shelterNo} value={shelter.shelterNo}>
                   {shelter.name}
                 </option>
               ))}
@@ -123,8 +174,13 @@ export default function ApplicationForm() {
               style={inputStyle}
               disabled={selectedShelter === ""}
             >
+              {/* 강아지 목록 */}
               <option value="" disabled={!selectedShelter}>선택</option>
-              {/* TODO: 선택한 보호소에 따라 강아지 리스트를 표시 */}
+              {dogList.map((dog) => (
+                <option key={dog.dogNo} value={dog.dogNo}>
+                  {dog.name}
+                </option>
+              ))}
             </select>
           </label>
           <br />
@@ -136,6 +192,7 @@ export default function ApplicationForm() {
               value={formData.name}
               style={inputStyle}
               onChange={handleInputChange}
+              placeholder="ex) 홍길동"
             />
           </label>
           <br />
@@ -161,6 +218,19 @@ export default function ApplicationForm() {
               value={formData.age}
               style={inputStyle}
               onChange={handleInputChange}
+              placeholder="ex) 28"
+            />
+          </label>
+          <br />
+          <label>
+            연락처:
+            <input
+              type="text"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              style={inputStyle}
+              onChange={handleInputChange}
+              placeholder="ex) 010-1234-5678"
             />
           </label>
           <br />
@@ -172,6 +242,7 @@ export default function ApplicationForm() {
               value={formData.callTime}
               style={inputStyle}
               onChange={handleInputChange}
+              placeholder="ex) 오후 5시"
             />
           </label>
           <br />
@@ -183,6 +254,7 @@ export default function ApplicationForm() {
               value={formData.residence}
               style={inputStyle}
               onChange={handleInputChange}
+              placeholder="ex) 경기, 서울 등"
             />
           </label>
           <br />
@@ -194,18 +266,22 @@ export default function ApplicationForm() {
               value={formData.job}
               style={inputStyle}
               onChange={handleInputChange}
+              placeholder="ex) 무직, 자영업 등"
             />
           </label>
           <br />
           <label>
             반려동물 경험:
-            <input
-              type="text"
+            <select
               name="petExperience"
               value={formData.petExperience}
-              style={inputStyle}
               onChange={handleInputChange}
-            />
+              style={inputStyle}
+            >
+              <option value="">선택</option>
+              <option value="false">없음</option>
+              <option value="true">있음</option>
+            </select>
           </label>
           <br />
           <label>
@@ -215,6 +291,7 @@ export default function ApplicationForm() {
               value={formData.additional}
               style={inputStyle}
               onChange={handleInputChange}
+              placeholder="자유롭게 입력해주세요"
             />
           </label>
           <br />
