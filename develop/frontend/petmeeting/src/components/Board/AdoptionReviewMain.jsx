@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Button, TextField, Input } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -8,6 +8,15 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
+
+import defaultDog1 from "../../assets/images/dog/dog1.png";
+import defaultDog2 from "../../assets/images/dog/dog2.png";
+import defaultDog3 from "../../assets/images/dog/dog3.png";
+import defaultDog4 from "../../assets/images/dog/dog4.png";
+import defaultDog5 from "../../assets/images/dog/dog5.png";
+import defaultDog6 from "../../assets/images/dog/dog6.png";
+import defaultDog7 from "../../assets/images/dog/dog7.png";
+import defaultDog8 from "../../assets/images/dog/dog8.png";
 
 export default function AdoptionReviewDetail() {
   const { boardNo } = useParams();
@@ -25,6 +34,16 @@ export default function AdoptionReviewDetail() {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const [editedDate, setEditedDate] = useState(null);
+  const [imagePath, setImagePath] = useState(null);
+  
+  const dogImages = [
+    defaultDog1, defaultDog2, defaultDog3, defaultDog4,
+    defaultDog5, defaultDog6, defaultDog7, defaultDog8
+  ];
+
+  const getRandomDogImagePath = () => {
+    return dogImages[boardNo%8];
+  };
 
   useEffect(() => {
     // 게시글 정보 가져오기
@@ -33,31 +52,42 @@ export default function AdoptionReviewDetail() {
         setSelectedReview(response.data);
         setEditedTitle(response.data.title);
         setEditedContent(response.data.content);
+        setEditedDate(response.data.modifiedTime
+          ? "작성 시간 : " + formatDateTime(response.data.modifiedTime * 1000) + " (수정됨)"
+          : "작성 시간 : " + formatDateTime(response.data.createdTime * 1000)
+        );
+
+        if (!response.data.imagePath) {
+          setImagePath(getRandomDogImagePath());
+        } else {
+          setImagePath(
+            `https://i9a203.p.ssafy.io/backapi/api/v1/image/` +
+            response.data.imagePath +
+            "?option=board"
+          );
+        }
+
       });
 
-    if(accessToken) {
-    // 좋아요 체크
-    axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/board/like/` + boardNo,
-      {
-        headers: {
-          "AccessToken": "Bearer " + accessToken
-        }
-      })
-      .then(response => {
-        setIsLiked(response.data.result);
-      })
+    if (accessToken) {
+      // 좋아요 체크
+      axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/board/like/` + boardNo,
+        {
+          headers: {
+            "AccessToken": "Bearer " + accessToken
+          }
+        })
+        .then(response => {
+          setIsLiked(response.data.result);
+        })
     }
-  }, []);
+  }, [boardNo, accessToken]);
 
   if (!selectedReview) {
     return <div>게시글을 찾을 수 없습니다.</div>;
   }
 
   // 수정되었으면 수정 시간, 그렇지 않으면 작성 시간으로 설정
-  const imagePath =
-    `https://i9a203.p.ssafy.io/backapi/api/v1/image/` +
-    selectedReview.imagePath +
-    "?option=board";
   let date =
     "작성 시간 : " + formatDateTime(selectedReview.createdTime * 1000);
 
@@ -121,19 +151,27 @@ export default function AdoptionReviewDetail() {
         </Box>
 
         {/* 사진 */}
-        <img
-          src={imagePath}
-          alt="게시글 이미지"
-          style={{ width: "100%", maxHeight: "400px", objectFit: "cover" }}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "8px"
+          }}
+        >
+          <img
+            src={imagePath}
+            alt="게시글 이미지"
+            style={{ height: "400px", objectFit: "cover" }}
+          />
+        </Box>
 
         {/* 내용 */}
         <Box>
           {isEditing ? (
             <>
               {/* 이미지 업로드 */}
-              <input type="file" accept=".jpg, .jpeg, .png, .gif" 
-              onChange={(event) => setSelectedFile(event.target)}/>
+              <input type="file" accept=".jpg, .jpeg, .png, .gif"
+                onChange={(event) => setSelectedFile(event.target)} />
 
               {/* 내용 수정하는 곳 */}
               <TextField
@@ -142,7 +180,7 @@ export default function AdoptionReviewDetail() {
                 label="내용"
                 value={editedContent}
                 onChange={(event) => setEditedContent(event.target.value)}
-                sx={{ wordWrap: "break-word", mt: 2, maxHeight: "200px", overflowY: "auto", padding: "10px 0 0 0"}}
+                sx={{ wordWrap: "break-word", mt: 2, maxHeight: "200px", overflowY: "auto", padding: "10px 0 0 0" }}
               />
             </>
           ) : (
@@ -195,9 +233,7 @@ export default function AdoptionReviewDetail() {
                   </React.Fragment>
                 ))}
               </Typography>
-
             </>
-
           )}
         </Box>
 
@@ -267,7 +303,7 @@ export default function AdoptionReviewDetail() {
   );
 
   function likeBoard(boardNo) {
-    if(!accessToken) {
+    if (!accessToken) {
       alert("로그인이 필요합니다.");
       return;
     }
@@ -285,7 +321,7 @@ export default function AdoptionReviewDetail() {
   }
 
   function dislikeBoard(boardNo) {
-    if(!accessToken) {
+    if (!accessToken) {
       alert("로그인이 필요합니다.");
       return;
     }
@@ -319,19 +355,19 @@ export default function AdoptionReviewDetail() {
     if (window.confirm("변경된 내용을 저장하시겠습니까?")) {
       let imagePath = null;
 
-      if(imageFile) {
+      if (imageFile) {
         const formData = new FormData();
-        formData.append("image", imageFile.files[0]); 
+        formData.append("image", imageFile.files[0]);
 
         await axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/image?option=board", formData,
-        {
-          headers: {
-            "AccessToken": "Bearer " + accessToken,
-            "Content-Type": "multipart/form-data",
-          }
-        }).then((response) => {
-          imagePath = response.data;
-        })
+          {
+            headers: {
+              "AccessToken": "Bearer " + accessToken,
+              "Content-Type": "multipart/form-data",
+            }
+          }).then((response) => {
+            imagePath = response.data;
+          })
       }
 
       await axios.put("https://i9a203.p.ssafy.io/backapi/api/v1/board/" + boardNo,
