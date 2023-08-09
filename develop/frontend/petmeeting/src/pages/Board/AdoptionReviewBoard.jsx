@@ -1,7 +1,7 @@
 import { Box, Typography, Grid, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add"
 import React, { useEffect, useState } from "react";
-import ReviewList from '../../components/Board/AdoptionReviewList';
+import ReviewItem from '../../components/Board/AdoptionReviewListItem';
 import { setAdoptionReview } from "../../stores/Slices/AdoptionReviewSlice";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -40,9 +40,9 @@ export default function AdoptionReviewBoard() {
 
   return (
     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Typography variant="h5" gutterBottom>
+      <h1>
         입양후기
-      </Typography>
+      </h1>
 
       {/* 입양후기 작성 버튼 */}
       <Box sx={{
@@ -59,7 +59,7 @@ export default function AdoptionReviewBoard() {
           </Link>
         ) : (
           <Box>
-            
+
           </Box>
         )}
         
@@ -72,7 +72,7 @@ export default function AdoptionReviewBoard() {
             <Grid item key={idx} xs={12} sm={6} md={4}>
               {/* Link 컴포넌트를 사용하여 페이지 이동 */}
               <Link to={`/board/adoption-review/${board.boardNo}`}>
-                <ReviewList board={board} />
+                <ReviewItem board={board} />
               </Link>
             </Grid>
           ))}

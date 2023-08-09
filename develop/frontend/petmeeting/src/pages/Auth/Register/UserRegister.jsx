@@ -19,6 +19,8 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 import "../../../styles/base.css";
 import {
@@ -57,6 +59,19 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
   const [userIdAvailable, setUserIdAvailable] = React.useState(null);
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+
+  const handleSnackbarOpen = () => {
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackbarOpen(false);
+  };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -82,9 +97,13 @@ export default function SignUp() {
       console.log(response.data.result);
 
       if (!response.data.result) {
-        setUserIdAvailable(true);
-      } else {
+        console.log("들어왔음");
+        // alert("아이디가 이미 사용중입니다.");
+
         setUserIdAvailable(false);
+      } else {
+        handleSnackbarOpen(); // 스낵바 열기
+        setUserIdAvailable(true);
       }
     } catch (error) {
       console.log("중복!");
@@ -229,24 +248,37 @@ export default function SignUp() {
                   <ToggleButton value="보호소">보호소</ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="userId"
-                  label="아이디"
-                  name="userId"
-                  autoComplete="username"
-                />
-                <Button
-                  onClick={() =>
-                    handleUserIdCheck(document.getElementById("userId").value)
-                  }
-                  variant="contained"
-                  color="primary"
-                >
-                  아이디 중복확인
-                </Button>
+              <Grid container spacing={2}>
+                <Grid item container xs={12} alignItems="center">
+                  <Grid item xs={8}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="userId"
+                      label="아이디"
+                      name="userId"
+                      autoComplete="username"
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button
+                      onClick={() =>
+                        handleUserIdCheck(
+                          document.getElementById("userId").value
+                        )
+                      }
+                      variant="contained"
+                      color="primary"
+                      sx={{
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      중복확인
+                    </Button>
+                  </Grid>
+                </Grid>
                 {userIdAvailable === false && (
                   <Typography variant="body2" color="error">
                     아이디가 이미 사용 중입니다.
@@ -368,6 +400,15 @@ export default function SignUp() {
         </Box>
         <Copyright sx={{ mt: 5 }} />
       </Container>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity="success">
+          회원가입 가능한 아이디입니다!
+        </Alert>
+      </Snackbar>
     </ThemeProvider>
   );
 }

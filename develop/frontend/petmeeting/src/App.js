@@ -37,6 +37,8 @@ import LogIn from "./pages/Auth/LogIn";
 import UserRegister from "./pages/Auth/Register/UserRegister";
 import InfoSidebar from "./components/Sidebar/InfoSidebar";
 import RankSystemSidebar from "./components/Sidebar/RankSystemSidebar";
+import ChatSidebar from "./components/Sidebar/ChatSidebar";
+
 import BroadCastingPage from "./pages/BroadCasting";
 import "./styles/base.css";
 
@@ -46,6 +48,9 @@ import AdoptionReviewCreate from "./components/Board/AdoptionReviewCreate";
 
 import InquiryMain from "./components/Board/InquiryMain";
 import InquiryCreate from "./components/Board/InquiryCreate";
+
+import ApplicationForm from "./components/Adoption/ApplicationForm";
+
 
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -172,6 +177,9 @@ function App() {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
+  // 현재 경로가 보호소 상세 페이지인지 확인
+  const isShelterDetailPage = location.pathname.startsWith("/shelter/");
+
   useEffect(() => {
     const token = sessionStorage.getItem("token");
 
@@ -186,6 +194,9 @@ function App() {
   const pageCheck = authPage.includes(location.pathname);
 
   const backgroundColor = pageCheck ? "var(--yellow1)" : "var(--yellow2)";
+
+  const shelterNoMatch = location.pathname.match(/\/shelter\/(\d+)/);
+  const shelterNo = shelterNoMatch ? shelterNoMatch[1] : null;
 
   return (
     <>
@@ -228,6 +239,7 @@ function App() {
                         <InfoSidebar />
                       </Box>
                     </Grid>
+
                     <Grid item style={{ flex: 3 }} sx={{ mt: 2 }}>
                       <Box
                         border={1}
@@ -238,7 +250,11 @@ function App() {
                           borderRadius: "8px",
                         }}
                       >
-                        <RankSystemSidebar />
+                        {shelterNo ? (
+                          <ChatSidebar shelterNo={shelterNo} />
+                        ) : (
+                          <RankSystemSidebar />
+                        )}
                       </Box>
                     </Grid>
                   </Grid>
@@ -295,6 +311,7 @@ function App() {
                   path="/board/adoption-review/cr"
                   element={<AdoptionReviewCreate />}
                 />
+
                 <Route
                   path="/board/inquiry/cr"
                   element={<InquiryCreate />}
@@ -303,6 +320,9 @@ function App() {
                   path="/board/inquiry/:inquiryNo"
                   element={<InquiryMain />}
                 />
+
+                <Route path="/adoption/form" element={<ApplicationForm />} />
+
               </Routes>
             </Box>
           </Grid>
