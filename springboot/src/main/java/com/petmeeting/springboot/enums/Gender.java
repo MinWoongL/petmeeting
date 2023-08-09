@@ -15,7 +15,7 @@ public enum Gender {
     }
 
     public static Gender getGender(String value) {
-        if (value.equals("F"))
+        if (value.contains("F"))
             return FEMALE;
         else
             return MALE;

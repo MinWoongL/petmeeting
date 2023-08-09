@@ -67,7 +67,7 @@ public class AdoptionServiceImpl implements AdoptionService {
                 .dog(dog)
                 .shelter(dog.getShelter())
                 .name(adoptionCreateReqDto.getName())
-                .gender(Gender.valueOf(adoptionCreateReqDto.getGender()))
+                .gender(Gender.getGender(adoptionCreateReqDto.getGender()))
                 .age(adoptionCreateReqDto.getAge())
                 .phoneNumber(adoptionCreateReqDto.getPhoneNumber())
                 .callTime(adoptionCreateReqDto.getCallTime())
