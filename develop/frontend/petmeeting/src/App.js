@@ -44,6 +44,8 @@ import TokenRefresher from "./apis/refresher";
 import AdoptionReviewMain from "./components/Board/AdoptionReviewMain";
 import AdoptionReviewCreate from "./components/Board/AdoptionReviewCreate";
 
+import ApplicationForm from "./components/Adoption/ApplicationForm";  
+
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorEl2, setAnchorEl2] = useState(null);
@@ -291,6 +293,10 @@ function App() {
                 <Route
                   path="/board/adoption-review/cr"
                   element={<AdoptionReviewCreate />}
+                />
+                <Route 
+                  path="/adoption/form"
+                  element={<ApplicationForm />}
                 />
               </Routes>
             </Box>
