@@ -6,6 +6,7 @@ import reviewReducer from './Slices/ReviewSlice'
 import DeviceSlice from './Slices/DeviceSlice';
 import AdoptionReviewSlice from './Slices/AdoptionReviewSlice';
 import sessionSlice from './Slices/sessionSlice';
+import InquirySlice from './Slices/InquirySlice';
 
 const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
     reviews: reviewReducer,
     device: DeviceSlice,
     adoptionReview: AdoptionReviewSlice,
-    session: sessionSlice
+    session: sessionSlice,
+    inquiry: InquirySlice
   }
 });
 

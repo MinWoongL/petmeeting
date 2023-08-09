@@ -46,7 +46,11 @@ import TokenRefresher from "./apis/refresher";
 import AdoptionReviewMain from "./components/Board/AdoptionReviewMain";
 import AdoptionReviewCreate from "./components/Board/AdoptionReviewCreate";
 
+import InquiryMain from "./components/Board/InquiryMain";
+import InquiryCreate from "./components/Board/InquiryCreate";
+
 import ApplicationForm from "./components/Adoption/ApplicationForm";
+
 
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -307,7 +311,18 @@ function App() {
                   path="/board/adoption-review/cr"
                   element={<AdoptionReviewCreate />}
                 />
+
+                <Route
+                  path="/board/inquiry/cr"
+                  element={<InquiryCreate />}
+                />
+                <Route
+                  path="/board/inquiry/:inquiryNo"
+                  element={<InquiryMain />}
+                />
+
                 <Route path="/adoption/form" element={<ApplicationForm />} />
+
               </Routes>
             </Box>
           </Grid>
