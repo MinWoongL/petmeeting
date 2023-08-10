@@ -20,11 +20,15 @@ client.connect().then();
 const express = require('express');
 const app = express();
 
+// cors
+const cors = require('cors');
+app.use(cors());
+
 // constrants
 const PORT = process.env.PORT || 3010;
 
-app.get('/:iot_command', async (req, res) => {
-    console.log('GET /' + req.params.iot_command);
+app.get('/iot/:iot_command', async (req, res) => {
+    console.log('IOT GET /' + req.params.iot_command);
     if(await client.exists('iot' + req.params.iot_command)) {
         res_value = await client.get('iot' + req.params.iot_command);
         res.send(res_value);
@@ -34,9 +38,14 @@ app.get('/:iot_command', async (req, res) => {
     }
 });
 
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
     console.log('DEFAULT GET: ' + req.originalUrl);
-    res.send('8');
+    res.send('0');
+});
+
+app.use('*', (req, res) => {
+    console.log('INVALID INPUT: ' + req.originalUrl);
+    res.send('0');
 });
 
 /*
