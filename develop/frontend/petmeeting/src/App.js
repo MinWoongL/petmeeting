@@ -323,7 +323,15 @@ function App() {
                 />
 
                 <Route path="/adoption/form" element={<ApplicationForm />} />
+
+
+                <Route 
+                  path="/board/usage-guide"
+                  element={<UsageGuide />}
+                />
+
                 <Route path="/payment/success" element={<PaymentSuccess />}/>
+
               </Routes>
             </Box>
           </Grid>
