@@ -12,6 +12,18 @@ export default function HowToUse() {
             <Typography>
                 이용방법
             </Typography>
+            <Box>
+                <Typography>
+                    조작방법
+                </Typography>
+
+
+            </Box>
+            <Box>
+                <Typography>
+                    후원방법
+                </Typography>
+            </Box>
 
 
         </Box>
