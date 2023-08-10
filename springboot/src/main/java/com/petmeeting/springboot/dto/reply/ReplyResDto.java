@@ -14,7 +14,7 @@ public class ReplyResDto {
     Integer userNo;
     String writer;
     String content;
-    Long createTime;
+    Long createdTime;
     Long modifiedTime;
     Integer likeCnt;
 
@@ -27,7 +27,7 @@ public class ReplyResDto {
                 .userNo(user.getId())
                 .writer(user.getUserId())
                 .content(reply.getContent())
-                .createTime(reply.getCreatedTime())
+                .createdTime(reply.getCreatedTime())
                 .modifiedTime(reply.getModifiedTime())
                 .likeCnt(reply.getLikeCnt())
                 .build();
