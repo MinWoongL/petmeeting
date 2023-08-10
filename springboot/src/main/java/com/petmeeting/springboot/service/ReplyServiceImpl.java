@@ -54,7 +54,6 @@ public class ReplyServiceImpl implements ReplyService {
                 .board(boardRepository.findById(replyReqDto.getBoardNo()).get())
                 .content(replyReqDto.getContent())
                 .createdTime(System.currentTimeMillis() / 1000L)
-                .likeCnt(0)
                 .build();
 
         replyRepository.save(reply);
@@ -202,6 +201,12 @@ public class ReplyServiceImpl implements ReplyService {
     public void dislikeReply(Integer replyNo, String token) {
         log.info("[입양후기 댓글 좋아요 취소] 입양후기 댓글 좋아요 취소 요청. replyNo : {}, token : {}", replyNo, token);
 
+        Reply reply = replyRepository.findById(replyNo)
+                .orElseThrow(() -> {
+                    log.error("[입양후기 댓글 좋아요 취소] 댓글을 찾을 수 없습니다.");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.");
+                });
+
         if(!checkLiked(replyNo, token)) {
             log.error("[입양후기 댓글 좋아요 취소] 아직 좋아요를 누르지 않은 사용자입니다.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "아직 좋아요를 누르지 않았습니다.");
@@ -211,12 +216,6 @@ public class ReplyServiceImpl implements ReplyService {
 
         Integer dislikeCnt = likeReplyRepository.deleteLikeReplyByUserAndReply(userNo, replyNo);
         log.info("[입양후기 댓글 좋아요 취소] 취소완료. {}개", dislikeCnt);
-
-        Reply reply = replyRepository.findById(replyNo)
-                .orElseThrow(() -> {
-                    log.error("[입양후기 댓글 좋아요 취소] 댓글을 찾을 수 없습니다.");
-                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.");
-                });
 
         reply.updateLikeCnt(false);
         replyRepository.save(reply);

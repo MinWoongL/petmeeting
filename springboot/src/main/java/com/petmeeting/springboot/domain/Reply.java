@@ -3,6 +3,7 @@ package com.petmeeting.springboot.domain;
 import com.petmeeting.springboot.dto.reply.ReplyUpdateReqDto;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@DynamicInsert
 public class Reply {
     @Id
     @GeneratedValue
