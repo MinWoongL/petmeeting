@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { wait } from "@testing-library/user-event/dist/utils";
 
 export default function ApplicationForm() {
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ export default function ApplicationForm() {
     window.history.back();
   }
 
-  const [selectedShelter, setSelectedShelter] = useState("");
+  const [selectedShelter, setSelectedShelter] = useState(0);
   const [selectedDog, setSelectedDog] = useState("");
   const [shelterList, setShelterList] = useState([]);
   const [dogList, setDogList] = useState([]);
@@ -87,18 +88,21 @@ export default function ApplicationForm() {
 
   const handleShelterChange = async (event) => {
     const selectedValue = event.target.value;
-    await setSelectedShelter(selectedValue);
+    setSelectedShelter(selectedValue);
     setSelectedDog("");
-
+  
     if (selectedValue === "") {
-      setSelectedDog("");
+      setDogList([]); // 강아지 목록 초기화
     } else {
-      await axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/dog?shelterNo=${selectedShelter}`)
-      .then((response) => {
+      try {
+        const response = await axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/dog?shelterNo=${selectedValue}`);
         setDogList(response.data);
-      })
+      } catch (error) {
+        console.error("강아지 목록을 가져오는 중 오류 발생:", error);
+      }
     }
   };
+  
 
   const handleDogChange = (event) => {
     setSelectedDog(event.target.value);
@@ -137,9 +141,9 @@ export default function ApplicationForm() {
       headers: {
         "AccessToken": "Bearer " + accessToken
       }
-    }).then((response) => {
-      // 입양신청 목록으로 이동시켜야함!!!
-      console.log(response.data);
+    }).then(() => {
+      window.history.back();
+      alert("신청이 완료되었습니다.")
     })
   };
 
@@ -300,7 +304,7 @@ export default function ApplicationForm() {
               취소
             </button>
             <button type="submit" style={buttonStyle}>
-              신청 제출
+              신청서 제출
             </button>
           </div>
         </form>

@@ -10,6 +10,7 @@ const initialState = {
   points: 0,
   isLoggedIn: false,
   isAdopted: false,
+  imagePath: null,
 };
 
 // id : member
@@ -23,7 +24,8 @@ const userSlice = createSlice({
 
       state.userId = action.payload.userId;
       // state.password = action.payload.password;
-      // state.points = action.payload.points;
+      state.points = action.payload.points;
+      state.imagePath = action.payload.imagePath;
       state.isLoggedIn = true;
       state.isAdopted = action.payload.adopted;
     },
