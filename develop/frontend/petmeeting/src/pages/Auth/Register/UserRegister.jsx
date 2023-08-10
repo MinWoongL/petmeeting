@@ -13,6 +13,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
@@ -60,6 +61,33 @@ export default function SignUp() {
   const [passwordError, setPasswordError] = React.useState(false);
   const [userIdAvailable, setUserIdAvailable] = React.useState(null);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [imagePath, setImagePath] = React.useState("");
+
+  const [selectedProfileImage, setSelectedProfileImage] = React.useState(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
+
+  const profileImages = [
+    `https://i9a203.p.ssafy.io/backapi/api/v1/image/profile1.png?option=member`,
+    `https://i9a203.p.ssafy.io/backapi/api/v1/image/profile2.png?option=member`,
+    `https://i9a203.p.ssafy.io/backapi/api/v1/image/profile3.png?option=member`,
+    `https://i9a203.p.ssafy.io/backapi/api/v1/image/profile4.png?option=member`,
+    `https://i9a203.p.ssafy.io/backapi/api/v1/image/profile5.png?option=member`,
+    `https://i9a203.p.ssafy.io/backapi/api/v1/image/profile6.png?option=member`,
+  ];
+
+  const handleProfileModalOpen = () => {
+    setIsProfileModalOpen(true);
+  };
+
+  const handleProfileModalClose = () => {
+    setIsProfileModalOpen(false);
+  };
+
+  const handleProfileImageSelect = (image, index) => {
+    setSelectedProfileImage(image);
+    setIsProfileModalOpen(false);
+    setImagePath(`profile${index+1}.png`);
+  };
 
   const handleSnackbarOpen = () => {
     setSnackbarOpen(true);
@@ -124,7 +152,7 @@ export default function SignUp() {
         name: data.get("name"),
         phoneNumber: data.get("phoneNumber"),
         userGroup: userType,
-        imagePath: data.get("imagePath"),
+        imagePath: imagePath,
       };
 
       // If the user type is not "사용자", add additional fields
@@ -248,6 +276,43 @@ export default function SignUp() {
                   <ToggleButton value="보호소">보호소</ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
+              <Grid item xs={12} align="center">
+                <label><h3>프로필 사진을 골라주세요</h3></label>
+                <div style={{ display: "flex", gap: "10px", display: "flex", justifyContent: "center", margin: "30px" }}>
+                  <Avatar
+                    src={selectedProfileImage}
+                    sx={{ width: 70, height: 70, cursor: "pointer" }}
+                    onClick={handleProfileModalOpen}
+                  />
+                </div>
+              </Grid>
+
+              <Dialog
+                open={isProfileModalOpen}
+                onClose={handleProfileModalClose}
+                aria-labelledby="profile-dialog-title"
+              >
+                <DialogTitle id="profile-dialog-title">프로필 사진 선택</DialogTitle>
+                <DialogContent>
+                  <Grid container spacing={2}>
+                    {profileImages.map((image, index) => (
+                      <Grid item xs={4} key={index} align="center">
+                        <Avatar
+                          src={image}
+                          sx={{ width: 50, height: 50, cursor: "pointer" }}
+                          onClick={() => handleProfileImageSelect(image, index)}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleProfileModalClose} color="primary">
+                    닫기
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
               <Grid container spacing={2}>
                 <Grid item container xs={12} alignItems="center">
                   <Grid item xs={8}>
@@ -312,7 +377,7 @@ export default function SignUp() {
                   }
                 />
               </Grid>
-
+              
               <Grid item xs={12}>
                 <TextField
                   required
@@ -363,15 +428,6 @@ export default function SignUp() {
                   </Grid>
                 </>
               )}
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="imagePath"
-                  label="Image Path"
-                  name="imagePath"
-                />
-              </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
                   control={
