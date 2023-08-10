@@ -7,7 +7,6 @@ import lombok.Data;
 @Builder
 public class ReplyReqDto {
     Integer boardNo;
-    Integer userNo;
     String content;
 
 }

@@ -48,7 +48,6 @@ public class ReplyController {
     )
     @PutMapping("/{replyNo}")
     public ResponseEntity<ReplyResDto> updateReply(@PathVariable Integer replyNo, @RequestBody ReplyUpdateReqDto replyUpdateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
-        System.out.println(replyUpdateReqDto.getContent());
         return ResponseEntity.ok(replyService.updateReply(replyNo, replyUpdateReqDto, token));
     }
 
