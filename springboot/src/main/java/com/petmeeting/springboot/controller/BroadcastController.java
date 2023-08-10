@@ -3,18 +3,17 @@ package com.petmeeting.springboot.controller;
 import com.petmeeting.springboot.dto.broadcast.BroadcastCheckResDto;
 import com.petmeeting.springboot.dto.broadcast.BroadcastReqDto;
 import com.petmeeting.springboot.dto.broadcast.BroadcastShelterResDto;
+import com.petmeeting.springboot.dto.broadcast.SseEmitters;
 import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.service.BroadcastService;
-import com.petmeeting.springboot.service.SseService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -22,22 +21,9 @@ import java.util.Map;
 @RequestMapping("/api/v1/broadcast")
 public class BroadcastController {
 
-    private final SseService sseService;
     private final BroadcastService broadcastService;
     private final String ACCESS_TOKEN = "AccessToken";
-
     private final Long CONTROL_TIME = 3000L; // 5분 설정
-
-    @Operation(
-            summary = "SSE 연결",
-            description = "방송에 접속한 사용자들과 SSE 통신을 연결합니다."
-    )
-    @GetMapping(value = "/connection", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> connect() {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("X-Accel-Buffering", "no");
-        return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(sseService.connect());
-    }
 
     @Operation(
             summary = "기기 조작 요청",
@@ -47,17 +33,8 @@ public class BroadcastController {
     public ResponseEntity<Map<String, String>> controlRequest(@PathVariable Integer shelterNo, @RequestHeader(ACCESS_TOKEN) String token) {
         Map<String, String> result = broadcastService.control(shelterNo, token, CONTROL_TIME);
 
-        sseService.sendMessage(result.get("userId"), CONTROL_TIME);
+//        sseService.sendMessage(result.get("userId"), CONTROL_TIME);
         return ResponseEntity.ok(result);
-    }
-
-    @Operation(
-            hidden = true
-    )
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        sseService.sendMessage("hi", 10);
-        return ResponseEntity.ok("complete");
     }
 
     @Operation(
@@ -96,5 +73,29 @@ public class BroadcastController {
     @GetMapping("/check/{shelterNo}")
     public ResponseEntity<BroadcastCheckResDto> checkControlUser(@PathVariable Integer shelterNo) {
         return ResponseEntity.ok(broadcastService.checkControlUser(shelterNo));
+    }
+
+
+
+
+    private final SseEmitters sseEmitters;
+    @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> connect() {
+        SseEmitter emitter = new SseEmitter();
+        sseEmitters.add(emitter);
+        try {
+            emitter.send(SseEmitter.event()
+                    .name("connect")
+                    .data("connected!"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok(emitter);
+    }
+
+    @PostMapping("/count")
+    public ResponseEntity<Void> count() {
+        sseEmitters.count();
+        return ResponseEntity.ok().build();
     }
 }

@@ -110,7 +110,7 @@ public class DogServiceImpl implements DogService {
     @Override
     @Transactional
     public DogResDto updateDogStatus(Integer dogNo, DogStatusUpdateReqDto dogStatusUpdateReqDto, String token){
-        log.info("[유기견 상태 변경] 유기견 상태 변경 요청. dogNo : {}, token : {}, {]", dogNo, token, dogStatusUpdateReqDto.toString());
+        log.info("[유기견 상태 변경] 유기견 상태 변경 요청. dogNo : {}, token : {}, {}", dogNo, token, dogStatusUpdateReqDto.toString());
 
         Integer userNo = jwtUtils.getUserNo(token);
         Users user = userRepository.findById(userNo).get();

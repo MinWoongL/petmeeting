@@ -22,25 +22,4 @@ public class DogReqDto {
     String reasonAbandonment;
     Boolean isInoculated;
     String imagePath;
-
-    // Dto -> Entity 로직
-//    public Dog toEntity(Shelter shelter){
-//        return Dog.builder()
-//                .shelter(shelter)
-//                .name(name)
-//                .dogSize((DogSize) dogSize)
-//                .gender(gender)
-//                .weight(weight)
-//                .age(age)
-//                .personality(personality)
-//                .protectionStartDate(protectionStartDate)
-//                .protectionEndDate(protectionEndDate)
-//                .adoptionAvailability(adoptionAvailability)
-//                .currentStatus(currentStatus)
-//                .dogSpecies(dogSpecies)
-//                .reasonAbandonment(reasonAbandonment)
-//                .isInoculated(isInoculated)
-//                .imagePath(imagePath)
-//                .build();
-//    }
 }

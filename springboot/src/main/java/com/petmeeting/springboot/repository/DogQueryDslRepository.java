@@ -32,7 +32,7 @@ public class DogQueryDslRepository {
                             notContainsShelter(),
                             isAdoptable(dog.adoptionAvailability))
                     .limit((condition.getMax() == null || condition.getMax() == 0) ? 10 : condition.getMax())
-                    .offset((condition.getOffset() == null || condition.getOffset() == 0) ? 1 : condition.getOffset()) // 0이 아니라 null이여야 정상작동
+                    .offset((condition.getOffset() == null || condition.getOffset() == 0) ? 0 : condition.getOffset()) // 0이 아니라 null이여야 정상작동
                     .orderBy(dog.dogNo.desc())
                     .fetch();
         }
@@ -43,7 +43,7 @@ public class DogQueryDslRepository {
                         sameDogSize(condition.getDogSize()),
                         containsShelter(condition.getShelterNo()))
                 .limit((condition.getMax() == null || condition.getMax() == 0) ? 10 : condition.getMax())
-                .offset((condition.getOffset() == null || condition.getOffset() == 0) ? 1 : condition.getOffset())
+                .offset((condition.getOffset() == null || condition.getOffset() == 0) ? 0 : condition.getOffset())
                 .orderBy(dog.dogNo.desc())
                 .fetch();
     }

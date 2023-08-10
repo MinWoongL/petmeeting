@@ -30,7 +30,7 @@ public class Dog {
     @Column(name = "name", length = 20, nullable = false)
     private String name;
 
-    @Column(name = "dog_size", columnDefinition = "varchar(10)", nullable = false)
+    @Column(name = "dog_size", columnDefinition = "varchar(15)", nullable = false)
     @Enumerated(EnumType.STRING)
     private DogSize dogSize;
 
