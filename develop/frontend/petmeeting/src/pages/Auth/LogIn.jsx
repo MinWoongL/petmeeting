@@ -74,7 +74,7 @@ export default function Login() {
         dispatch(
           login({
             userId: response.data.name,
-            points: response.data.points,
+
             points: response.data.holdingPoint,
             tokens: response.data.holdingToken,
             imagePath: response.data.imagePath,
@@ -98,7 +98,7 @@ export default function Login() {
           isAdopted: response.data.adopted,
           imagePath: response.data.imagePath,
           points: response.data.holdingPoint,
-          tokens: response.data.holdingToken
+          tokens: response.data.holdingToken,
         };
 
         // Save the new user object to localStorage

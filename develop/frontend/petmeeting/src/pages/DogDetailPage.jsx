@@ -8,12 +8,52 @@ import {
   Typography,
   Container,
   Grid,
+  Button,
 } from "@mui/material";
 import { config } from "../static/config";
 
 const DogDetailPage = () => {
   const { dogId } = useParams();
   const [dogDetails, setDogDetails] = useState(null);
+  const [donationAmount, setDonationAmount] = useState(""); // State for donation amount input
+  const [error, setError] = useState(""); // State for error messages
+
+  const handleDonate = async () => {
+    if (!donationAmount || isNaN(donationAmount)) {
+      setError("Please enter a valid donation amount.");
+      return;
+    }
+
+    const token = JSON.parse(sessionStorage.getItem("token"));
+
+    const requestBody = {
+      dogNo: dogDetails.dogNo,
+      donationValue: parseInt(donationAmount), // You can adjust the donation value as needed
+    };
+
+    try {
+      const response = await axios.post(
+        `${config.baseURL}/api/v1/donation`,
+        requestBody,
+        {
+          headers: { AccessToken: `Bearer ${token.accessToken}` },
+        }
+      );
+
+      // Handle success, show a message or perform any other action
+      console.log("Donation successful:", response.data);
+    } catch (error) {
+      if (error.response.status === 400) {
+        setError("Insufficient points for donation.");
+      } else if (error.response.status === 401) {
+        setError("Login required for donation.");
+      } else {
+        setError("Failed to donate.");
+      }
+
+      console.error("Failed to donate:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,6 +132,23 @@ const DogDetailPage = () => {
           <Typography variant="body1" paragraph>
             Reason for Abandonment: {dogDetails.reasonAbandonment}
           </Typography>
+          {error && <Typography color="error">{error}</Typography>}
+          <input
+            type="number"
+            value={donationAmount}
+            onChange={(e) => setDonationAmount(e.target.value)}
+            placeholder="Enter donation amount"
+            style={{ marginTop: "10px", marginRight: "10px" }}
+          />
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleDonate}
+            style={{ marginTop: "15px" }}
+          >
+            Donate
+          </Button>
         </CardContent>
       </Card>
     </Container>
