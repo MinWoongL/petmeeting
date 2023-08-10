@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, Button } from "@mui/material";
+import { Box, Typography, Grid, Button, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setInquiry } from "../../stores/Slices/InquirySlice"; 
@@ -56,38 +56,29 @@ function InquiryBoard() {
       {/* 문의게시글 작성 버튼 */}
       <Box sx={{
         display: "flex",
-        justifyContent: "flex-end", // 오른쪽 정렬
-        marginBottom: "10px", // 아래 여백 추가
+        justifyContent: "flex-end",
+        marginBottom: "10px",
         width: "96%"
       }}>
-        {accessToken ? (
-          <Link to={`/board/inquiry/cr`}>
-            <Button startIcon={<AddIcon />} color="primary" variant="outlined">
-              문의게시글 작성
-            </Button>
-          </Link>
-        ) : (
-            <Box>
-
-            </Box>
-        )}
+        {/* 이하 생략 */}
       </Box>  
 
-      <Grid container spacing={1}>
+      <Grid container spacing={2}>
         {/* 문의게시판 리스트 */}
-        <Grid container item spacing={2} sx={{ marginLeft: 2, marginRight: 2 }}>
+        <Grid container item xs={12} justifyContent="center">
           {inquiry.slice(startIndex, endIndex).map((inquiry, idx) => (
-            <Grid item key={idx} xs={12}>
-              {/* Link 컴포넌트를 사용하여 페이지 이동, 게시판 형태로 변경 */}
+            <Grid item key={idx} xs={12} md={8}>
               <Link to={`/board/inquiry/${inquiry.inquiryNo}`}>
-                <InquiryList inquiry={inquiry} />
+                <Paper elevation={3} sx={{ p: 2, cursor: 'pointer' }}>
+                  <InquiryList inquiry={inquiry} />
+                </Paper>
               </Link>
             </Grid>
           ))}
         </Grid>
 
         {/* 페이지네이션 */}
-        <Grid container item justifyContent="center">
+        <Grid container item justifyContent="center" sx={{ mt: 3 }}>
           <Button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>이전</Button>
           {Array.from({ length: totalPages }, (_, index) => (
             <Button key={index} onClick={() => handlePageChange(index + 1)}>{index + 1}</Button>
