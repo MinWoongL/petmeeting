@@ -41,7 +41,7 @@ public class BroadcastController {
             summary = "방송 중인 보호소 가져오기",
             description = "방송 중인 보호소 정보를 가져옵니다."
     )
-    @GetMapping("/broadcast/shelter")
+    @GetMapping("/shelter")
     public ResponseEntity<BroadcastShelterResDto> getBroadcastShelter() {
         return ResponseEntity.ok(broadcastService.getBroadcastShelter());
     }
