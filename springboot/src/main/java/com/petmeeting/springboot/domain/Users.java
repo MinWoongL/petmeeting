@@ -46,6 +46,7 @@ public abstract class Users {
     private Boolean isActivated;
 
     @Column(name = "image_path")
+    @ColumnDefault("profile1.png")
     private String imagePath;
 
     @PrePersist

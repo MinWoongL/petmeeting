@@ -52,6 +52,15 @@ public class BroadcastController {
     }
 
     @Operation(
+            hidden = true
+    )
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        sseService.sendMessage("hi", 10);
+        return ResponseEntity.ok("complete");
+    }
+
+    @Operation(
             summary = "방송 중인 보호소 가져오기",
             description = "방송 중인 보호소 정보를 가져옵니다."
     )
