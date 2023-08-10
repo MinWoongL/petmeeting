@@ -37,6 +37,7 @@ app.use((req, res, next) => {
     res.removeHeader('Date');
     res.removeHeader('Connection');
     res.removeHeader('Keep-Alive');
+    next();
 })
 
 app.get('/iot/:iot_command', async (req, res) => {
