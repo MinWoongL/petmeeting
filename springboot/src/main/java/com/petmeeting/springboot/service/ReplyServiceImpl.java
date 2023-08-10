@@ -84,7 +84,7 @@ public class ReplyServiceImpl implements ReplyService {
                         .userNo(reply.getUser().getId())
                         .writer(reply.getUser().getUserId())
                         .content(reply.getContent())
-                        .createTime(reply.getCreatedTime())
+                        .createdTime(reply.getCreatedTime())
                         .modifiedTime(reply.getModifiedTime())
                         .likeCnt(reply.getLikeCnt())
                         .build())
