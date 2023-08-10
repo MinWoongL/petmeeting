@@ -28,17 +28,21 @@ app.use(cors());
 const PORT = process.env.PORT || 3010;
 
 // remove header
-app.use((req, res, next) => {
-    res.removeHeader('X-Powered-By');
-    res.removeHeader('Access-Control-Allow-Origin');
-    res.removeHeader('Content-Type');
-    res.removeHeader('Content-Length');
-    res.removeHeader('ETag');
-    res.removeHeader('Date');
-    res.removeHeader('Connection');
-    res.removeHeader('Keep-Alive');
-    next();
-})
+app.set('X-Powered-By', false);
+app.set('ETag', false);
+app.set('Date', false);
+
+// app.use((req, res, next) => {
+//     res.removeHeader('X-Powered-By');
+//     res.removeHeader('Access-Control-Allow-Origin');
+//     res.removeHeader('Content-Type');
+//     res.removeHeader('Content-Length');
+//     res.removeHeader('ETag');
+//     res.removeHeader('Date');
+//     res.removeHeader('Connection');
+//     res.removeHeader('Keep-Alive');
+//     next();
+// })
 
 app.get('/iot/:iot_command', async (req, res) => {
     console.log('IOT GET /' + req.params.iot_command);
