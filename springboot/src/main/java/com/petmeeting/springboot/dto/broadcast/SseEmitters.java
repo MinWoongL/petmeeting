@@ -1,7 +1,10 @@
 package com.petmeeting.springboot.dto.broadcast;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +43,25 @@ public class SseEmitters {
                 emitter.send(SseEmitter.event()
                         .name("count")
                         .data(count));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+    public void sendMessage(String userId, Long remainTime) {
+        emitters.forEach(emitter -> {
+            try {
+                Map<String, Object> map = new HashMap<>();
+                map.put("userId", userId);
+                map.put("remainTime", remainTime);
+
+                emitter.send(SseEmitter.event()
+                        .name("data")
+                        .data(map));
+
+//                emitter.send(SseEmitter.event()
+//                        .name("remainTime")
+//                        .data(remainTime));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

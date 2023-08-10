@@ -35,7 +35,7 @@ public class BroadcastController {
     public ResponseEntity<Map<String, String>> controlRequest(@PathVariable Integer shelterNo, @RequestHeader(ACCESS_TOKEN) String token) {
         Map<String, String> result = broadcastService.control(shelterNo, token, CONTROL_TIME);
 
-//        sseService.sendMessage(result.get("userId"), CONTROL_TIME);
+        sseEmitters.sendMessage(result.get("userId"), CONTROL_TIME);
         return ResponseEntity.ok(result);
     }
 
@@ -80,6 +80,11 @@ public class BroadcastController {
 
     // ---------------------------------- SSE 다시 확인 예정 -------------------------------
     private final SseEmitters sseEmitters;
+
+    @Operation(
+        summary = "SSE 통신 연결",
+        description = "SSE 통신 연결하는 method입니다."
+    )
     @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connect() {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
@@ -97,9 +102,12 @@ public class BroadcastController {
         return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(emitter);
     }
 
-    @PostMapping("/count")
+    @Operation(
+            hidden = true
+    )
+    @PostMapping("/test")
     public ResponseEntity<Void> count() {
-        sseEmitters.count();
+        sseEmitters.sendMessage("hi", 1000L);
         return ResponseEntity.ok().build();
     }
 }
