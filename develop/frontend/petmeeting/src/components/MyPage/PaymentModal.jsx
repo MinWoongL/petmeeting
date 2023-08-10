@@ -32,7 +32,7 @@ const tiers = [
 const customTier = {
   title: 'Token 10개',
   buttonText: '충전하기',
-  minPrice: '50000',
+  minPrice: 50000,
 };
 
 const PaymentModal = ({ open, onClose }) => {
@@ -47,10 +47,11 @@ const PaymentModal = ({ open, onClose }) => {
   const baseUrl = window.location.origin;
 
   const handleCustomPlan = () => {
-    if (customPrice < 50000) {
+    const customNumber = Number(customPrice)
+    if (customNumber < 50000) {
       setShowWarning(true);
     } else {
-      handleSelectPlan(customPrice);
+      handleSelectPlan(customNumber);
       setShowWarning(false);
     }
   };
@@ -143,7 +144,7 @@ const PaymentModal = ({ open, onClose }) => {
                       type="number"
                       label="Enter Price"
                       value={customPrice}
-                      onChange={(e) => setCustomPrice(e.target.value)}
+                      onChange={(e) => setCustomPrice(Number(e.target.value))}
                       InputProps={{
                         startAdornment: '₩',
                       }}
