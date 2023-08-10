@@ -2,17 +2,22 @@ import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { TextField, Button, Paper, Typography } from "@mui/material";
 import { config } from "../../static/config";
+import { useNavigate } from "react-router-dom";
 function ChatSidebar({ shelterNo }) {
   const [chats, setChats] = useState([]);
   const [newChat, setNewChat] = useState("");
   const token = JSON.parse(sessionStorage.getItem("token"));
   const chatContainerRef = useRef(null);
-
+  const navigate = useNavigate();
   const scrollToBottom = () => {
     const chatDiv = chatContainerRef.current;
     if (chatDiv) {
       chatDiv.scrollTop = chatDiv.scrollHeight;
     }
+  };
+  const isUserLoggedIn = () => {
+    const token = JSON.parse(sessionStorage.getItem("token"));
+    return token !== null; // 로그인된 경우 true, 로그인되지 않은 경우 false 반환
   };
 
   useEffect(() => {
@@ -33,7 +38,16 @@ function ChatSidebar({ shelterNo }) {
 
   // 채팅 등록하기
   const handleChatSubmit = () => {
+    if (!isUserLoggedIn()) {
+      alert("로그인 후에 사용하실 수 있습니다. 로그인 페이지로 이동합니다.");
+
+      navigate("/login");
+      // 로그인 페이지로 이동하는 코드를 추가하세요.
+      return; // 이후의 코드 실행을 중단합니다.
+    }
+
     axios
+
       .post(
         `${config.baseURL}/api/v1/shelter/chat`,
         {
