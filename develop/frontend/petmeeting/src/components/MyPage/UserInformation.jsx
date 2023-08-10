@@ -84,38 +84,88 @@ const UserInformation = ({
                 Edit
               </Button>
             )}
-            <Button variant="contained" onClick={handleCharge} style={{ backgroundColor: "var(--yellow5)", color: "var(--dark)" }}>
+            <Button
+              variant="contained"
+              onClick={handleCharge}
+              style={{
+                backgroundColor: "var(--yellow5)",
+                color: "var(--dark)",
+              }}
+            >
               충전하기
             </Button>
           </Box>
           <Divider sx={{ my: 2 }} />
           {isEditing ? (
             <>
-              <TextField fullWidth label="Name" value={editData.name} onChange={(e) => handleChange("name", e.target.value)} />
-              <TextField fullWidth label="Phone Number" value={editData.phoneNumber} onChange={(e) => handleChange("phoneNumber", e.target.value)} />
-              <TextField fullWidth label="Location" value={editData.location} onChange={(e) => handleChange("location", e.target.value)} />
-              <TextField fullWidth label="Email" value={editData.email} onChange={(e) => handleChange("email", e.target.value)} />
-              <TextField fullWidth type="password" label="Password" onChange={(e) => handleChange("password", e.target.value)} />
+              <TextField
+                fullWidth
+                label="Name"
+                value={editData.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+              />
+              <TextField
+                fullWidth
+                label="Phone Number"
+                value={editData.phoneNumber}
+                onChange={(e) => handleChange("phoneNumber", e.target.value)}
+              />
+
+              <TextField
+                fullWidth
+                label="Email"
+                value={editData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+              />
+              <TextField
+                fullWidth
+                type="password"
+                label="Password"
+                onChange={(e) => handleChange("password", e.target.value)}
+              />
               <Button variant="contained" color="primary" onClick={handleSave}>
                 Save
               </Button>
             </>
           ) : (
             <>
-              <Typography variant="subtitle1" color="text.secondary" component="div">
-                전화번호: {profile.phoneNumber}
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                component="div"
+              >
+                연락처: {profile.phoneNumber}
               </Typography>
-              <Typography variant="subtitle1" color="text.secondary" component="div">
-                지역: {profile.location}
+
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                component="div"
+              >
+                보유 포인트1: {profile.holdingPoint}
               </Typography>
-              <Typography variant="body2" color="text.secondary" component="div">
-                이메일: {profile.email}
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                component="div"
+              >
+                보유 멍코인: {profile.holdingToken}
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                component="div"
+              >
+                입양여부: {profile.adopted ? "Y" : "N"}
               </Typography>
             </>
           )}
         </CardContent>
       </Card>
-      <PaymentModal open={paymentModalOpen} onClose={() => setPaymentModalOpen(false)} />
+      <PaymentModal
+        open={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+      />
     </Box>
   );
 };

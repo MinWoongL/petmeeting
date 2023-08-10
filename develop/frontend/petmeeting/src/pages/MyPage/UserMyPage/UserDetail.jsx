@@ -14,6 +14,11 @@ function UserProfilePage() {
   const handleUpdate = (updatedData) => {
     setUserData(updatedData);
   };
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleEditingChange = (editing) => {
+    setIsEditing(editing);
+  };
 
   useEffect(() => {
     console.log(userData);
@@ -34,7 +39,11 @@ function UserProfilePage() {
 
   return (
     <div>
-      <UserInformation profile={userData} onUpdate={handleUpdate} />
+      <UserInformation
+        profile={userData}
+        isEditing={isEditing}
+        onChange={handleEditingChange}
+      />
 
       <div>
         <Button onClick={() => setView("like")}>좋아요 한 개 보기</Button>
