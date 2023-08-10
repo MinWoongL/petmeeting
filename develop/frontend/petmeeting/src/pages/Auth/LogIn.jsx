@@ -72,6 +72,10 @@ export default function Login() {
           login({
             userId: response.data.name,
             points: response.data.points,
+            points: response.data.holdingPoint,
+            tokens: response.data.holdingToken,
+            imagePath: response.data.imagePath,
+            isAdopted: response.data.adopted,
           })
         ); // 로그인 상태로 설정
 
@@ -88,6 +92,9 @@ export default function Login() {
           name: response.data.name,
           userType: userType, // Add userType
           isAdopted: response.data.adopted,
+          imagePath: response.data.imagePath,
+          points: response.data.holdingPoint,
+          tokens: response.data.holdingToken
         };
 
         // Save the new user object to localStorage
