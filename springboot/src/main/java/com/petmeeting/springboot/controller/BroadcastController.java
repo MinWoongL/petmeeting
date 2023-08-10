@@ -76,12 +76,11 @@ public class BroadcastController {
     }
 
 
-
-
+    // ---------------------------------- SSE 다시 확인 예정 -------------------------------
     private final SseEmitters sseEmitters;
     @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connect() {
-        SseEmitter emitter = new SseEmitter();
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         sseEmitters.add(emitter);
         try {
             emitter.send(SseEmitter.event()
