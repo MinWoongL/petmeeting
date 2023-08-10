@@ -58,9 +58,9 @@ public class ChargeServiceImpl implements ChargeService {
         Integer selectPoint = Integer.parseInt(chargeReadyReqDto.getSelectPoint());
         Integer selectToken = 0;
 
-        if(selectPoint <= 5000) selectToken = 1;
-        else if (selectPoint <= 10000) selectToken = 2;
-        else selectToken = 3;
+        if(selectPoint <= 5000) selectToken = 2;
+        else if (selectPoint <= 10000) selectToken = 5;
+        else selectToken = 10;
 
         log.info("[결제요청] userId : {} / price : {}", user.getUserId(), chargeReadyReqDto.getSelectPoint());
 
