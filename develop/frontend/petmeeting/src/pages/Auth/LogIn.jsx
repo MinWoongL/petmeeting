@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 // 로그인창 토글 버튼 임포트
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -35,6 +35,8 @@ export default function Login() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  //네비게이션 로직
+
   const handleUserTypeChange = (event, newUserType) => {
     setUserType(newUserType);
   };
@@ -45,6 +47,7 @@ export default function Login() {
     setOpenSnackbar(false);
   };
 
+  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   //   const user = useSelector((state) => state.user);
@@ -72,6 +75,10 @@ export default function Login() {
           login({
             userId: response.data.name,
             points: response.data.points,
+            points: response.data.holdingPoint,
+            tokens: response.data.holdingToken,
+            imagePath: response.data.imagePath,
+            isAdopted: response.data.adopted,
           })
         ); // 로그인 상태로 설정
 
@@ -82,18 +89,23 @@ export default function Login() {
           console.log("No token found in response");
         }
 
+        console.log(response);
         // Create new user object
         const newUser = {
           userNo: response.data.userNo,
           name: response.data.name,
-          userType: userType, // Add userType
+          userType: response.data.userGroup, // Add userType
           isAdopted: response.data.adopted,
+          imagePath: response.data.imagePath,
+          points: response.data.holdingPoint,
+          tokens: response.data.holdingToken
         };
 
         // Save the new user object to localStorage
         localStorage.setItem("user", JSON.stringify(newUser));
 
-        navigate("/"); // Home으로 이동
+        // navigate("/"); // Home으로 이동
+        navigate(location.state?.from || "/");
       } else {
         console.log("Login failed");
       }

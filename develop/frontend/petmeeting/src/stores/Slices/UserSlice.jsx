@@ -8,8 +8,12 @@ const initialState = {
   userId: "Duhee",
   password: "",
   points: 0,
+  holdingPoint: 0,
+  holdingToken: 0,
+
   isLoggedIn: false,
   isAdopted: false,
+  imagePath: null,
 };
 
 // id : member
@@ -23,7 +27,10 @@ const userSlice = createSlice({
 
       state.userId = action.payload.userId;
       // state.password = action.payload.password;
-      // state.points = action.payload.points;
+      state.holdingPoint = action.payload.points;
+
+      state.holdingToken = action.payload.tokens;
+      state.imagePath = action.payload.imagePath;
       state.isLoggedIn = true;
       state.isAdopted = action.payload.adopted;
     },

@@ -111,9 +111,6 @@ function ShelterMyPage() {
       <div>
         <button onClick={() => setView("dogs")}>강아지 목록</button>
         <button onClick={() => setView("donations")}>후원 랭킹</button>
-        <Button variant="outlined" onClick={handleEdit}>
-          {isEditing ? "Save" : "Edit"}
-        </Button>
       </div>
       {view === "dogs" ? (
         <div>

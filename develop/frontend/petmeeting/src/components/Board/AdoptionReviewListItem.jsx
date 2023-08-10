@@ -1,7 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
+import defaultDog1 from "../../assets/images/dog/dog1.png";
+import defaultDog2 from "../../assets/images/dog/dog2.png";
+import defaultDog3 from "../../assets/images/dog/dog3.png";
+import defaultDog4 from "../../assets/images/dog/dog4.png";
+import defaultDog5 from "../../assets/images/dog/dog5.png";
+import defaultDog6 from "../../assets/images/dog/dog6.png";
+import defaultDog7 from "../../assets/images/dog/dog7.png";
+import defaultDog8 from "../../assets/images/dog/dog8.png";
 
 function AdoptionReviewList(props) {
   const [hovered, setHovered] = useState(false);
+  const [imagePath, setImagePath] = useState("");
 
   const adoptionReviewListStyle = {
     backgroundColor: 'white', // 배경색을 하얀색으로 설정
@@ -28,7 +37,7 @@ function AdoptionReviewList(props) {
   };
   const imageStyle = {
     width: '100%', // 이미지가 컨테이너 너비에 맞게 표시
-    height: '100%', // 이미지가 컨테이너 높이에 맞게 표시
+    height: '280px', // 이미지가 컨테이너 높이에 맞게 표시
     objectFit: 'cover', // 이미지 비율을 유지하면서 컨테이너에 맞춤
   };
   const titleStyle = {
@@ -55,16 +64,48 @@ function AdoptionReviewList(props) {
     margin: '0px 0px 0px 0px'
   }
 
-  const imageUrl = "https://i9a203.p.ssafy.io/backapi/api/v1/image/" + props.board.imagePath + "?option=board"
+  const handleMouseEnter = useCallback(() => {
+    if (!hovered) {
+      setHovered(true);
+    }
+  }, [hovered]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (hovered) {
+      setHovered(false);
+    }
+  }, [hovered]);
+
+  const dogImages = [
+    defaultDog1, defaultDog2, defaultDog3, defaultDog4,
+    defaultDog5, defaultDog6, defaultDog7, defaultDog8
+  ];
+
+  const getRandomDogImagePath = () => {
+    return dogImages[props.board.boardNo%8];
+  };
+
+  const memoizedImageUrl = useMemo(() => {
+    if (!props.board.imagePath) {
+      setImagePath(getRandomDogImagePath());
+    } else {
+      setImagePath(
+        `https://i9a203.p.ssafy.io/backapi/api/v1/image/` +
+        props.board.imagePath +
+        "?option=board"
+      );
+    }
+  }, [props.board.imagePath]);
+  
   
   return (
     <div
       style={adoptionReviewListStyle}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <div style={imageContainerStyle}>
-        <img src={imageUrl} alt="입양후기 사진" style={imageStyle} />
+        <img src={imagePath} alt="입양후기 사진" style={imageStyle} />
       </div>
       <div style={titleContainerStyle}>
         <span style={titleStyle}>{props.board.title}</span>
