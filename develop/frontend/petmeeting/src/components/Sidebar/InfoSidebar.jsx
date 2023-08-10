@@ -153,7 +153,12 @@ function InfoSidebar() {
                 <EditIcon fontSize="small" />
               </IconButton>
             </Stack>
-            <Typography variant="body2">내 포인트: {user.points}</Typography>
+            <Typography variant="body2">
+              내 포인트: {user.holdingPoint}
+            </Typography>
+            <Typography variant="body2">
+              내 멍코인: {user.holdingToken}
+            </Typography>
           </Box>
         </Box>
 
