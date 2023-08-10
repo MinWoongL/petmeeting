@@ -8,6 +8,8 @@ import com.petmeeting.springboot.dto.common.MessageDto;
 import com.petmeeting.springboot.service.BroadcastService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,7 +91,10 @@ public class BroadcastController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return ResponseEntity.ok(emitter);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("X-Accel-Buffering", "no");
+        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(emitter);
     }
 
     @PostMapping("/count")
