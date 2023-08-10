@@ -56,11 +56,21 @@ function InquiryBoard() {
       {/* 문의게시글 작성 버튼 */}
       <Box sx={{
         display: "flex",
-        justifyContent: "flex-end",
-        marginBottom: "10px",
-        width: "96%"
+        justifyContent: "flex-end", // 오른쪽 정렬
+        marginBottom: "10px", // 아래 여백 추가
+        width: "65%"
       }}>
-        {/* 이하 생략 */}
+        {accessToken ? (
+          <Link to={`/board/inquiry/cr`}>
+            <Button startIcon={<AddIcon />} color="primary" variant="outlined">
+              문의게시글 작성
+            </Button>
+          </Link>
+        ) : (
+            <Box>
+
+            </Box>
+        )}
       </Box>  
 
       <Grid container spacing={2}>
