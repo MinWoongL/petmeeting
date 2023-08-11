@@ -19,6 +19,7 @@ function MainPage() {
       </Box>
       {/* 방송중메인영역 */}
       <BroadCastingMain/>
+      {/* <div><br /><br /><br /><br /></div> */}
       {/* sub방송중페이지영역 */}
       <BroadCastingSub/>
       {/* 입양후기페이지영역 */}

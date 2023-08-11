@@ -214,7 +214,7 @@ function BroadCastingMain() {
                 effect={'coverflow'}
                 grabCursor={true}
                 centeredSlides={true}
-                loop={false}
+                loop={true}
                 slidesPerView={'auto'}
                 coverflowEffect={{
                     rotate: 0,
@@ -258,7 +258,7 @@ function BroadCastingMain() {
                 {/* 기존의 라이브 스트리밍 SwiperSlides */}
                 {liveBroadcasts.map((broadcast) => (
                     <SwiperSlide key={broadcast.id} style={{ width: '500px', height: '350px' }}>
-                      <h1>asdf</h1>
+                      {/* <h1>asdf</h1> */}
                         <Card onClick={() => handleCardClick(broadcast.id)} style={{ height: '100%' }}>
                             <Box display="flex" flexDirection="column" height="100%">
                                 <Box
@@ -282,11 +282,12 @@ function BroadCastingMain() {
                     </SwiperSlide>
                 ))}
 
-                <div className="slider-controler">
-                    <div className="swiper-button-prev slider-arrow" style={{ top: '50%', left: '10px' }}>
+                <div className="slider-controller">
+                    <div className="swiper-button-prev slider-arrow" style={{ top: '50%', left: '10px' , color: 'white'}}>
                         <ion-icon name="arrow-back-outline"></ion-icon>
+                        왼쪽
                     </div>
-                    <div className="swiper-button-next slider-arrow" style={{ top: '50%', right: '10px' }}>
+                    <div className="swiper-button-next slider-arrow" style={{ top: '50%', right: '10px', color: 'white' }}>
                         <ion-icon name="arrow-forward-outline"></ion-icon>
                     </div>
                 </div>
