@@ -26,7 +26,7 @@ public class AdoptionQueryDslRepository {
                 .where(findUserGroup(user),
                         containsDogNo(condition.getDogNo()))
                 .limit(condition.getMax() == 0 ? 10 : condition.getMax())
-                .offset(condition.getOffset() == null ? 1 : condition.getOffset())
+                .offset(condition.getOffset() == null ? 0 : condition.getOffset())
                 .orderBy(adoption.adoptionNo.desc())
                 .fetch();
     }
@@ -52,7 +52,7 @@ public class AdoptionQueryDslRepository {
      * @return
      */
     private BooleanExpression containsDogNo(Integer dogNo) {
-        if(dogNo == 0 || dogNo == null)
+        if(dogNo == null || dogNo == 0)
             return null;
 
         return adoption.dog.dogNo.eq(dogNo);
