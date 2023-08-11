@@ -8,8 +8,10 @@ import com.petmeeting.springboot.service.ShelterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -38,10 +40,13 @@ public class ShelterController {
     public ResponseEntity<List<ShelterResDto>> getShelterByCondition
             (@Parameter(description = "option : 'all' : page나 max에 관계없이 모든 목록, null일 경우 적용 안 됨 / page : 반환받을 페이지(default = 1) / max : 반환받을 크기(default = 10) / name : 보호소이름 / location : 보호소 주소")
              ShelterSearchCondition condition) {
-        if (condition.getOption() == null && condition.getOption().toLowerCase().contains("all"))
+        if(condition.getOption() == null)
+            return ResponseEntity.ok(shelterService.getShelterByCondition(condition));
+
+        if (condition.getOption().toLowerCase().contains("all"))
             return ResponseEntity.ok(shelterService.getAllShelter());
 
-        return ResponseEntity.ok(shelterService.getShelterByCondition(condition));
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
     }
 
     @Operation(
