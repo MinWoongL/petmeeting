@@ -52,6 +52,7 @@ import InquiryCreate from "./components/Board/InquiryCreate";
 
 import ApplicationForm from "./components/Adoption/ApplicationForm";
 
+import { getAccessToken } from "./utils/tokenRefresher";
 
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -313,17 +314,17 @@ function App() {
                   element={<AdoptionReviewCreate />}
                 />
 
-                <Route
-                  path="/board/inquiry/cr"
-                  element={<InquiryCreate />}
-                />
+                <Route path="/board/inquiry/cr" element={<InquiryCreate />} />
                 <Route
                   path="/board/inquiry/:inquiryNo"
                   element={<InquiryMain />}
                 />
 
                 <Route path="/adoption/form" element={<ApplicationForm />} />
-                <Route path="/payment/success" element={<PaymentSuccess />}/>
+
+                <Route path="/board/usage-guide" element={<UsageGuide />} />
+
+                <Route path="/payment/success" element={<PaymentSuccess />} />
               </Routes>
             </Box>
           </Grid>

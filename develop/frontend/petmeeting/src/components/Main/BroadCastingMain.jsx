@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
+import { Snackbar } from '@mui/material';
+import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -23,13 +25,22 @@ function BroadCastingMain() {
     const [videoTitles, setVideoTitles] = useState({});
     const [videoThumbnails, setVideoThumbnails] = useState({});
     const [videoDescriptions, setVideoDescriptions] = useState({});
-    const customSessionId = "GodJaeHong"
-    const mySession = "Sessionjaehong4"
+    const [openViduSessions, setOpenViduSessions] = useState([]);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     const liveBroadcasts = [{ id: "BZcu8MK_jfo" }, { id: "zwVAKBO8rJM" }, { id: "uqkhMBJ9yrs" }];
 
+    const fetchOpenViduSessions = async () => {
+      try {
+          const response = await axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/shelter`);
+          const sessions = Array.isArray(response.data) ? response.data : [response.data];
+          setOpenViduSessions(sessions);
+          console.log('방송중인보호소',response.data)
+      } catch (error) {
+          console.error('OpenVidu 세션 데이터를 가져오는 데 실패했습니다:', error);
+      }
+    };
     // OpenVidu 관련 상태 변수
-    // const [mytoken, setmytoken] = useState(null);
     const [subscribers, setSubscriberss] = useState([]);
 
     const initializeSession = () => {
@@ -55,11 +66,12 @@ function BroadCastingMain() {
       return sessionInstance
     };
 
-    const joinSessionSub = async () => {
+    const joinSessionSub = async (shelterNo, mySession) => {
+      const customSessionId = shelterNo.toString();
       const sessionInstance = await initializeSession();
       dispatch(setSessionInstance(sessionInstance));
       console.log('join1')
-      const token = await getToken();
+      const token = await getToken(customSessionId);
       // console.log('session(Join에서):',sessionInstance)
       // console.log('token 잘 들어옴?', token)
       sessionInstance.connect(token, { clientData: mySession })
@@ -82,7 +94,7 @@ function BroadCastingMain() {
       // setmytoken(token)
     };
 
-    const getToken = async() => {
+    const getToken = async(customSessionId) => {
       // console.log('gettoken1')
       const sessionId = await createSession(customSessionId);
       return await createToken(sessionId);
@@ -154,9 +166,24 @@ function BroadCastingMain() {
         });
     };
 
-    const handleOpenViduClick = async() => {
-      joinSessionSub()
+    const handleOpenViduClick = async(shelterNo) => {
+      const userNo = localStorage.getItem('userNo')
+      if (userNo) { // 로그인된 상태
+        const mySession = `Session${userNo}`; // 로그인된 사용자의 세션
+        joinSessionSub(shelterNo, mySession);
+      } else { // 로그인되지 않은 상태
+        setSnackbarOpen(true); // Snackbar 표시
+      }
     };
+
+    const handleCloseSnackbar = () => {
+      setSnackbarOpen(false);
+    };
+
+    useEffect(() => {
+      // 컴포넌트가 마운트될 때 OpenVidu 세션 데이터를 가져옵니다.
+      fetchOpenViduSessions();
+    }, []);
   
 
     useEffect(() => {
@@ -232,33 +259,34 @@ function BroadCastingMain() {
                 className="swiper_container"
             >
                 {/* OpenVidu 세션의 SwiperSlide */}
-                <SwiperSlide style={{ width: '500px', height: '350px' }}>
-                    <Card onClick={handleOpenViduClick} style={{ height: '100%' }}>
-                        <Box display="flex" flexDirection="column" height="100%">
-                            <Box
-                                display="flex"
-                                justifyContent="center"
-                                alignItems="center"
-                                style={{
-                                    flexGrow: 5,
-                                    width: '100%',
-                                    backgroundImage: `url(path_to_dummy_thumbnail.jpg)`,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center'
-                                }}
-                            >
-                            </Box>
-                            <CardContent style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Typography variant="Jua">OpenVidu Live Session</Typography>
-                            </CardContent>
-                        </Box>
+                {openViduSessions.map((session) => (
+                  <SwiperSlide key={session.shelterNo} style={{ width: '500px', height: '350px' }}>
+                    <Card onClick={() => handleOpenViduClick(session.shelterNo)} style={{ height: '100%' }}>
+                      <Box display="flex" flexDirection="column" height="100%">
+                          <Box
+                              display="flex"
+                              justifyContent="center"
+                              alignItems="center"
+                              style={{
+                                  flexGrow: 5,
+                                  width: '100%',
+                                  backgroundImage: `url(path_to_dummy_thumbnail.jpg)`,
+                                  backgroundSize: 'cover',
+                                  backgroundPosition: 'center'
+                              }}
+                          >
+                          </Box>
+                          <CardContent style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                              <Typography variant="Jua">{session.onBroadcastTitle}</Typography>
+                          </CardContent>
+                      </Box>
                     </Card>
-                </SwiperSlide>
+                  </SwiperSlide>
+                ))}
 
                 {/* 기존의 라이브 스트리밍 SwiperSlides */}
                 {liveBroadcasts.map((broadcast) => (
                     <SwiperSlide key={broadcast.id} style={{ width: '500px', height: '350px' }}>
-                      <h1>asdf</h1>
                         <Card onClick={() => handleCardClick(broadcast.id)} style={{ height: '100%' }}>
                             <Box display="flex" flexDirection="column" height="100%">
                                 <Box
@@ -292,6 +320,18 @@ function BroadCastingMain() {
                 </div>
                 <div className="swiper-pagination"></div>
             </Swiper>
+          <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+          <Alert 
+            onClose={handleCloseSnackbar} 
+            severity="error" 
+            sx={{ 
+              width: '100%', // Alert의 너비를 스넥바와 동일하게 설정
+              fontSize: '1.2rem' // 폰트 크기를 1.2rem으로 설정
+            }}
+          >
+              로그인이 필요합니다.
+            </Alert>
+          </Snackbar>
         </Box>
     );
 }

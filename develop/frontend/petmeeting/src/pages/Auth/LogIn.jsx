@@ -74,7 +74,7 @@ export default function Login() {
         dispatch(
           login({
             userId: response.data.name,
-            points: response.data.points,
+
             points: response.data.holdingPoint,
             tokens: response.data.holdingToken,
             imagePath: response.data.imagePath,
@@ -89,15 +89,16 @@ export default function Login() {
           console.log("No token found in response");
         }
 
+        console.log(response);
         // Create new user object
         const newUser = {
           userNo: response.data.userNo,
           name: response.data.name,
-          userType: userType, // Add userType
+          userType: response.data.userGroup, // Add userType
           isAdopted: response.data.adopted,
           imagePath: response.data.imagePath,
           points: response.data.holdingPoint,
-          tokens: response.data.holdingToken
+          tokens: response.data.holdingToken,
         };
 
         // Save the new user object to localStorage

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import ProfileCard from "../../../components/Shelter/ShelterList";
+import ProfileCard from "../../../components/Shelter/ShelterMypageProfile";
 import DogDetail from "../../../components/Shelter/DogDetail"; // Replace with your actual component
 import DonationRanking from "../../../components/Shelter/DonationRanking"; // Replace with your actual component
 import UserAdoptionList from "../../../components/MyPage/UserAdoptionList";
