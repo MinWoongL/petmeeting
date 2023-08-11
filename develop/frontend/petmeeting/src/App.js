@@ -51,6 +51,9 @@ import InquiryCreate from "./components/Board/InquiryCreate";
 
 import ApplicationForm from "./components/Adoption/ApplicationForm";
 
+import PetMeetingLogo1 from "./assets/images/petmeeting_logo1.png";
+import PetMeetingLogo2 from "./assets/images/petmeeting_logo2.png";
+
 
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -88,7 +91,7 @@ function NavBar({ isLoggedIn }) {
           style={{ textDecoration: "none", color: "inherit", flexGrow: 1 }}
         >
           <Typography variant="h6" component="div">
-            HappyDog!
+             <img src={PetMeetingLogo1} alt="Pet Meeting Logo" style={{ maxHeight: "40px", marginTop: "9px" }} />
           </Typography>
         </Link>
         <Button color="inherit" component={Link} to="/">
