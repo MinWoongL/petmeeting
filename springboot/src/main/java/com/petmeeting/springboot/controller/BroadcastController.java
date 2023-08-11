@@ -52,7 +52,7 @@ public class BroadcastController {
             summary = "방송 시작하기",
             description = "보호소가 방송을 시작합니다."
     )
-    @PostMapping("/broadcast")
+    @PostMapping
     public ResponseEntity<MessageDto> startBroadcast(@RequestBody BroadcastReqDto broadcastReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         broadcastService.startBroadcast(broadcastReqDto, token);
         return ResponseEntity.ok(MessageDto.msg("Start Broadcast"));
