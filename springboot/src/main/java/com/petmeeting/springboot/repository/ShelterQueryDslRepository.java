@@ -20,8 +20,8 @@ public class ShelterQueryDslRepository {
     public List<Shelter> findByCondition(ShelterSearchCondition condition) {
         return jpaQueryFactory.selectFrom(shelter)
                 .where(shelter.isDeleted.eq(false),
-                        containsName(condition.getName()),
-                        containsLocation(condition.getLocation()))
+                        containsName(condition.getName().split(",")[0]),
+                        containsLocation(condition.getLocation().split(",")[0]))
                 .limit(condition.getMax() == null ? 10 : condition.getMax())
                 .offset(condition.getOffset() == null ? 0 : condition.getOffset())
                 .orderBy(shelter.id.desc())
