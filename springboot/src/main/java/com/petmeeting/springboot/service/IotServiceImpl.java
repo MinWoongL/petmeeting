@@ -59,10 +59,10 @@ public class IotServiceImpl implements IotService {
         Integer command = iotReqDto.getCommand();
         if (user instanceof Shelter) {
             log.info("[기기조작] (보호소) 기기 조작 명령을 내립니다.");
-            vop.set("iot1_toy", String.valueOf(command), 2, TimeUnit.SECONDS);
+            vop.set("iot1", String.valueOf(command), 2, TimeUnit.SECONDS);
         } else {
             log.info("[기기조작] (사용자) 기기 조작 명령을 내립니다.");
-            vop.set("iot1_toy", String.valueOf(command), Long.valueOf(endTime) - System.currentTimeMillis() / 1000L, TimeUnit.SECONDS);
+            vop.set("iot1", String.valueOf(command), Long.valueOf(endTime) - System.currentTimeMillis() / 1000L, TimeUnit.SECONDS);
         }
 
     }
