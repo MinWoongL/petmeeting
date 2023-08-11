@@ -25,7 +25,7 @@ public class AdoptionQueryDslRepository {
         return jpaQueryFactory.selectFrom(adoption)
                 .where(findUserGroup(user),
                         containsDogNo(condition.getDogNo()))
-                .limit(condition.getMax() == 0 ? 10 : condition.getMax())
+                .limit(condition.getMax() == null ? 10 : condition.getMax())
                 .offset(condition.getOffset() == null ? 0 : condition.getOffset())
                 .orderBy(adoption.adoptionNo.desc())
                 .fetch();
