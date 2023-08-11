@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { wait } from "@testing-library/user-event/dist/utils";
 
 export default function ApplicationForm() {
   const [formData, setFormData] = useState({
