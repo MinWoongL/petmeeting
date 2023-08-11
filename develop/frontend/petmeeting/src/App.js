@@ -53,8 +53,6 @@ import InquiryCreate from "./components/Board/InquiryCreate";
 import ApplicationForm from "./components/Adoption/ApplicationForm";
 
 import PetMeetingLogo1 from "./assets/images/petmeeting_logo1.png";
-import PetMeetingLogo2 from "./assets/images/petmeeting_logo2.png";
-
 import LoadingMain from "./components/loading/LoadingMain";
 
 
@@ -188,12 +186,12 @@ function App() {
   // 현재 경로가 보호소 상세 페이지인지 확인
   const isShelterDetailPage = location.pathname.startsWith("/shelter/");
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, []);
-  // }) d유녕유녕
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000); // 2초 후 로딩 상태 해제
+  }, []); 
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -215,142 +213,114 @@ function App() {
 
   return (
     <>
+    {loading ? (
+      <LoadingMain />
+    ) : (
       <div
-        className="theme-yellow"
-        style={{
-          minHeight: "180vh",
-          height: "100%",
-          backgroundColor: "var(--yellow3)",
-          overflowYL: "auto",
-        }}
-      >
-        <NavBar isLoggedIn={isLoggedIn} />
+      className="theme-yellow"
+      style={{
+        minHeight: "180vh",
+        height: "100%",
+        backgroundColor: "var(--yellow3)",
+        overflowYL: "auto",
+      }}
+    >
+      <NavBar isLoggedIn={isLoggedIn} />
 
-        <Grid container spacing={2} style={{ height: "calc(100% - 64px)" }}>
-          <Hidden smDown>
-            {/* 로그인 또는 회원가입 페이지가 아니면 왼쪽 영역을 표시 */}
-            {!pageCheck && (
-              <Grid
-                item
-                xs={3}
-                style={{ maxHeight: "calc(100vh - 64px)", borderRadius: "8px" }}
-              >
-                {" "}
-                {/* 왼쪽 3칸 */}
-                <Box border="none" height="100%" >
-                  <Grid
-                    container
-                    direction="column"
-                    wrap="nowrap"
-                    style={{ height: "100%" }}
-                  >
-                    <Grid item style={{ flex: 2 }}>
-                      <Box
-                        marginTop="10px"
-                        marginLeft="10px"
-                        border={1}
-                        borderColor="transparent"
-                        height="100%"
-                      >
-                        <InfoSidebar />
-                      </Box>
-                    </Grid>
-
-                    <Grid item style={{ flex: 3 }} sx={{ mt: 2 }}>
-                      <Box
-                        marginTop="10px"
-                        marginLeft="10px"
-                        border={1}
-                        borderColor="transparent"
-                        height="100%"
-                        style={{
-                          backgroundColor: "var(--yellow6)",
-                          borderRadius: "8px",
-                          marginBottom: "18px"
-                        }}
-                      >
-                        {shelterNo ? (
-                          <ChatSidebar shelterNo={shelterNo} />
-                        ) : (
-                          <RankSystemSidebar />
-                        )}
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </Grid>
-            )}
-          </Hidden>
-
-          <Grid item xs={pageCheck ? 12 : 9}>
-            {" "}
-            {/* 로그인 또는 회원가입 페이지이면 전체 영역, 아니면 오른쪽 9칸 */}
-            <Box
-              border={1}
-              borderColor="transparent"
-              minHeight="85vh"
-              height="100%"
-              style={{ backgroundColor: "var(--yellow)" }}
+      <Grid container spacing={2} style={{ height: "calc(100% - 64px)" }}>
+        <Hidden smDown>
+          {/* 로그인 또는 회원가입 페이지가 아니면 왼쪽 영역을 표시 */}
+          {!pageCheck && (
+            <Grid
+              item
+              xs={3}
+              style={{ maxHeight: "calc(100vh - 64px)", borderRadius: "8px" }}
             >
-              <Routes>
-                <Route path="/" exact element={<MainPage />} />
+              {" "}
+              {/* 왼쪽 3칸 */}
+              <Box border="none" height="100%" >
+                <Grid
+                  container
+                  direction="column"
+                  wrap="nowrap"
+                  style={{ height: "100%" }}
+                >
+                  <Grid item style={{ flex: 2 }}>
+                    <Box
+                      marginTop="10px"
+                      marginLeft="10px"
+                      border={1}
+                      borderColor="transparent"
+                      height="100%"
+                    >
+                      <InfoSidebar />
+                    </Box>
+                  </Grid>
 
-                <Route path="/register-dog" element={<RegisterDog />} />
-                <Route path="/shelter" element={<ShelterPage />} />
-                <Route
-                  path="/shelter/:shelterNo"
-                  element={<ShelterDetailPage />}
-                />
-                <Route path="/adoption" element={<AdoptionPage />} />
+                  <Grid item style={{ flex: 3 }} sx={{ mt: 2 }}>
+                    <Box
+                      marginTop="10px"
+                      marginLeft="10px"
+                      border={1}
+                      borderColor="transparent"
+                      height="100%"
+                      style={{
+                        backgroundColor: "var(--yellow6)",
+                        borderRadius: "8px",
+                        marginBottom: "18px"
+                      }}
+                    >
+                      {shelterNo ? (
+                        <ChatSidebar shelterNo={shelterNo} />
+                      ) : (
+                        <RankSystemSidebar />
+                      )}
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Grid>
+          )}
+        </Hidden>
 
-                <Route
-                  path="/board/adoption-review"
-                  element={<AdoptionReviewBoard />}
-                />
-                <Route path="/board/inquiry" element={<InquiryBoard />} />
-                <Route path="/board/usage-guide" element={<UsageGuide />} />
-
-                <Route path="/mypage" element={<UserDetail />} />
-                <Route
-                  path="/Mypage/ShelterMyPage"
-                  element={<ShelterMyPage />}
-                />
-                <Route path="/login" element={<LogIn />} />
-                <Route path="/signup" element={<UserRegister />} />
-                <Route path="/dog/:dogId" element={<DogDetailPage />} />
-                <Route
-                  path="/broadcasting/:broadcastId"
-                  element={<BroadCastingPage />}
-                ></Route>
-                <Route
-                  path="/board/adoption-review/:boardNo" // URL 파라미터를 사용하는 경로로 변경
-                  element={<AdoptionReviewMain />} // AdoptionReviewMain 컴포넌트 렌더링
-                />
-                <Route
-                  path="/board/adoption-review/cr"
-                  element={<AdoptionReviewCreate />}
-                />
-
-                <Route
-                  path="/board/inquiry/cr"
-                  element={<InquiryCreate />}
-                />
-                <Route
-                  path="/board/inquiry/:inquiryNo"
-                  element={<InquiryMain />}
-                />
-
-                <Route path="/adoption/form" element={<ApplicationForm />} />
-
-                <Route 
-                  path="/board/usage-guide"
-                  element={<UsageGuide />}
-                />
-              </Routes>
-            </Box>
-          </Grid>
+        <Grid item xs={pageCheck ? 12 : 9}>
+          {" "}
+          {/* 로그인 또는 회원가입 페이지이면 전체 영역, 아니면 오른쪽 9칸 */}
+          <Box
+            border={1}
+            borderColor="transparent"
+            minHeight="85vh"
+            height="100%"
+            style={{ backgroundColor: "var(--yellow)" }}
+          >
+            <Routes>
+              <Route path="/" exact element={<MainPage />} />
+              <Route path="/register-dog" element={<RegisterDog />} />
+              <Route path="/shelter" element={<ShelterPage />} />
+              <Route path="/shelter/:shelterNo" element={<ShelterDetailPage />} />
+              <Route path="/adoption" element={<AdoptionPage />} />
+              <Route path="/board/adoption-review" element={<AdoptionReviewBoard />} />
+              <Route path="/board/inquiry" element={<InquiryBoard />} />
+              <Route path="/board/usage-guide" element={<UsageGuide />} />
+              <Route path="/mypage" element={<UserDetail />} />
+              <Route path="/Mypage/ShelterMyPage" element={<ShelterMyPage />} />
+              <Route path="/login" element={<LogIn />} />
+              <Route path="/signup" element={<UserRegister />} />
+              <Route path="/dog/:dogId" element={<DogDetailPage />} />
+              <Route path="/broadcasting/:broadcastId" element={<BroadCastingPage />} />
+              <Route path="/board/adoption-review/:boardNo" element={<AdoptionReviewMain />} />
+              <Route path="/board/adoption-review/cr" element={<AdoptionReviewCreate />} />
+              <Route path="/board/inquiry/cr" element={<InquiryCreate />} />
+              <Route path="/board/inquiry/:inquiryNo" element={<InquiryMain />} />
+              <Route path="/adoption/form" element={<ApplicationForm />} />
+              <Route path="/board/usage-guide" element={<UsageGuide />} />
+              <Route path="/loading" element={<LoadingMain />} />
+            </Routes>
+          </Box>
         </Grid>
-      </div>
+      </Grid>
+    </div>
+    )}
     </>
   );
 }
