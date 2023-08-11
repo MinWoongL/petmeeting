@@ -5,6 +5,7 @@ import {
   Routes,
   Link,
   useLocation,
+  Switch
 } from "react-router-dom";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import store from "./stores/index";
@@ -53,6 +54,8 @@ import ApplicationForm from "./components/Adoption/ApplicationForm";
 
 import PetMeetingLogo1 from "./assets/images/petmeeting_logo1.png";
 import PetMeetingLogo2 from "./assets/images/petmeeting_logo2.png";
+
+import LoadingMain from "./components/loading/LoadingMain";
 
 
 function NavBar({ isLoggedIn }) {
@@ -180,8 +183,17 @@ function App() {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
+  const [loading, setLoading] = useState(false); // 유녕추가
+
   // 현재 경로가 보호소 상세 페이지인지 확인
   const isShelterDetailPage = location.pathname.startsWith("/shelter/");
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, []);
+  // }) d유녕유녕
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
