@@ -20,8 +20,8 @@ public class ShelterQueryDslRepository {
     public List<Shelter> findByCondition(ShelterSearchCondition condition) {
         return jpaQueryFactory.selectFrom(shelter)
                 .where(shelter.isDeleted.eq(false),
-                        containsName(condition.getName().split(",")[0]),
-                        containsLocation(condition.getLocation().split(",")[0]))
+                        containsName(condition.getName()),
+                        containsLocation(condition.getLocation()))
                 .limit(condition.getMax() == null ? 10 : condition.getMax())
                 .offset(condition.getOffset() == null ? 0 : condition.getOffset())
                 .orderBy(shelter.id.desc())
@@ -32,6 +32,8 @@ public class ShelterQueryDslRepository {
         if (location == null)
             return null;
 
+        location = location.split(",")[0];
+
         return shelter.location.contains(location)
                 .or(shelter.location.startsWith(location))
                 .or(shelter.location.endsWith(location));
@@ -40,6 +42,8 @@ public class ShelterQueryDslRepository {
     private BooleanExpression containsName(String name) {
         if (name == null)
             return null;
+
+        name = name.split(",")[0];
 
         return shelter.name.contains(name)
                 .or(shelter.name.startsWith(name))
