@@ -222,7 +222,7 @@ function App() {
               >
                 {" "}
                 {/* 왼쪽 3칸 */}
-                <Box border={1} borderColor="grey.900" height="100%">
+                <Box border="none" height="100%" >
                   <Grid
                     container
                     direction="column"
@@ -231,10 +231,11 @@ function App() {
                   >
                     <Grid item style={{ flex: 2 }}>
                       <Box
+                        marginTop="10px"
+                        marginLeft="10px"
                         border={1}
-                        borderColor="grey.900"
+                        borderColor="transparent"
                         height="100%"
-                        borderRadius="8px"
                       >
                         <InfoSidebar />
                       </Box>
@@ -242,12 +243,15 @@ function App() {
 
                     <Grid item style={{ flex: 3 }} sx={{ mt: 2 }}>
                       <Box
+                        marginTop="10px"
+                        marginLeft="10px"
                         border={1}
-                        borderColor="grey.900"
+                        borderColor="transparent"
                         height="100%"
                         style={{
                           backgroundColor: "var(--yellow6)",
                           borderRadius: "8px",
+                          marginBottom: "18px"
                         }}
                       >
                         {shelterNo ? (
@@ -268,10 +272,10 @@ function App() {
             {/* 로그인 또는 회원가입 페이지이면 전체 영역, 아니면 오른쪽 9칸 */}
             <Box
               border={1}
-              borderColor="grey.900"
+              borderColor="transparent"
               minHeight="85vh"
               height="100%"
-              style={{ backgroundColor }}
+              style={{ backgroundColor: "var(--yellow)" }}
             >
               <Routes>
                 <Route path="/" exact element={<MainPage />} />

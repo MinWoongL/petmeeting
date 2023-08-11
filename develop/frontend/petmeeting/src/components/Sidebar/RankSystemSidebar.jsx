@@ -40,7 +40,7 @@ function RankSide() {
         오늘의 인기 강아지
       </Typography>
 
-      <Paper elevation={3} sx={{ width: '90%', overflowX: 'auto', borderRadius: '0 0 4px 4px' }}>
+      <Paper elevation={3} sx={{ width: '90%', overflowX: 'auto', borderRadius: '8px' }}>
       <Tabs
       value={currentTab}
       onChange={handleTabChange}
