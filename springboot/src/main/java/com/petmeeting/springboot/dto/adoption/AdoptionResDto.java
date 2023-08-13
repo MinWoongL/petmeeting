@@ -11,6 +11,7 @@ public class AdoptionResDto {
     Integer adoptionNo;
     Integer memberNo;
     Integer dogNo;
+    String dogName;
     Integer shelterNo; // 여기는 객체쓰면안댐
     String name;
     String gender;
@@ -28,6 +29,7 @@ public class AdoptionResDto {
                 .adoptionNo(adoption.getAdoptionNo())
                 .memberNo(adoption.getMember().getId())
                 .dogNo(adoption.getDog().getDogNo())
+                .dogName(adoption.getDog().getName())
                 .shelterNo(adoption.getShelter().getId())
                 .name(adoption.getName())
                 .gender(adoption.getGender().getValue())
