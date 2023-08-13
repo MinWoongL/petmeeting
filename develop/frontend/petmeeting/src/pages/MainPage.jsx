@@ -9,9 +9,9 @@ function MainPage() {
 
   return (
     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Typography component="h1" variant="h5">
+      {/* <Typography component="h1" variant="h5">
         Home
-      </Typography>
+      </Typography> */}
       <Box component="div" noValidate sx={{ mt: 1 }}>
         <Typography component="p">
           

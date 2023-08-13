@@ -6,7 +6,8 @@ import {
   Link,
   useLocation,
   Switch,
-  useHistory
+  useHistory,
+  useNavigate
 } from "react-router-dom";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import store from "./stores/index";
@@ -23,6 +24,8 @@ import {
   Toolbar,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import font from "./index.css";
+
 import MainPage from "./pages/MainPage";
 import ShelterPage from "./pages/Shelter";
 import ShelterDetailPage from "./pages/ShelterDetail";
@@ -57,9 +60,11 @@ import PetMeetingLogo1 from "./assets/images/petmeeting_logo1.png";
 import LoadingMain from "./components/loading/LoadingMain";
 
 
+
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const navigate = useNavigate();
 
   // 로그인 토글 기능
   const handleOpen = (event) => {
@@ -80,11 +85,22 @@ function NavBar({ isLoggedIn }) {
     setAnchorEl2(null);
   };
 
+  // 네브바 버튼 스타일
+  const buttonStyle = {
+    margin: '0 10px', // 버튼 간격 조정
+    fontWeight: 'bold', // 글씨 두껍게
+    fontFamily: ' sans-serif', 
+    fontSize: '20px',
+    // color: 'black', // 네브바 하얀색일때 사용
+};
+
   return (
     <AppBar
       position="static"
       className="theme-blueberry"
-      style={{ backgroundColor: "var(--dark)" }}
+      // style={{ backgroundColor: "var(--dark)" }
+      style={{ backgroundColor: "var(--yellow8)", boxShadow: "none" }}
+      // style={{ backgroundColor: "white", boxShadow: "none" }}
     >
       <TokenRefresher />
       <Toolbar>
@@ -96,17 +112,17 @@ function NavBar({ isLoggedIn }) {
              <img src={PetMeetingLogo1} alt="Pet Meeting Logo" style={{ maxHeight: "40px", marginTop: "9px" }} />
           </Typography>
         </Link>
-        <Button color="inherit" component={Link} to="/">
+        <Button color="inherit" component={Link} to="/" style={buttonStyle}>
           Home
         </Button>
-        <Button color="inherit" component={Link} to="/shelter">
+        <Button color="inherit" component={Link} to="/shelter" style={buttonStyle}>
           보호소
         </Button>
-        <Button color="inherit" component={Link} to="/adoption">
+        <Button color="inherit" component={Link} to="/adoption" style={buttonStyle}>
           입양하기
         </Button>
         <>
-          <Button color="inherit" onClick={handleOpenBoard}>
+          <Button color="inherit" onClick={handleOpenBoard} style={buttonStyle}>
             게시판
           </Button>
           <Menu
@@ -118,6 +134,7 @@ function NavBar({ isLoggedIn }) {
               onClick={handleCloseBoard}
               component={Link}
               to="/board/adoption-review"
+              style={buttonStyle}
             >
               입양후기
             </MenuItem>
@@ -125,6 +142,7 @@ function NavBar({ isLoggedIn }) {
               onClick={handleCloseBoard}
               component={Link}
               to="/board/inquiry"
+              style={buttonStyle}
             >
               문의게시판
             </MenuItem>
@@ -132,6 +150,7 @@ function NavBar({ isLoggedIn }) {
               onClick={handleCloseBoard}
               component={Link}
               to="/board/usage-guide"
+              style={buttonStyle}
             >
               이용방법
             </MenuItem>
@@ -144,18 +163,19 @@ function NavBar({ isLoggedIn }) {
                 color="inherit"
                 component={Link}
                 to="/mypage/ShelterMyPage"
+                style={buttonStyle}
               >
                 보호소 마이페이지
               </Button>
             ) : (
-              <Button color="inherit" component={Link} to="/mypage">
+              <Button color="inherit" component={Link} to="/mypage" style={buttonStyle}>
                 마이페이지
               </Button>
             )}
           </>
         ) : (
           <>
-            <Button color="inherit" onClick={handleOpen}>
+            <Button color="inherit" onClick={handleOpen} style={buttonStyle}>
               <AccountCircleIcon /> {/* 사람모양 아이콘 */}
             </Button>
             <Menu
@@ -163,10 +183,10 @@ function NavBar({ isLoggedIn }) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose} component={Link} to="/login">
+              <MenuItem onClick={handleClose} component={Link} to="/login" style={buttonStyle}>
                 로그인
               </MenuItem>
-              <MenuItem onClick={handleClose} component={Link} to="/signup">
+              <MenuItem onClick={handleClose} component={Link} to="/signup" style={buttonStyle}>
                 회원가입
               </MenuItem>
             </Menu>
@@ -213,6 +233,7 @@ function App() {
 
   return (
     <>
+    {/* 로딩화면 추가(F5) */}
     {loading ? (
       <LoadingMain />
     ) : (
@@ -221,7 +242,7 @@ function App() {
       style={{
         minHeight: "180vh",
         height: "100%",
-        backgroundColor: "var(--yellow3)",
+        backgroundColor: "var(--yellow3)", // 배경없애는게 어떨지
         overflowYL: "auto",
       }}
     >
