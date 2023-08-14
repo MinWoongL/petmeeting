@@ -1,0 +1,1 @@
+// pages/adoption.jsx 에서 해결가능
