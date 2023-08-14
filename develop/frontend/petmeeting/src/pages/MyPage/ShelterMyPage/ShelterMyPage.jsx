@@ -6,7 +6,7 @@ import axios from "axios";
 import ProfileCard from "../../../components/Shelter/ShelterMypageProfile";
 import DogDetail from "../../../components/Shelter/DogDetail"; // Replace with your actual component
 import DonationRanking from "../../../components/Shelter/DonationRanking"; // Replace with your actual component
-import UserAdoptionList from "../../../components/MyPage/UserAdoptionList";
+import ShelterAdoptionList from "../../../components/MyPage/ShelterAdoptionList";
 import Button from "@mui/material/Button";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
@@ -131,7 +131,7 @@ function ShelterMyPage() {
       ) : (
         <></>
       )}
-      {view === "adoption" ? <UserAdoptionList shelterNo={userNo} /> : <></>}
+      {view === "adoption" ? <ShelterAdoptionList shelterNo={userNo} /> : <></>}
 
       {/* 유기견 등록용으로 사용할 버튼 */}
       <Fab

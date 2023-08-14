@@ -168,7 +168,8 @@ function BroadCastingMain() {
     };
 
     const handleOpenViduClick = async(shelterNo) => {
-      const userNo = localStorage.getItem('userNo')
+      const userData = JSON.parse(localStorage.getItem('user'))
+      const userNo = userData.userNo
       if (userNo) { // 로그인된 상태
         const mySession = `Session${userNo}`; // 로그인된 사용자의 세션
         joinSessionSub(shelterNo, mySession);

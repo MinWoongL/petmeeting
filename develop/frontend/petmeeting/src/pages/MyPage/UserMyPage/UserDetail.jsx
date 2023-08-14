@@ -4,6 +4,7 @@ import UserInformation from "../../../components/MyPage/UserInformation";
 import Button from "@mui/material/Button";
 import UserBookmarkDog from "../../../components/MyPage/UserBookmarkDog";
 import UserLikeDog from "../../../components/MyPage/UserLikeDog";
+import UserAdoptionList from "../../../components/MyPage/UserAdoptionList";
 
 function UserProfilePage() {
   const [userData, setUserData] = useState(null);
@@ -48,11 +49,14 @@ function UserProfilePage() {
       <div>
         <Button onClick={() => setView("like")}>좋아요 한 개 보기</Button>
         <Button onClick={() => setView("bookmark")}>북마크한 개 보기</Button>
+        <Button onClick={() => setView("adoptionList")}>입양신청내역 보기</Button>
       </div>
       {view === "like" ? (
         <UserLikeDog likedDogs={userData.likedDogs} />
       ) : view === "bookmark" ? (
         <UserBookmarkDog bookmarkedDogs={userData.bookmarkedDogs} />
+      ) : view === "adoptionList" ? (
+        <UserAdoptionList />
       ) : null}
     </div>
   );
