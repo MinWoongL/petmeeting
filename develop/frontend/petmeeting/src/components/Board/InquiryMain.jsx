@@ -58,7 +58,7 @@ export default function InquiryMain() {
         marginBottom: "30px"
       }}
     >
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom style={{fontFamily: 'Jua'}}>
         문의게시글 상세보기
       </Typography>
 
