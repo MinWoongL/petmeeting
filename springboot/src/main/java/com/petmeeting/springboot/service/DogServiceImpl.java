@@ -61,7 +61,7 @@ public class DogServiceImpl implements DogService {
                 .personality(registerDogReqDto.getPersonality())
                 .protectionStartDate(registerDogReqDto.getProtectionStartDate())
                 .protectionEndDate(registerDogReqDto.getProtectionEndDate())
-                .adoptionAvailability(AdoptionAvailability.getAvailability(registerDogReqDto.getAdoptionAvailability()))
+                .adoptionAvailability(AdoptionAvailability.ADOPT_POSSIBLE)
                 .currentStatus(registerDogReqDto.getCurrentStatus())
                 .dogSpecies(registerDogReqDto.getDogSpecies())
                 .reasonAbandonment(registerDogReqDto.getReasonAbandonment())

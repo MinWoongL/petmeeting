@@ -16,7 +16,6 @@ public class DogReqDto {
     String personality;
     Long protectionStartDate;
     Long protectionEndDate;
-    String adoptionAvailability;
     String currentStatus;
     String dogSpecies;
     String reasonAbandonment;
