@@ -51,7 +51,6 @@ function BroadCastingMain() {
       const sessionInstance = OV.initSession();
       // console.log('Session 잘 만들어짐? : ', sessionInstance)
 
-
       sessionInstance.on('streamCreated', (event) => {
         // console.log('구독구독')
           const subscriber = sessionInstance.subscribe(event.stream, JSON.parse(event.stream.connection.data).clientData);
