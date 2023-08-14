@@ -1,30 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Link,
-  useLocation,
-  Switch,
-  useHistory,
-  useNavigate
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link, useLocation, Switch, useHistory, useNavigate } from "react-router-dom";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import store from "./stores/index";
 import { login } from "./stores/Slices/UserSlice";
-import {
-  AppBar,
-  Button,
-  Typography,
-  Grid,
-  Box,
-  Menu,
-  MenuItem,
-  Hidden,
-  Toolbar,
-} from "@mui/material";
+import { AppBar, Button, Typography, Grid, Box, Menu, MenuItem, Hidden, Toolbar,} from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import font from "./index.css";
+import "./styles/base.css";
+import TokenRefresher from "./apis/refresher";
+import { getAccessToken } from "./utils/tokenRefresher";
 
 import MainPage from "./pages/MainPage";
 import ShelterPage from "./pages/Shelter";
@@ -35,7 +19,7 @@ import AdoptionReviewBoard from "./pages/Board/AdoptionReviewBoard";
 import InquiryBoard from "./pages/Board/InquiryBoard";
 import UsageGuide from "./pages/Board/UsageGuide";
 import DogDetailPage from "./pages/DogDetailPage";
-
+import PaymentSuccess from "./pages/PaymentSuccessPage";
 import UserDetail from "./pages/MyPage/UserMyPage/UserDetail";
 import ShelterMyPage from "./pages/MyPage/ShelterMyPage/ShelterMyPage";
 import LogIn from "./pages/Auth/LogIn";
@@ -43,23 +27,14 @@ import UserRegister from "./pages/Auth/Register/UserRegister";
 import InfoSidebar from "./components/Sidebar/InfoSidebar";
 import RankSystemSidebar from "./components/Sidebar/RankSystemSidebar";
 import ChatSidebar from "./components/Sidebar/ChatSidebar";
-
 import BroadCastingPage from "./pages/BroadCasting";
-import "./styles/base.css";
-
-import TokenRefresher from "./apis/refresher";
 import AdoptionReviewMain from "./components/Board/AdoptionReviewMain";
 import AdoptionReviewCreate from "./components/Board/AdoptionReviewCreate";
-
 import InquiryMain from "./components/Board/InquiryMain";
 import InquiryCreate from "./components/Board/InquiryCreate";
-
 import ApplicationForm from "./components/Adoption/ApplicationForm";
-
 import PetMeetingLogo1 from "./assets/images/petmeeting_logo1.png";
 import LoadingMain from "./components/loading/LoadingMain";
-
-
 
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -98,9 +73,7 @@ function NavBar({ isLoggedIn }) {
     <AppBar
       position="static"
       className="theme-blueberry"
-      // style={{ backgroundColor: "var(--dark)" }
       style={{ backgroundColor: "var(--yellow8)", boxShadow: "none" }}
-      // style={{ backgroundColor: "white", boxShadow: "none" }}
     >
       <TokenRefresher />
       <Toolbar>
@@ -242,10 +215,9 @@ function App() {
       style={{
         minHeight: "180vh",
         height: "100%",
-        backgroundColor: "var(--yellow3)", // 배경없애는게 어떨지
+        backgroundColor: "var(--yellow3)", 
         overflowYL: "auto",
-      }}
-    >
+      }}>
       <NavBar isLoggedIn={isLoggedIn} />
 
       <Grid container spacing={2} style={{ height: "calc(100% - 64px)" }}>
@@ -336,11 +308,12 @@ function App() {
               <Route path="/adoption/form" element={<ApplicationForm />} />
               <Route path="/board/usage-guide" element={<UsageGuide />} />
               <Route path="/loading" element={<LoadingMain />} />
+              <Route path="/payment/success" element={<PaymentSuccess />} />              
             </Routes>
           </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </div>
+      </div>
     )}
     </>
   );

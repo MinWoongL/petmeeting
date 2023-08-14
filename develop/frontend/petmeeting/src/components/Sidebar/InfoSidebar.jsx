@@ -39,6 +39,10 @@ function InfoSidebar() {
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
+  let image = user?.imagePath ? user.imagePath : "profile2.png";
+
+  const imagePath = `https://i9a203.p.ssafy.io/backapi/api/v1/image/${image}?option=member`;
+
   const handleSnackbarClose = (event, reason) => {
     console.log("Snackbar is closing due to:", reason);
     if (reason === "clickaway") {
@@ -91,7 +95,7 @@ function InfoSidebar() {
             justifyContent="center"
           >
             <img
-              src="https://png.pngtree.com/element_origin_min_pic/16/05/28/18574977d4e06ba.jpg"
+              src={user.avatarUrl}
               alt="Default avatar"
               style={{
                 width: "150px",
@@ -146,7 +150,7 @@ function InfoSidebar() {
       <CardContent>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Avatar
-            src={user.avatarUrl}
+            src={imagePath}
             alt="User avatar"
             style={{ width: "80px", height: "80px", marginRight: "20px" }}
           />
@@ -158,7 +162,12 @@ function InfoSidebar() {
                 <EditIcon fontSize="small" />
               </IconButton>
             </Stack>
-            <Typography variant="body2">내 포인트: {user.points}</Typography>
+            <Typography variant="body2">
+              내 포인트: {user.holdingPoint}
+            </Typography>
+            <Typography variant="body2">
+              내 멍코인: {user.holdingToken}
+            </Typography>
           </Box>
         </Box>
 

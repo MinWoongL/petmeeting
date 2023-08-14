@@ -10,8 +10,13 @@ import { config } from "../../static/config";
 import { Link } from "react-router-dom";
 import LikeButton from "../Button/DogLikeButton";
 import BookmarkButton from "../Button/DogBookmarkButton";
+import DefaultDogImage from "../../assets/images/dog/DefaultDog.jpg";
 
 export default function DogListItem({ dog, index }) {
+  const imageSource = dog.imagePath
+    ? `${config.baseURL}/api/v1/image/${dog.imagePath}?option=dog`
+    : DefaultDogImage;
+
   return (
     <Link to={`/dog/${dog.dogNo}`} key={index} style={{ textDecoration: "none" }}>
       <Card key={index} sx={{ width: 300 }}>
@@ -22,7 +27,7 @@ export default function DogListItem({ dog, index }) {
         <CardMedia
           component="img"
           height="160"
-          image={`${config.baseURL}/api/v1/image/${dog.imagePath}?option=dog`}
+          image={imageSource}
           alt={dog.name}
         />
         <CardContent>

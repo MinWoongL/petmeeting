@@ -31,7 +31,7 @@ export default function Adoption() {
   return (
     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <h1>
-        입양하기
+        입양하기 
       </h1>
       {/* 입양하러가기 배너 */}
       <Link to="/adoption/form">

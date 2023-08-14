@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import ProfileCard from "../../../components/Shelter/ShelterList";
+import ProfileCard from "../../../components/Shelter/ShelterMypageProfile";
 import DogDetail from "../../../components/Shelter/DogDetail"; // Replace with your actual component
 import DonationRanking from "../../../components/Shelter/DonationRanking"; // Replace with your actual component
+import UserAdoptionList from "../../../components/MyPage/UserAdoptionList";
 import Button from "@mui/material/Button";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
@@ -111,6 +112,7 @@ function ShelterMyPage() {
       <div>
         <button onClick={() => setView("dogs")}>강아지 목록</button>
         <button onClick={() => setView("donations")}>후원 랭킹</button>
+        <button onClick={() => setView("adoption")}>입양신청내역</button>
         <Button variant="outlined" onClick={handleEdit}>
           {isEditing ? "Save" : "Edit"}
         </Button>
@@ -125,7 +127,17 @@ function ShelterMyPage() {
           </Link>
         </div>
       ) : (
+        <></>
+      )}
+      {view === "donations" ? (
         <DonationRanking shelterNo={userNo} /> // Pass the shelterNo to the DonationRanking component
+      ) : (
+        <></>
+      )}
+      {view === "adoption" ? (
+        <UserAdoptionList shelterNo={userNo}/>
+      ) : (
+        <></>
       )}
 
       {/* 유기견 등록용으로 사용할 버튼 */}

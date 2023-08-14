@@ -1,46 +1,84 @@
-import React, { useState, useEffect } from 'react';
-import { Typography, Box, Table, TableBody, TableCell, TableHead, TableRow, Tabs, Tab, Avatar, Paper } from '@mui/material';
+import React, { useState, useEffect } from "react";
+import {
+  Typography,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Tabs,
+  Tab,
+  Avatar,
+  Paper,
+} from "@mui/material";
+import axios from "axios";
+import { config } from "../../static/config";
 
 function RankSide() {
   const [dogs, setDogs] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
 
-  useEffect(() => {
-    const fetchedDogs = [
-      { name: 'Dog 1', likes: 5, image: 'https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2023/05/202307181707536.jpg' },
-      { name: 'Dog 2', likes: 2, image: 'https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2023/07/202307251307624.jpg' },
-      { name: 'Dog 3', likes: 8, image: 'https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2023/05/202307171707248.jpg' },
-      { name: 'Dog 4', likes: 12, image: 'https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2023/07/202308010708549.jpg' },
-    ];
+  const fetchDogData = async () => {
+    try {
+      const response = await axios.get(
+        `${config.baseURL}/api/v1/dog?option=rank&max=5`
+      );
+      const data = response.data; // Assuming the response contains an array of dog objects
+      return data;
+    } catch (error) {
+      console.error("Error fetching dog data:", error);
+    }
+  };
 
-    setDogs(fetchedDogs);
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedData = await fetchDogData();
+      setDogs(fetchedData);
+    };
+    fetchData();
   }, []);
 
-  const sortDogsByLikes = (dogs) => {
-    return [...dogs].sort((a, b) => b.likes - a.likes);
-  };
-
-  const shuffleDogs = (dogs) => {
-    for (let i = dogs.length - 1; i > 0; i--) {
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [dogs[i], dogs[j]] = [dogs[j], dogs[i]];
+      [array[i], array[j]] = [array[j], array[i]];
     }
-    return dogs;
+    return array;
   };
-
-  const displayedDogs = currentTab === 0 ? sortDogsByLikes(dogs) : shuffleDogs(dogs);
 
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
   };
 
+  let displayedDogs = dogs.slice(0, 4); // Display the top 4 liked dogs
+
+  if (currentTab === 1) {
+    const shuffledDogs = shuffleArray([...dogs]);
+    displayedDogs = shuffledDogs.slice(0, 4); // Display the top 4 shuffled dogs
+  }
   return (
-    <Box sx={{ width: '100%', height: '100%', mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius:'8px' }}>
-      <Typography component="h1" variant="h5" gutterBottom style={{ fontFamily: 'Poor Story' }}>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        mt: 4,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        borderRadius: "8px",
+      }}
+    >
+      <Typography
+        component="h1"
+        variant="h5"
+        gutterBottom
+        style={{ fontFamily: "Poor Story" }}
+      >
         오늘의 인기 강아지
       </Typography>
 
-      <Paper elevation={3} sx={{ width: '90%', overflowX: 'auto', borderRadius: '8px' }}>
+    <Paper elevation={3} sx={{ width: '90%', overflowX: 'auto', borderRadius: '8px' }}>
       <Tabs
       value={currentTab}
       onChange={handleTabChange}
@@ -65,19 +103,26 @@ function RankSide() {
       <Tab label="좋아요순" />
       <Tab label="랜덤순" />
     </Tabs>
-
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>강아지</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>이름</TableCell>
-              <TableCell align="right" sx={{ fontWeight: 'bold' }}>좋아요</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>강아지</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>이름</TableCell>
+              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                좋아요
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {displayedDogs.map((dog, index) => (
               <TableRow key={index}>
-                <TableCell><Avatar src={dog.image} alt={dog.name} sx={{ width: 60, height: 60 }} /></TableCell>
+                <TableCell>
+                  <Avatar
+                    src={`https://i9a203.p.ssafy.io/backapi/api/v1/image/${dog.imagePath}?option=dog`}
+                    alt={dog.name}
+                    sx={{ width: 60, height: 60 }}
+                  />
+                </TableCell>
                 <TableCell>{dog.name}</TableCell>
                 <TableCell align="right">{dog.likes}</TableCell>
               </TableRow>
