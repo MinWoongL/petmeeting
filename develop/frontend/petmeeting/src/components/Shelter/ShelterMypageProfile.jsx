@@ -23,8 +23,6 @@ import {
 import useDogDetail from "../../apis/useDogDetail";
 import { config } from "../../static/config";
 
-import { resetToInitialState } from "../../stores/Slices/UserSlice"; // Import the reset action from your userSlice
-
 const APPLICATION_SERVER_URL = "https://i9a203.p.ssafy.io/openvidu/";
 const OPENVIDU_PASSWORD = process.env.REACT_APP_OPENVIDU_PASSWORD;
 
@@ -45,10 +43,7 @@ const ShelterMypageProfile = ({
   const [publisher, setPublisher] = useState(null);
   const [subscribers, setSubscribers] = useState([]);
 
-  const dogData = useDogDetail(userData ? userData.userNo : null);
-
-  // const dogData = userData ? useDogDetail(userData.userNo): null;
-
+  const dogData = useDogDetail(userData.userNo);
   const [dogSelectionModalOpen, setDogSelectionModalOpen] = useState(false);
   const [selectedDog, setSelectedDog] = useState(null);
 
@@ -71,29 +66,6 @@ const ShelterMypageProfile = ({
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to update profile data:", error);
-    }
-  };
-
-  const handleWithdrawal = async () => {
-    const shouldWithdraw = window.confirm(
-      "Are you sure you want to withdraw? This action cannot be undone."
-    );
-
-    if (shouldWithdraw) {
-      try {
-        await axios.delete("https://i9a203.p.ssafy.io/backapi/api/v1/user", {
-          headers: { AccessToken: `Bearer ${token.accessToken}` },
-        });
-        // Clear local storage and navigate to the home page after successful withdrawal
-        localStorage.clear();
-        sessionStorage.clear();
-
-        dispatch(resetToInitialState());
-
-        navigate("/");
-      } catch (error) {
-        console.error("Failed to withdraw:", error);
-      }
     }
   };
 
@@ -308,22 +280,13 @@ const ShelterMypageProfile = ({
               </Typography>
             </Box>
             {showEditButton && (
-              <>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={isEditing ? handleSave : handleEdit}
-                >
-                  {isEditing ? "Save" : "Edit"}
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={handleWithdrawal}
-                >
-                  탈퇴하기
-                </Button>
-              </>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={isEditing ? handleSave : handleEdit}
+              >
+                {isEditing ? "Save" : "Edit"}
+              </Button>
             )}
             <Button
               variant="outlined"

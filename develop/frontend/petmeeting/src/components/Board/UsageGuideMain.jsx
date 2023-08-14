@@ -2,24 +2,14 @@ import React from "react";
 import { Box, Typography, Grid, Table, TableBody, TableRow, TableCell, List, ListItem, ListItemText } from "@mui/material";
 import PlayWithDog from "../../assets/images/play_with_dog.png";
 import GiveMeMoney from "../../assets/images/give_me_money.png";
-import BackgroundBox from "../../assets/images/BackgroundBox.png";
-import "../../styles/base.css";
 
 export default function UsageGuideMain() {
-
     return ( 
-        <div style={{ 
-            marginTop: '4px', 
-            backgroundImage: `url(${BackgroundBox})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-            minHeight: '100vh', // 이미지가 차지하는 높이만큼 높이 조절
-            }}>
-            <div style={{ marginBottom: '4px' }}>
-                <h1 style={{ marginBottom: '2px' }}>
+        <Box sx={{ mt: 4 }}>
+            <Box sx={{ mb: 4 }}>
+                <Typography variant="h4" sx={{ mb: 2 }}>
                     유기견과 실시간 놀아주기
-                </h1>
+                </Typography>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                     <img src={PlayWithDog} alt="조작방법" style={{ width: '100%', height: 'auto' }} />
@@ -47,13 +37,13 @@ export default function UsageGuideMain() {
                         </List>
                     </Grid>
                 </Grid>
-            </div>
+            </Box>
 
             {/* 후원방법 */}
-            <div style={{ textAlign: "right" }}>
-                <h1 sx={{ marginBottom: 2 }}>
+            <Box>
+                <Typography variant="h4" sx={{ mb: 2 }}>
                     유기견에게 후원하기
-                </h1>
+                </Typography>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                     <img src={GiveMeMoney} alt="후원방법" style={{ width: '100%', height: 'auto' }} />
@@ -78,8 +68,8 @@ export default function UsageGuideMain() {
                         </List>
                     </Grid>
                 </Grid>
-            </div>
-        </div>
+            </Box>
+        </Box>
     )
 }
 

@@ -28,9 +28,8 @@ function BroadCastingMain() {
     const [videoDescriptions, setVideoDescriptions] = useState({});
     const [openViduSessions, setOpenViduSessions] = useState([]);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
-    
 
-    const liveBroadcasts = [{ id: "BZcu8MK_jfo" }, { id: "zwVAKBO8rJM" }, { id: "uqkhMBJ9yrs" }, { id: "l3UcjImor28"}];
+    const liveBroadcasts = [{ id: "BZcu8MK_jfo" }, { id: "zwVAKBO8rJM" }, { id: "uqkhMBJ9yrs" }];
 
     const fetchOpenViduSessions = async () => {
       try {
@@ -168,8 +167,7 @@ function BroadCastingMain() {
     };
 
     const handleOpenViduClick = async(shelterNo) => {
-      const userData = JSON.parse(localStorage.getItem('user'))
-      const userNo = userData ? userData.userNo : undefined;
+      const userNo = localStorage.getItem('userNo')
       if (userNo) { // 로그인된 상태
         const mySession = `Session${userNo}`; // 로그인된 사용자의 세션
         joinSessionSub(shelterNo, mySession);
@@ -242,12 +240,12 @@ function BroadCastingMain() {
                 grabCursor={true}
                 centeredSlides={true}
                 loop={true}
-                slidesPerView={2}
+                slidesPerView={'auto'}
                 coverflowEffect={{
                     rotate: 0,
                     stretch: 0,
                     depth: 100,
-                    modifier: 2.5,  
+                    modifier: 2.5,
                 }}
                 pagination={{ el: '.swiper-pagination', clickable: true }}
                 navigation={{
@@ -259,32 +257,30 @@ function BroadCastingMain() {
                 className="swiper_container"
             >
                 {/* OpenVidu 세션의 SwiperSlide */}
-                {openViduSessions ? (
-                  openViduSessions.map((session) => (
-                    <SwiperSlide key={session.shelterNo} style={{ width: '500px', height: '350px' }}>
-                      <Card onClick={() => handleOpenViduClick(session.shelterNo)} style={{ height: '100%' }}>
-                        <Box display="flex" flexDirection="column" height="100%">
-                            <Box
-                                display="flex"
-                                justifyContent="center"
-                                alignItems="center"
-                                style={{
-                                    flexGrow: 5,
-                                    width: '100%',
-                                    backgroundImage: `url(path_to_dummy_thumbnail.jpg)`,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center'
-                                }}
-                            >
-                            </Box>
-                            <CardContent style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Typography variant="Jua">{session.onBroadcastTitle}</Typography>
-                            </CardContent>
-                        </Box>
-                      </Card>
-                    </SwiperSlide>
-                  ))
-                ) : null}
+                {openViduSessions.map((session) => (
+                  <SwiperSlide key={session.shelterNo} style={{ width: '500px', height: '350px' }}>
+                    <Card onClick={() => handleOpenViduClick(session.shelterNo)} style={{ height: '100%' }}>
+                      <Box display="flex" flexDirection="column" height="100%">
+                          <Box
+                              display="flex"
+                              justifyContent="center"
+                              alignItems="center"
+                              style={{
+                                  flexGrow: 5,
+                                  width: '100%',
+                                  backgroundImage: `url(path_to_dummy_thumbnail.jpg)`,
+                                  backgroundSize: 'cover',
+                                  backgroundPosition: 'center'
+                              }}
+                          >
+                          </Box>
+                          <CardContent style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                              <Typography variant="Jua">{session.onBroadcastTitle}</Typography>
+                          </CardContent>
+                      </Box>
+                    </Card>
+                  </SwiperSlide>
+                ))}
 
                 {/* 기존의 라이브 스트리밍 SwiperSlides */}
                 {liveBroadcasts.map((broadcast) => (

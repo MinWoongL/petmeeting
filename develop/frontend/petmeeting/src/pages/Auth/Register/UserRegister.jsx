@@ -168,9 +168,8 @@ export default function SignUp() {
           ...postData,
           location: data.get("location"),
           siteUrl: data.get("siteUrl"),
-          registImagePath: imagePath,
+          registImagePath: data.get("registImagePath"),
         };
-        console.log(postData);
       }
       const response = await axios.post(
         "https://i9a203.p.ssafy.io/backapi/api/v1/user/sign-up",
@@ -244,7 +243,6 @@ export default function SignUp() {
         }
       }
     } catch (error) {
-      console.log();
       console.error("Signup failed:", error);
     }
   };

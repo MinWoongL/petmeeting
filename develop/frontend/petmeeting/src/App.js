@@ -1,28 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Link,
-  useLocation,
-  Switch,
-  useHistory,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link, useLocation, Switch, useHistory, useNavigate } from "react-router-dom";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import store from "./stores/index";
 import { login } from "./stores/Slices/UserSlice";
-import {
-  AppBar,
-  Button,
-  Typography,
-  Grid,
-  Box,
-  Menu,
-  MenuItem,
-  Hidden,
-  Toolbar,
-} from "@mui/material";
+import { AppBar, Button, Typography, Grid, Box, Menu, MenuItem, Hidden, Toolbar,} from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import font from "./index.css";
 import "./styles/base.css";
@@ -81,12 +62,12 @@ function NavBar({ isLoggedIn }) {
 
   // 네브바 버튼 스타일
   const buttonStyle = {
-    margin: "0 10px", // 버튼 간격 조정
-    fontWeight: "bold", // 글씨 두껍게
-    fontFamily: " sans-serif",
-    fontSize: "20px",
+    margin: '0 10px', // 버튼 간격 조정
+    fontWeight: 'bold', // 글씨 두껍게
+    fontFamily: 'sans-serif', 
+    fontSize: '20px',
     // color: 'black', // 네브바 하얀색일때 사용
-  };
+};
 
   return (
     <AppBar
@@ -101,30 +82,16 @@ function NavBar({ isLoggedIn }) {
           style={{ textDecoration: "none", color: "inherit", flexGrow: 1 }}
         >
           <Typography variant="h6" component="div">
-            <img
-              src={PetMeetingLogo1}
-              alt="Pet Meeting Logo"
-              style={{ maxHeight: "50px", marginTop: "9px" }}
-            />
+             <img src={PetMeetingLogo1} alt="Pet Meeting Logo" style={{ maxHeight: "50px", marginTop: "9px" }} />
           </Typography>
         </Link>
         <Button color="inherit" component={Link} to="/" style={buttonStyle}>
           Home
         </Button>
-        <Button
-          color="inherit"
-          component={Link}
-          to="/shelter"
-          style={buttonStyle}
-        >
+        <Button color="inherit" component={Link} to="/shelter" style={buttonStyle}>
           보호소
         </Button>
-        <Button
-          color="inherit"
-          component={Link}
-          to="/adoption"
-          style={buttonStyle}
-        >
+        <Button color="inherit" component={Link} to="/adoption" style={buttonStyle}>
           입양하기
         </Button>
         <>
@@ -174,12 +141,7 @@ function NavBar({ isLoggedIn }) {
                 보호소 마이페이지
               </Button>
             ) : (
-              <Button
-                color="inherit"
-                component={Link}
-                to="/mypage"
-                style={buttonStyle}
-              >
+              <Button color="inherit" component={Link} to="/mypage" style={buttonStyle}>
                 마이페이지
               </Button>
             )}
@@ -194,20 +156,10 @@ function NavBar({ isLoggedIn }) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem
-                onClick={handleClose}
-                component={Link}
-                to="/login"
-                style={buttonStyle}
-              >
+              <MenuItem onClick={handleClose} component={Link} to="/login" style={buttonStyle}>
                 로그인
               </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                component={Link}
-                to="/signup"
-                style={buttonStyle}
-              >
+              <MenuItem onClick={handleClose} component={Link} to="/signup" style={buttonStyle}>
                 회원가입
               </MenuItem>
             </Menu>
@@ -223,7 +175,7 @@ function App() {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); 
 
   // 현재 경로가 보호소 상세 페이지인지 확인
   const isShelterDetailPage = location.pathname.startsWith("/shelter/");
@@ -231,7 +183,7 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 1000); // 1초 후 로딩 상태 해제
+    }, 2000); // 2초 후 로딩 상태 해제
   }, []); 
 
   useEffect(() => {
@@ -254,140 +206,115 @@ function App() {
 
   return (
     <>
-      {/* 로딩화면 추가(F5) */}
-      {loading ? (
-        <LoadingMain />
-      ) : (
-        <div
-          className="theme-yellow"
-          style={{
-            minHeight: "180vh",
-            height: "100%",
-            backgroundColor: "var(--yellow3)",
-            overflowYL: "auto",
-          }}
-        >
-          <NavBar isLoggedIn={isLoggedIn} />
+    {/* 로딩화면 추가(F5) */}
+    {loading ? (
+      <LoadingMain />
+    ) : (
+      <div
+      className="theme-yellow"
+      style={{
+        minHeight: "180vh",
+        height: "100%",
+        backgroundColor: "var(--yellow3)", 
+        overflowYL: "auto",
+      }}>
+      <NavBar isLoggedIn={isLoggedIn} />
 
-          <Grid container spacing={2} style={{ height: "calc(100% - 64px)" }}>
-            <Hidden smDown>
-              {/* 로그인 또는 회원가입 페이지가 아니면 왼쪽 영역을 표시 */}
-              {!pageCheck && (
-                <Grid
-                  item
-                  xs={3}
-                  style={{
-                    maxHeight: "calc(100vh - 64px)",
-                    borderRadius: "8px",
-                  }}
-                >
-                  {" "}
-                  {/* 왼쪽 3칸 */}
-                  <Box border="none" height="100%">
-                    <Grid
-                      container
-                      direction="column"
-                      wrap="nowrap"
-                      style={{ height: "100%" }}
-                    >
-                      <Grid item style={{ flex: 2 }}>
-                        <Box
-                          marginTop="10px"
-                          marginLeft="10px"
-                          border={1}
-                          borderColor="transparent"
-                          height="100%"
-                        >
-                          <InfoSidebar />
-                        </Box>
-                      </Grid>
-
-                      <Grid item style={{ flex: 3 }} sx={{ mt: 2 }}>
-                        <Box
-                          marginTop="10px"
-                          marginLeft="10px"
-                          border={1}
-                          borderColor="transparent"
-                          height="100%"
-                          style={{
-                            backgroundColor: "var(--yellow6)",
-                            borderRadius: "8px",
-                            marginBottom: "18px",
-                          }}
-                        >
-                          {shelterNo ? (
-                            <ChatSidebar shelterNo={shelterNo} />
-                          ) : (
-                            <RankSystemSidebar />
-                          )}
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </Grid>
-              )}
-            </Hidden>
-
-            <Grid item xs={pageCheck ? 12 : 9}>
+      <Grid container spacing={2} style={{ height: "calc(100% - 64px)" }}>
+        <Hidden smDown>
+          {/* 로그인 또는 회원가입 페이지가 아니면 왼쪽 영역을 표시 */}
+          {!pageCheck && (
+            <Grid
+              item
+              xs={3}
+              style={{ maxHeight: "calc(100vh - 64px)", borderRadius: "8px" }}
+            >
               {" "}
-              {/* 로그인 또는 회원가입 페이지이면 전체 영역, 아니면 오른쪽 9칸 */}
-              <Box
-                border={1}
-                borderColor="transparent"
-                minHeight="85vh"
-                height="100%"
-                style={{ backgroundColor: "var(--yellow)" }}
-              >
-                <Routes>
-                  <Route path="/" exact element={<MainPage />} />
-                  <Route path="/register-dog" element={<RegisterDog />} />
-                  <Route path="/shelter" element={<ShelterPage />} />
-                  <Route
-                    path="/shelter/:shelterNo"
-                    element={<ShelterDetailPage />}
-                  />
-                  <Route path="/adoption" element={<AdoptionPage />} />
-                  <Route
-                    path="/board/adoption-review"
-                    element={<AdoptionReviewBoard />}
-                  />
-                  <Route path="/board/inquiry" element={<InquiryBoard />} />
-                  <Route path="/board/usage-guide" element={<UsageGuide />} />
-                  <Route path="/mypage" element={<UserDetail />} />
-                  <Route
-                    path="/Mypage/ShelterMyPage"
-                    element={<ShelterMyPage />}
-                  />
-                  <Route path="/login" element={<LogIn />} />
-                  <Route path="/signup" element={<UserRegister />} />
-                  <Route path="/dog/:dogId" element={<DogDetailPage />} />
-                  <Route
-                    path="/broadcasting/:broadcastId"
-                    element={<BroadCastingPage />}
-                  />
-                  <Route
-                    path="/board/adoption-review/:boardNo"
-                    element={<AdoptionReviewMain />}
-                  />
-                  <Route
-                    path="/board/adoption-review/cr"
-                    element={<AdoptionReviewCreate />}
-                  />
-                  <Route path="/board/inquiry/cr" element={<InquiryCreate />} />
-                  <Route
-                    path="/board/inquiry/:inquiryNo"
-                    element={<InquiryMain />}
-                  />
-                  <Route path="/adoption/form" element={<ApplicationForm />} />
-                  <Route path="/board/usage-guide" element={<UsageGuide />} />
-                  <Route path="/loading" element={<LoadingMain />} />
-                  <Route path="/payment/success" element={<PaymentSuccess />} />
-                </Routes>
+              {/* 왼쪽 3칸 */}
+              <Box border="none" height="100%" >
+                <Grid
+                  container
+                  direction="column"
+                  wrap="nowrap"
+                  style={{ height: "100%" }}
+                >
+                  <Grid item style={{ flex: 2 }}>
+                    <Box
+                      marginTop="10px"
+                      marginLeft="10px"
+                      border={1}
+                      borderColor="transparent"
+                      height="100%"
+                    >
+                      <InfoSidebar />
+                    </Box>
+                  </Grid>
+
+                  <Grid item style={{ flex: 3 }} sx={{ mt: 2 }}>
+                    <Box
+                      marginTop="10px"
+                      marginLeft="10px"
+                      border={1}
+                      borderColor="transparent"
+                      height="100%"
+                      style={{
+                        backgroundColor: "var(--yellow6)",
+                        borderRadius: "8px",
+                        marginBottom: "18px"
+                      }}
+                    >
+                      {shelterNo ? (
+                        <ChatSidebar shelterNo={shelterNo} />
+                      ) : (
+                        <RankSystemSidebar />
+                      )}
+                    </Box>
+                  </Grid>
+                </Grid>
               </Box>
             </Grid>
+          )}
+        </Hidden>
+
+        <Grid item xs={pageCheck ? 12 : 9}>
+          {" "}
+          {/* 로그인 또는 회원가입 페이지이면 전체 영역, 아니면 오른쪽 9칸 */}
+          <Box
+            border={1}
+            borderColor="transparent"
+            minHeight="85vh"
+            height="100%"
+            style={{ backgroundColor: "var(--yellow)" }}
+          >
+            <Routes>
+              <Route path="/" exact element={<MainPage />} />
+              <Route path="/register-dog" element={<RegisterDog />} />
+              <Route path="/shelter" element={<ShelterPage />} />
+              <Route path="/shelter/:shelterNo" element={<ShelterDetailPage />} />
+              <Route path="/adoption" element={<AdoptionPage />} />
+              <Route path="/board/adoption-review" element={<AdoptionReviewBoard />} />
+              <Route path="/board/inquiry" element={<InquiryBoard />} />
+              <Route path="/board/usage-guide" element={<UsageGuide />} />
+              <Route path="/mypage" element={<UserDetail />} />
+              <Route path="/Mypage/ShelterMyPage" element={<ShelterMyPage />} />
+              <Route path="/login" element={<LogIn />} />
+              <Route path="/signup" element={<UserRegister />} />
+              <Route path="/dog/:dogId" element={<DogDetailPage />} />
+              <Route path="/broadcasting/:broadcastId" element={<BroadCastingPage />} />
+              <Route path="/board/adoption-review/:boardNo" element={<AdoptionReviewMain />} />
+              <Route path="/board/adoption-review/cr" element={<AdoptionReviewCreate />} />
+              <Route path="/board/inquiry/cr" element={<InquiryCreate />} />
+              <Route path="/board/inquiry/:inquiryNo" element={<InquiryMain />} />
+              <Route path="/adoption/form" element={<ApplicationForm />} />
+              <Route path="/board/usage-guide" element={<UsageGuide />} />
+              <Route path="/loading" element={<LoadingMain />} />
+              <Route path="/payment/success" element={<PaymentSuccess />} />              
+            </Routes>
+          </Box>
           </Grid>
-        </div>
-      )}
+        </Grid>
+      </div>
+    )}
     </>
   );
 }

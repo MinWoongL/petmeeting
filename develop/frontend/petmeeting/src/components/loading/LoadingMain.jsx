@@ -6,7 +6,8 @@ const LoadingMain = () => {
 
     return(
         <div style={{ 
-            backgroundColor: "#FDF2E2", 
+            // backgroundColor: "var(--dark)", 
+            backgroundColor: "black",
             minHeight: "100vh", 
             display: "flex", 
             justifyContent: "center", 
