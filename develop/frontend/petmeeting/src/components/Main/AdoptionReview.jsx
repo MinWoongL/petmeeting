@@ -105,9 +105,9 @@ function AdoptionReview() {
         <Button
           variant="contained" 
           style={{
-            backgroundColor: 'var(--yellow8)',
+            backgroundColor: 'var(--yellow8)', 
             marginBottom: '10px',
-            marginLeft: '65px'
+            marginLeft: '63px'
           }} 
           onClick={handlePrev}>
             Prev
