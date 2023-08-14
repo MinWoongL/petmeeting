@@ -3,6 +3,8 @@ import axios from "axios";
 import { TextField, Button, Paper, Typography } from "@mui/material";
 import { config } from "../../static/config";
 import { useNavigate } from "react-router-dom";
+import ChatIcon from "./ChatIcon.png";
+
 function ChatSidebar({ shelterNo }) {
   const [chats, setChats] = useState([]);
   const [newChat, setNewChat] = useState("");
@@ -77,15 +79,18 @@ function ChatSidebar({ shelterNo }) {
 
   return (
     <div>
-      <h3>채팅</h3>
+      <span style={{ display: "block", textAlign: "center", marginTop: "12px" }}>
+        <img src={ChatIcon} alt="CHAT WITH SHELTER" style={{ maxHeight: '35px' }}/>
+      </span>
       <div
         ref={chatContainerRef}
         style={{
           height: "300px", // 채팅창의 높이 설정
           overflowY: "scroll", // 세로 스크롤 허용
-          border: "1px solid lightgrey", // 경계선 추가
-          borderRadius: "10px", // 모서리 둥글게
-          padding: "10px",
+          border: "10px solid lightgrey", // 경계선 추가
+          // borderRadius: "10px", // 모서리 둥글게
+          borderColor: "var(--yellow6)",
+          backgroundColor: "white",
         }}
       >
         {chats
