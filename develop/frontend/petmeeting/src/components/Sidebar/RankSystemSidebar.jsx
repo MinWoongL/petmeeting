@@ -78,35 +78,31 @@ function RankSide() {
         오늘의 인기 강아지
       </Typography>
 
-      <Paper
-        elevation={3}
-        sx={{ width: "90%", overflowX: "auto", borderRadius: "0 0 4px 4px" }}
-      >
-        <Tabs
-          value={currentTab}
-          onChange={handleTabChange}
-          centered
-          sx={{
-            marginBottom: "0px",
-            borderBottom: "1px solid #e0e0e0",
-            "& .Mui-selected": {
-              color: "var(--dark)",
-              fontWeight: "bold",
-            },
-            "& .MuiTabs-indicator": {
-              backgroundColor: "var(--yellow7)",
-            },
-            "& .MuiTab-root": {
-              "&:hover": {
-                backgroundColor: "var(--yellow8)", // Or any other hover effect you want
-              },
-            },
-          }}
-        >
-          <Tab label="좋아요순" />
-          <Tab label="랜덤순" />
-        </Tabs>
-
+    <Paper elevation={3} sx={{ width: '90%', overflowX: 'auto', borderRadius: '8px' }}>
+      <Tabs
+      value={currentTab}
+      onChange={handleTabChange}
+      centered
+      sx={{
+        marginBottom: '0px',
+        borderBottom: '1px solid #e0e0e0',
+        '& .Mui-selected': {
+          color: 'var(--dark)',
+          fontWeight: 'bold',
+        },
+        '& .MuiTabs-indicator': {
+          backgroundColor: 'var(--yellow7)',
+        },
+        '& .MuiTab-root': {
+          '&:hover': {
+            backgroundColor: 'var(--yellow8)'  // Or any other hover effect you want
+          },
+        }
+      }}
+    >
+      <Tab label="좋아요순" />
+      <Tab label="랜덤순" />
+    </Tabs>
         <Table>
           <TableHead>
             <TableRow>

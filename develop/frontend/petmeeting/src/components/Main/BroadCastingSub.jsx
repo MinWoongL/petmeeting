@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Typography, Box, CardMedia, Avatar, Button } from '@mui/material';
 import { useSelector } from 'react-redux';
-
+import broadcastIcon from './BroadcastIcon.png';
 
 
 function BroadCastingSub() {
@@ -35,15 +35,13 @@ function BroadCastingSub() {
     };
 
     return (
-        <Box sx={{ mt: 1 }}>
+        <Box sx={{ mt: 3 }}>
             {/* Title and Description */}
-            <Box sx={{ mb: 1 }}>
-                <Typography variant="h5" gutterBottom>
-                    보호소 방송국 채널
-                </Typography>
-            </Box>
-            <Button onClick={handlePrev}>Prev</Button>
-            <Button onClick={handleNext}>Next</Button>
+            <span>
+                <img src={broadcastIcon} alt="보호소 방송국" style={{ maxHeight: '30px'}} />
+                <Button onClick={handlePrev}>Prev</Button>
+                <Button onClick={handleNext}>Next</Button>
+            </span>
             <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
                 {getVisibleCards().map((card, index) => (
                     <Card key={index} style={{ width: 300 }}>

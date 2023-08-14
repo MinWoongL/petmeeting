@@ -6,7 +6,6 @@ import GiveMeMoney from "../../assets/images/give_me_money.png";
 export default function UsageGuideMain() {
     return ( 
         <Box sx={{ mt: 4 }}>
-            {/* 조작방법 */}
             <Box sx={{ mb: 4 }}>
                 <Typography variant="h4" sx={{ mb: 2 }}>
                     유기견과 실시간 놀아주기

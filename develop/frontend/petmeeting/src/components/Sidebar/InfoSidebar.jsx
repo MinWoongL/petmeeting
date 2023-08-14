@@ -105,17 +105,26 @@ function InfoSidebar() {
               }}
             />
             <Typography variant="h6">Guest</Typography>
-            <Box mt={3} width="100%">
+            <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
               <Button
                 variant="contained"
-                color="primary"
-                fullWidth
+                style={{ backgroundColor: '#7a5207', fontWeight: 'bold' }}
+
                 component={Link}
                 to="/login"
               >
                 로그인
               </Button>
-            </Box>
+              <Button
+                variant="contained"
+                style={{ backgroundColor: '#7a5207', fontWeight: 'bold' }}
+                
+                component={Link}
+                to="/signup"
+              >
+                회원가입
+              </Button>
+            </div>
           </Box>
         </CardContent>
         <Snackbar
