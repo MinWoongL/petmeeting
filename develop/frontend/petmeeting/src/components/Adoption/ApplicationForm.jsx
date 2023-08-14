@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 
 export default function ApplicationForm() {
@@ -95,6 +95,7 @@ export default function ApplicationForm() {
     } else {
       try {
         const response = await axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/dog?shelterNo=${selectedValue}`);
+        
         setDogList(response.data);
       } catch (error) {
         console.error("강아지 목록을 가져오는 중 오류 발생:", error);
@@ -110,6 +111,15 @@ export default function ApplicationForm() {
   const handleCancel = () => {
     window.history.back();
   };
+
+  const nameInputRef = useRef();
+  const genderInputRef = useRef();
+  const ageInputRef = useRef();
+  const phoneNumberInputRef = useRef();
+  const callTimeInputRef = useRef();
+  const residenceInputRef = useRef();
+  const jobInputRef = useRef();
+  const petExperienceInputRef = useRef();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -128,7 +138,7 @@ export default function ApplicationForm() {
     };
   
     for (const key in formData) {
-      if (formData[key] === null || formData[key].trim() === "") {
+      if (key !== "additional" && (formData[key] === null || formData[key].trim() === "")) {
         alert("모든 항목을 입력해주세요.");
         return;
       }
@@ -144,6 +154,13 @@ export default function ApplicationForm() {
       window.history.back();
       alert("신청이 완료되었습니다.")
     })
+  };
+
+  const handleEmptyField = (ref) => {
+    if (ref.current && !ref.current.value.trim()) {
+      ref.current.focus();
+      ref.current.scrollIntoView();
+    }
   };
 
   return (
@@ -196,6 +213,7 @@ export default function ApplicationForm() {
               style={inputStyle}
               onChange={handleInputChange}
               placeholder="ex) 홍길동"
+              ref={nameInputRef}
             />
           </label>
           <br />
@@ -206,6 +224,7 @@ export default function ApplicationForm() {
               value={formData.gender}
               onChange={handleInputChange}
               style={inputStyle}
+              ref={genderInputRef}
             >
               <option value="">선택</option>
               <option value="M">남성</option>
@@ -222,6 +241,7 @@ export default function ApplicationForm() {
               style={inputStyle}
               onChange={handleInputChange}
               placeholder="ex) 28"
+              ref={ageInputRef}
             />
           </label>
           <br />
@@ -234,6 +254,7 @@ export default function ApplicationForm() {
               style={inputStyle}
               onChange={handleInputChange}
               placeholder="ex) 010-1234-5678"
+              ref={phoneNumberInputRef}
             />
           </label>
           <br />
@@ -246,6 +267,7 @@ export default function ApplicationForm() {
               style={inputStyle}
               onChange={handleInputChange}
               placeholder="ex) 오후 5시"
+              ref={callTimeInputRef}
             />
           </label>
           <br />
@@ -258,6 +280,7 @@ export default function ApplicationForm() {
               style={inputStyle}
               onChange={handleInputChange}
               placeholder="ex) 경기, 서울 등"
+              ref={residenceInputRef}
             />
           </label>
           <br />
@@ -270,6 +293,7 @@ export default function ApplicationForm() {
               style={inputStyle}
               onChange={handleInputChange}
               placeholder="ex) 무직, 자영업 등"
+              ref={jobInputRef}
             />
           </label>
           <br />
@@ -280,6 +304,7 @@ export default function ApplicationForm() {
               value={formData.petExperience}
               onChange={handleInputChange}
               style={inputStyle}
+              ref={petExperienceInputRef}
             >
               <option value="">선택</option>
               <option value="false">없음</option>
@@ -302,7 +327,20 @@ export default function ApplicationForm() {
             <button type="button" style={cancelButtonStyle} onClick={handleCancel}>
               취소
             </button>
-            <button type="submit" style={buttonStyle}>
+            <button
+              type="submit"
+              style={buttonStyle}
+              onClick={() => {
+                handleEmptyField(petExperienceInputRef);
+                handleEmptyField(jobInputRef);
+                handleEmptyField(residenceInputRef);
+                handleEmptyField(callTimeInputRef);
+                handleEmptyField(phoneNumberInputRef);
+                handleEmptyField(ageInputRef);
+                handleEmptyField(genderInputRef);
+                handleEmptyField(nameInputRef);
+              }}
+            >
               신청서 제출
             </button>
           </div>

@@ -9,6 +9,7 @@ import {
   Container,
   Box,
   Typography,
+  MenuItem
 } from "@mui/material";
 import ImageUploadButton from "../components/Button/ImageUploadButton";
 
@@ -22,14 +23,16 @@ const RegisterDog = () => {
     personality: "",
     protectionStartDate: "",
     protectionEndDate: "",
-    adoptionAvailability: "",
     currentStatus: "",
     dogSpecies: "",
     reasonAbandonment: "",
-    isInoculated: false,
+    isInoculated: null,
     imagePath: "",
   });
   const [imagePath, setImagePath] = useState("");
+  const [ableToSelectDate, setAbleToSelectDate] = useState(false);
+
+
   useEffect(() => {
     setForm((prevForm) => ({ ...prevForm, imagePath }));
   }, [imagePath]);
@@ -80,6 +83,10 @@ const RegisterDog = () => {
   };
 
   const handleChange = (event) => {
+    if(event.target.name === "protectionStartDate") {
+      setAbleToSelectDate(true);
+    }
+
     setForm({
       ...form,
       [event.target.name]:
@@ -108,6 +115,7 @@ const RegisterDog = () => {
             autoFocus
           />
           <TextField
+            select
             variant="outlined"
             margin="normal"
             required
@@ -116,8 +124,13 @@ const RegisterDog = () => {
             name="dogSize"
             value={form.dogSize}
             onChange={handleChange}
-          />
+          >
+            <MenuItem value="소형">소형견</MenuItem>
+            <MenuItem value="중형">중형견</MenuItem>
+            <MenuItem value="대형견">대형견</MenuItem>
+          </TextField>
           <TextField
+            select
             variant="outlined"
             margin="normal"
             required
@@ -126,7 +139,10 @@ const RegisterDog = () => {
             name="gender"
             value={form.gender}
             onChange={handleChange}
-          />
+          >
+            <MenuItem value="M">남</MenuItem>
+            <MenuItem value="F">여</MenuItem>
+          </TextField>
           <TextField
             variant="outlined"
             margin="normal"
@@ -169,10 +185,16 @@ const RegisterDog = () => {
             type="date"
             value={form.protectionStartDate}
             onChange={handleChange}
+            InputProps={{
+              inputProps: {
+                max: form.protectionEndDate,
+              },
+            }}
           />
           <TextField
             variant="outlined"
             margin="normal"
+            disabled={!ableToSelectDate}
             required
             fullWidth
             label="Protection End Date"
@@ -180,17 +202,26 @@ const RegisterDog = () => {
             type="date"
             value={form.protectionEndDate}
             onChange={handleChange}
+            InputProps={{
+              inputProps: {
+                min: form.protectionStartDate,
+              },
+            }}
           />
           <TextField
+            select
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            label="Adoption Availability"
-            name="adoptionAvailability"
-            value={form.adoptionAvailability}
+            label="isInoculated"
+            name="isInoculated"
+            value={form.isInoculated}
             onChange={handleChange}
-          />
+          >
+            <MenuItem value="true">접종완료</MenuItem>
+            <MenuItem value="false">미접종</MenuItem>
+          </TextField>
           <TextField
             variant="outlined"
             margin="normal"
@@ -226,17 +257,6 @@ const RegisterDog = () => {
               Image Path: {form.imagePath}
             </Typography>
           </Box>
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="isInoculated"
-                checked={form.isInoculated}
-                onChange={handleChange}
-                color="primary"
-              />
-            }
-            label="Is Inoculated"
-          />
           <ImageUploadButton option="dog" setImagePath={setImagePath} />
           <Button type="submit" fullWidth variant="contained" color="primary">
             등록하기
