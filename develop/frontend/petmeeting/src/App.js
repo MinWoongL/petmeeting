@@ -183,7 +183,7 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 2000); // 2초 후 로딩 상태 해제
+    }, 1000); // 1초 후 로딩 상태 해제
   }, []); 
 
   useEffect(() => {
