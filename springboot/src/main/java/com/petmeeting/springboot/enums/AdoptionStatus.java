@@ -14,5 +14,13 @@ public enum AdoptionStatus {
     AdoptionStatus(String value){
         this.value = value;
     }
-
+    public static AdoptionStatus getValue(String status) {
+        if(status.contains("미채택")) {
+            return AdoptionStatus.ADOPT_FAIL;
+        } else if (status.contains("대기중")) {
+            return AdoptionStatus.WAITING;
+        } else {
+            return AdoptionStatus.ADOPT_SUCCESS;
+        }
+    }
 }

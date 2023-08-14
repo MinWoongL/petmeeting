@@ -215,7 +215,7 @@ public class AdoptionServiceImpl implements AdoptionService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한이 없습니다");
         };
 
-        AdoptionStatus status = AdoptionStatus.valueOf(adoptStatusUpdateDto.getAdoptionStatus());
+        AdoptionStatus status = AdoptionStatus.getValue(adoptStatusUpdateDto.getAdoptionStatus());
         Boolean adoptSuccess = adoption.updateAdoptionStatus(status);
         adoptionRepository.save(adoption);
         log.info("[입양신청서 상태 변경] adoption의 상태가 변경되었습니다. {} <- {}", adoption.getAdoptionStatus(), status);
