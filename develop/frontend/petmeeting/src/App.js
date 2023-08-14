@@ -82,7 +82,7 @@ function NavBar({ isLoggedIn }) {
           style={{ textDecoration: "none", color: "inherit", flexGrow: 1 }}
         >
           <Typography variant="h6" component="div">
-             <img src={PetMeetingLogo1} alt="Pet Meeting Logo" style={{ maxHeight: "40px", marginTop: "9px" }} />
+             <img src={PetMeetingLogo1} alt="Pet Meeting Logo" style={{ maxHeight: "50px", marginTop: "9px" }} />
           </Typography>
         </Link>
         <Button color="inherit" component={Link} to="/" style={buttonStyle}>
