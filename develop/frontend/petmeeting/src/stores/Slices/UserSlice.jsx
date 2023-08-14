@@ -39,6 +39,7 @@ const userSlice = createSlice({
 
       return initialState; // 로그아웃 시 초기 상태로 복귀
     },
+    resetToInitialState: (state) => initialState,
     addPoints: (state, action) => {
       state.points += action.payload;
     },
@@ -52,7 +53,13 @@ const userSlice = createSlice({
   },
 });
 
-export const { login, logout, addPoints, updateNickName, setPassword } =
-  userSlice.actions;
+export const {
+  login,
+  logout,
+  addPoints,
+  updateNickName,
+  setPassword,
+  resetToInitialState,
+} = userSlice.actions;
 
 export default userSlice.reducer;
