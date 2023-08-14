@@ -24,19 +24,20 @@ function RankSide() {
       const response = await axios.get(
         `${config.baseURL}/api/v1/dog?option=rank&max=5`
       );
-      const data = response.data; // Assuming the response contains an array of dog objects
+      const data = response.data;
       return data;
     } catch (error) {
       console.error("Error fetching dog data:", error);
+      return [];
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const fetchedData = await fetchDogData();
-      setDogs(fetchedData);
-    };
-    fetchData();
+      const fetchData = async () => {
+        const fetchedData = await fetchDogData();
+        setDogs(fetchedData || []);
+      };
+      fetchData();
   }, []);
 
   const shuffleArray = (array) => {
