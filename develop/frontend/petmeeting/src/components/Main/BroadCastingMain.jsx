@@ -28,6 +28,7 @@ function BroadCastingMain() {
     const [videoDescriptions, setVideoDescriptions] = useState({});
     const [openViduSessions, setOpenViduSessions] = useState([]);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const allSlides = [...openViduSessions, ...liveBroadcasts];
 
     const liveBroadcasts = [{ id: "BZcu8MK_jfo" }, { id: "zwVAKBO8rJM" }, { id: "uqkhMBJ9yrs" }];
 
@@ -169,7 +170,7 @@ function BroadCastingMain() {
 
     const handleOpenViduClick = async(shelterNo) => {
       const userData = JSON.parse(localStorage.getItem('user'))
-      const userNo = userData.userNo
+      const userNo = userData ? userData.userNo : undefined;
       if (userNo) { // 로그인된 상태
         const mySession = `Session${userNo}`; // 로그인된 사용자의 세션
         joinSessionSub(shelterNo, mySession);
