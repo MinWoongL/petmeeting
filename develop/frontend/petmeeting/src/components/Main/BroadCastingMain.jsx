@@ -13,6 +13,7 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import { useDispatch } from 'react-redux';
 import { setSessionInstance, setSubscribers } from '../../stores/Slices/sessionSlice';
+import liveIcon from './LiveIcon.png';
 
 const APPLICATION_SERVER_URL = 'https://i9a203.p.ssafy.io/openvidu/';
 const OPENVIDU_PASSWORD = process.env.REACT_APP_OPENVIDU_PASSWORD;
@@ -233,15 +234,13 @@ function BroadCastingMain() {
     }, []);
 
     return (
-        <Box className="container" sx={{ mt: 1 }} style={{ maxWidth: '932px' }}>
-            <Typography variant="h6" gutterBottom className="heading">
-                Live Broadcast Previews
-            </Typography>
+        <Box className="container" sx={{ mt: 1 }} style={{ maxWidth: '1050px', textAlign: 'center' }}> {/* 932px */}
+              <img src={liveIcon} alt='라이브 아이콘' style={{ maxHeight: '50px' }} />
             <Swiper
                 effect={'coverflow'}
                 grabCursor={true}
                 centeredSlides={true}
-                loop={false}
+                loop={true}
                 slidesPerView={'auto'}
                 coverflowEffect={{
                     rotate: 0,
@@ -309,17 +308,17 @@ function BroadCastingMain() {
                         </Card>
                     </SwiperSlide>
                 ))}
-
-                <div className="slider-controler">
-                    <div className="swiper-button-prev slider-arrow" style={{ top: '50%', left: '10px' }}>
+                <div className="slider-controller">
+                    <div className="swiper-button-prev slider-arrow" style={{ top: '50%', color: 'white'}}>
                         <ion-icon name="arrow-back-outline"></ion-icon>
                     </div>
-                    <div className="swiper-button-next slider-arrow" style={{ top: '50%', right: '10px' }}>
+                    <div className="swiper-button-next slider-arrow" style={{ top: '50%', color: 'white' }}>
                         <ion-icon name="arrow-forward-outline"></ion-icon>
                     </div>
                 </div>
-                <div className="swiper-pagination"></div>
+                <div className="swiper-pagination"></div>                
             </Swiper>
+            <div></div>
           <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
           <Alert 
             onClose={handleCloseSnackbar} 
@@ -333,6 +332,7 @@ function BroadCastingMain() {
             </Alert>
           </Snackbar>
         </Box>
+        
     );
 }
 

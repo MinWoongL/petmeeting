@@ -18,6 +18,8 @@ import { styled } from "@mui/material/styles";
 import heartOn from "../../assets/images/pet_heart_on.png";
 import heartOff from "../../assets/images/pet_heart_off.png";
 import axios from "axios";
+import { BorderTop } from "@mui/icons-material";
+import reviewIcon from "./ReviewIcon.png";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -108,14 +110,12 @@ function AdoptionReview() {
   };
 
   return (
-    <Box sx={{ mt: 1, mb: 4 }}>
-      <Box sx={{ mb: 1 }}>
-        <Typography variant="h5" gutterBottom>
-          입양 후기
-        </Typography>
-      </Box>
-      <Button onClick={handlePrev}>Prev</Button>
-      <Button onClick={handleNext}>Next</Button>
+    <Box sx={{ mt: 5, mb: 4 }}>
+      <span>
+        <img src={reviewIcon} alt="입양후기" style={{ maxHeight: '35px' }}/>
+        <Button onClick={handlePrev}>Prev</Button>
+        <Button onClick={handleNext}>Next</Button>
+      </span>
       <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
         {getVisibleReviews().map((review) => (
           <Card key={review.id} sx={{ width: 300 }}>

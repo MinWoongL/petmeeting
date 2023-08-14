@@ -11,3 +11,43 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+@font-face {
+  font-family: "NotoSans";
+  font-style: normal;
+  font-weight: normal;
+  src: url(../src/Fonts/Noto_Sans/NotoSans-Regular.ttf);
+}
+
+@font-face {
+  font-family: "NotoSans";
+  font-style: normal;
+  font-weight: bold;
+  src: url(../src/Fonts/Noto_Sans/NotoSans-Bold.ttf);
+}
+
+@font-face {
+  font-family: "NotoSansKr";
+  font-style: normal;
+  font-weight: normal;
+  src: url(../src/Fonts/Noto_Sans_KR/NotoSansKR-Regular.otf);
+}
+@font-face {
+  font-family: "NotoSansKr";
+  font-style: normal;
+  font-weight: bold;
+  src: url(../src/Fonts/Noto_Sans_KR/NotoSansKR-Bold.otf);
+}
+@font-face {
+  font-family: "NanumGothic";
+  font-style: normal;
+  font-weight: normal;
+  src: url(../src/Fonts/Nanum_Gothic/NanumGothic-Regular.ttf);
+}
+@font-face {
+  font-family: "NanumGothic";
+  font-style: normal;
+  font-weight: bold;
+  src: url(../src/Fonts/Nanum_Gothic/NanumGothic-Bold.ttf);
+}
