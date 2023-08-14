@@ -26,7 +26,7 @@ export default function Adoption() {
     } catch (exception) {
       console.log(exception);
     }
-  }, [currentPage, pageSize, allDogs]);
+  }, []);
 
   return (
     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
