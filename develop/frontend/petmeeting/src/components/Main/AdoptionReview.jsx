@@ -1,16 +1,5 @@
 import React, { useState } from "react";
-import {
-  Card,
-  CardHeader,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Collapse,
-  Typography,
-  IconButton,
-  Box,
-  Button,
-} from "@mui/material";
+import { Card, CardHeader, CardMedia, CardContent, CardActions, Collapse, Typography, IconButton, Box, Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -111,10 +100,28 @@ function AdoptionReview() {
 
   return (
     <Box sx={{ mt: 5, mb: 4 }}>
-      <span>
+      <span style={{ display: 'flex', alignItems: 'center' }}>
         <img src={reviewIcon} alt="입양후기" style={{ maxHeight: '35px' }}/>
-        <Button onClick={handlePrev}>Prev</Button>
-        <Button onClick={handleNext}>Next</Button>
+        <Button
+          variant="contained" 
+          style={{
+            backgroundColor: 'var(--yellow8)',
+            marginBottom: '10px',
+            marginLeft: '65px'
+          }} 
+          onClick={handlePrev}>
+            Prev
+        </Button>
+        <Button
+          variant="contained" 
+          onClick={handleNext}
+          style={{
+            backgroundColor: 'var(--yellow8)',
+            marginBottom: '10px',
+            marginLeft: '10px'
+          }}>
+            Next
+        </Button>
       </span>
       <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
         {getVisibleReviews().map((review) => (
