@@ -13,7 +13,12 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
@@ -22,6 +27,8 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+
+import RegisterImageUploadButton from "../../../components/Button/RegisterImageUploadButton";
 
 import "../../../styles/base.css";
 import {
@@ -86,7 +93,7 @@ export default function SignUp() {
   const handleProfileImageSelect = (image, index) => {
     setSelectedProfileImage(image);
     setIsProfileModalOpen(false);
-    setImagePath(`profile${index+1}.png`);
+    setImagePath(`profile${index + 1}.png`);
   };
 
   const handleSnackbarOpen = () => {
@@ -256,7 +263,7 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            회원 가입
           </Typography>
           <Box
             component="form"
@@ -277,8 +284,18 @@ export default function SignUp() {
                 </ToggleButtonGroup>
               </Grid>
               <Grid item xs={12} align="center">
-                <label><h3>프로필 사진을 골라주세요</h3></label>
-                <div style={{ display: "flex", gap: "10px", display: "flex", justifyContent: "center", margin: "30px" }}>
+                <label>
+                  <h3>프로필 사진을 골라주세요</h3>
+                </label>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                    display: "flex",
+                    justifyContent: "center",
+                    margin: "30px",
+                  }}
+                >
                   <Avatar
                     src={selectedProfileImage}
                     sx={{ width: 70, height: 70, cursor: "pointer" }}
@@ -292,7 +309,9 @@ export default function SignUp() {
                 onClose={handleProfileModalClose}
                 aria-labelledby="profile-dialog-title"
               >
-                <DialogTitle id="profile-dialog-title">프로필 사진 선택</DialogTitle>
+                <DialogTitle id="profile-dialog-title">
+                  프로필 사진 선택
+                </DialogTitle>
                 <DialogContent>
                   <Grid container spacing={2}>
                     {profileImages.map((image, index) => (
@@ -315,7 +334,7 @@ export default function SignUp() {
 
               <Grid container spacing={2}>
                 <Grid item container xs={12} alignItems="center">
-                  <Grid item xs={8}>
+                  <Grid item xs={9}>
                     <TextField
                       required
                       fullWidth
@@ -377,7 +396,7 @@ export default function SignUp() {
                   }
                 />
               </Grid>
-              
+
               <Grid item xs={12}>
                 <TextField
                   required
@@ -404,7 +423,7 @@ export default function SignUp() {
                       required
                       fullWidth
                       id="location"
-                      label="Location"
+                      label="주소"
                       name="location"
                     />
                   </Grid>
@@ -413,29 +432,27 @@ export default function SignUp() {
                       required
                       fullWidth
                       id="siteUrl"
-                      label="Site URL"
+                      label="홈페이지 주소"
                       name="siteUrl"
                     />
                   </Grid>
+                  <></>
                   <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      id="registImagePath"
-                      label="Site Image Path"
-                      name="registImagePath"
+                    <RegisterImageUploadButton
+                      option="shelter"
+                      setImagePath={setImagePath}
                     />
                   </Grid>
                 </>
               )}
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <FormControlLabel
                   control={
                     <Checkbox value="allowExtraEmails" color="primary" />
                   }
                   label="I want to receive inspiration, marketing promotions and updates via email."
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
             <Button
               type="submit"
@@ -443,12 +460,12 @@ export default function SignUp() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              회원 가입
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
+                <Link href="/login" variant="body2">
+                  이미 회원이십니까? 로그인 하러 가기
                 </Link>
               </Grid>
             </Grid>

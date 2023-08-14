@@ -9,6 +9,8 @@ import {
   TextField,
 } from "@mui/material";
 import axios from "axios";
+import { config } from "../../static/config";
+import RegisterImageUploadButton from "../Button/RegisterImageUploadButton"; // Adjust the path to the actual location of ImageUploadButton
 
 const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -52,6 +54,12 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
     <CardMedia
       component="img"
       sx={{ width: 151 }}
+      src={
+        config.baseURL +
+        "/api/v1/image/" +
+        profile.imagePath +
+        "?option=shelter"
+      }
       image={isEditing ? editData.image : profile.image}
       alt={isEditing ? editData.name : profile.name}
     />
@@ -97,7 +105,21 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
                   value={editData.image}
                   onChange={(e) => handleChange("image", e.target.value)}
                 />
+                {/* <RegisterImageUploadButton
+                  option="shelter"
+                  onImageUploadSuccess={(imagePath) =>
+                    handleChange("image", imagePath)
+                  }
+                /> */}
               </Box>
+
+              {/* <Box>
+                <TextField
+                  label="Image URL"
+                  value={editData.image}
+                  onChange={(e) => handleChange("image", e.target.value)}
+                />
+              </Box> */}
               <Box>
                 <TextField
                   type="password"
@@ -144,7 +166,7 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
       {isEditing ? (
         <Button onClick={handleSave}>Save</Button>
       ) : (
-        showEditButton && <Button onClick={handleEdit}>Edit</Button> // showEditButton이 true일 때만 Edit 버튼을 표시
+        showEditButton && <Button onClick={handleEdit}>123Edit</Button> // showEditButton이 true일 때만 Edit 버튼을 표시
       )}
     </Box>
   );

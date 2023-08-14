@@ -24,19 +24,20 @@ function RankSide() {
       const response = await axios.get(
         `${config.baseURL}/api/v1/dog?option=rank&max=5`
       );
-      const data = response.data; // Assuming the response contains an array of dog objects
+      const data = response.data;
       return data;
     } catch (error) {
       console.error("Error fetching dog data:", error);
+      return [];
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const fetchedData = await fetchDogData();
-      setDogs(fetchedData);
-    };
-    fetchData();
+      const fetchData = async () => {
+        const fetchedData = await fetchDogData();
+        setDogs(fetchedData || []);
+      };
+      fetchData();
   }, []);
 
   const shuffleArray = (array) => {
@@ -51,7 +52,7 @@ function RankSide() {
     setCurrentTab(newValue);
   };
 
-  let displayedDogs = dogs.slice(0, 4); // Display the top 4 liked dogs
+  let displayedDogs = dogs.slice(0, Math.min(4, dogs.length)); // Display the top 4 liked dogs
 
   if (currentTab === 1) {
     const shuffledDogs = shuffleArray([...dogs]);
@@ -78,31 +79,34 @@ function RankSide() {
         오늘의 인기 강아지
       </Typography>
 
-    <Paper elevation={3} sx={{ width: '90%', overflowX: 'auto', borderRadius: '8px' }}>
-      <Tabs
-      value={currentTab}
-      onChange={handleTabChange}
-      centered
-      sx={{
-        marginBottom: '0px',
-        borderBottom: '1px solid #e0e0e0',
-        '& .Mui-selected': {
-          color: 'var(--dark)',
-          fontWeight: 'bold',
-        },
-        '& .MuiTabs-indicator': {
-          backgroundColor: 'var(--yellow7)',
-        },
-        '& .MuiTab-root': {
-          '&:hover': {
-            backgroundColor: 'var(--yellow8)'  // Or any other hover effect you want
-          },
-        }
-      }}
-    >
-      <Tab label="좋아요순" />
-      <Tab label="랜덤순" />
-    </Tabs>
+      <Paper
+        elevation={3}
+        sx={{ width: "90%", overflowX: "auto", borderRadius: "8px" }}
+      >
+        <Tabs
+          value={currentTab}
+          onChange={handleTabChange}
+          centered
+          sx={{
+            marginBottom: "0px",
+            borderBottom: "1px solid #e0e0e0",
+            "& .Mui-selected": {
+              color: "var(--dark)",
+              fontWeight: "bold",
+            },
+            "& .MuiTabs-indicator": {
+              backgroundColor: "var(--yellow7)",
+            },
+            "& .MuiTab-root": {
+              "&:hover": {
+                backgroundColor: "var(--yellow8)", // Or any other hover effect you want
+              },
+            },
+          }}
+        >
+          <Tab label="좋아요순" />
+          <Tab label="랜덤순" />
+        </Tabs>
         <Table>
           <TableHead>
             <TableRow>

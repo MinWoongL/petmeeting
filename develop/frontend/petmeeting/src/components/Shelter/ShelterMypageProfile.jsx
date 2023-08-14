@@ -10,20 +10,28 @@ import {
   Divider,
   Modal,
   CardHeader,
-  CardMedia
+  CardMedia,
 } from "@mui/material";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setSessionInstance, setSubscribers } from '../../stores/Slices/sessionSlice';
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  setSessionInstance,
+  setSubscribers,
+} from "../../stores/Slices/sessionSlice";
 import useDogDetail from "../../apis/useDogDetail";
 import { config } from "../../static/config";
 
-const APPLICATION_SERVER_URL = 'https://i9a203.p.ssafy.io/openvidu/';
+const APPLICATION_SERVER_URL = "https://i9a203.p.ssafy.io/openvidu/";
 const OPENVIDU_PASSWORD = process.env.REACT_APP_OPENVIDU_PASSWORD;
 
-const ShelterMypageProfile = ({ profile, onChange, onUpdate, showEditButton = true }) => {
+const ShelterMypageProfile = ({
+  profile,
+  onChange,
+  onUpdate,
+  showEditButton = true,
+}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
@@ -64,7 +72,7 @@ const ShelterMypageProfile = ({ profile, onChange, onUpdate, showEditButton = tr
   const handleDogSelection = (dog) => {
     setSelectedDog(dog);
     setDogSelectionModalOpen(false);
-    handleBroadcast(dog);  // 선택된 강아지와 함께 방송 시작.
+    handleBroadcast(dog); // 선택된 강아지와 함께 방송 시작.
   };
 
   const displayDogSelectionModal = () => {
@@ -72,117 +80,127 @@ const ShelterMypageProfile = ({ profile, onChange, onUpdate, showEditButton = tr
   };
 
   const handleBroadcast = (dog) => {
-    const shelterNo = userData.userNo
-    console.log(shelterNo)
-    JoinSession(shelterNo, dog)
+    const shelterNo = userData.userNo;
+    console.log(shelterNo);
+    JoinSession(shelterNo, dog);
   };
 
-
-  const JoinSession = async(shelterNo, dog) => {
-    
+  const JoinSession = async (shelterNo, dog) => {
     const customSessionId = shelterNo.toString();
 
     const OV = new OpenVidu();
     const sessionInstance = OV.initSession();
 
-    sessionInstance.on('streamCreated', (event) => {
+    sessionInstance.on("streamCreated", (event) => {
       const subscriber = sessionInstance.subscribe(event.stream, undefined);
       setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
     });
 
-    sessionInstance.on('streamDestroyed', (event) => {
-      setSubscribers((prevSubscribers) => prevSubscribers.filter((subscriber) => subscriber !== event.stream.streamManager));
+    sessionInstance.on("streamDestroyed", (event) => {
+      setSubscribers((prevSubscribers) =>
+        prevSubscribers.filter(
+          (subscriber) => subscriber !== event.stream.streamManager
+        )
+      );
     });
 
-    sessionInstance.on('exception', (exception) => {
+    sessionInstance.on("exception", (exception) => {
       console.warn(exception);
     });
 
-    
-    console.log(sessionInstance)
-    console.log('Session내용: ', sessionInstance)
+    console.log(sessionInstance);
+    console.log("Session내용: ", sessionInstance);
 
     dispatch(setSessionInstance(sessionInstance));
-    console.log('join1')
+    console.log("join1");
     const token = await getToken(customSessionId);
 
-    sessionInstance.connect(token, { clientData: `publisher${customSessionId}` })
-          .then(async() => {
-            console.log('Successfully connected to the session as a subscriber');
+    sessionInstance
+      .connect(token, { clientData: `publisher${customSessionId}` })
+      .then(async () => {
+        console.log("Successfully connected to the session as a subscriber");
 
-            const publisher = await OV.initPublisherAsync(undefined, {
-                audioSource: undefined,
-                videoSource: undefined,
-                publishAudio: true,
-                publishVideo: true,
-                resolution: '640x480',
-                frameRate: 30,
-                insertMode: 'APPEND',
-                mirror: false,
+        const publisher = await OV.initPublisherAsync(undefined, {
+          audioSource: undefined,
+          videoSource: undefined,
+          publishAudio: true,
+          publishVideo: true,
+          resolution: "640x480",
+          frameRate: 30,
+          insertMode: "APPEND",
+          mirror: false,
+        });
+        console.log("publisher >> ", publisher);
+        sessionInstance
+          .publish(publisher)
+          .then(async () => {
+            console.log("퍼블리싱 성공");
+            const accessToken = JSON.parse(
+              sessionStorage.getItem("token")
+            )?.accessToken;
+            console.log(dog);
+
+            const broadcastTitle = `${dog.name} 이 방송 중입니다.`;
+            const dogNumber = dog.dogNo;
+            console.log("데이터 확인");
+            console.log(dog);
+            console.log(broadcastTitle);
+            console.log(dogNumber);
+
+            // 성공적으로 publishing이 끝난 후에 POST 요청을 보냅니다.
+            const response = await axios.post(
+              "https://i9a203.p.ssafy.io/backapi/api/v1/broadcast",
+              {
+                onBroadcastTitle: broadcastTitle, // 실제 방송 제목으로 바꿔야 합니다.
+                dogNo: dogNumber, // 이 값도 적절한 값으로 바꿔야 합니다.
+              },
+              {
+                headers: {
+                  AccessToken: `Bearer ${accessToken}`,
+                },
+              }
+            );
+
+            console.log("Broadcast POST response:", response.data);
+            navigate(`/broadcasting/${customSessionId}`, {
+              state: {
+                title: "OpenVidu Live Session",
+                description: "This is an OpenVidu live streaming session.",
+                thumbnail: `${config.baseURL}/api/v1/image/${dog.imagePath}?option=dog`,
+                isLiveSession: true,
+                token: token, // 직접 token 변수를 사용
+              },
             });
-            console.log('publisher >> ',publisher)
-            sessionInstance.publish(publisher)
-              .then(async () => {
-                console.log('퍼블리싱 성공')
-                const accessToken = JSON.parse(sessionStorage.getItem("token"))?.accessToken;
-                console.log(dog)
-
-                const broadcastTitle = `${dog.name} 이 방송 중입니다.`;
-                const dogNumber = dog.dogNo;
-                console.log('데이터 확인')
-                console.log(dog)
-                console.log(broadcastTitle)
-                console.log(dogNumber)
-
-                // 성공적으로 publishing이 끝난 후에 POST 요청을 보냅니다.
-                const response = await axios.post('https://i9a203.p.ssafy.io/backapi/api/v1/broadcast', {
-                    onBroadcastTitle: broadcastTitle, // 실제 방송 제목으로 바꿔야 합니다.
-                    dogNo: dogNumber // 이 값도 적절한 값으로 바꿔야 합니다.
-                },{
-                  headers: {
-                    AccessToken: `Bearer ${accessToken}`
-                  }
-                }
-                );
-
-                console.log('Broadcast POST response:', response.data);
-                navigate(`/broadcasting/${customSessionId}`, {
-                  state: {
-                      title: "OpenVidu Live Session",
-                      description: "This is an OpenVidu live streaming session.",
-                      thumbnail: `${config.baseURL}/api/v1/image/${dog.imagePath}?option=dog`,
-                      isLiveSession: true,
-                      token: token // 직접 token 변수를 사용
-                  }
-              });
-            })
-            .catch(error => {
-                console.error('Error publishing:', error);
-            });
-            setMainStreamManager(publisher);
-            setPublisher(publisher);
-              
           })
           .catch((error) => {
-              console.log('There was an error connecting to the session:', error.code, error.message);
+            console.error("Error publishing:", error);
           });
+        setMainStreamManager(publisher);
+        setPublisher(publisher);
+      })
+      .catch((error) => {
+        console.log(
+          "There was an error connecting to the session:",
+          error.code,
+          error.message
+        );
+      });
+  };
 
-  }
-
-  const getToken = async(customSessionId) => {
+  const getToken = async (customSessionId) => {
     // console.log('gettoken1')
     const sessionId = await createSession(customSessionId);
     return await createToken(sessionId);
-  }
+  };
   const createSession = (sessionId) => {
     return new Promise((resolve, reject) => {
       let data = JSON.stringify({ customSessionId: sessionId });
-  
+
       axios
         .post(`${APPLICATION_SERVER_URL}api/sessions`, data, {
           headers: {
             Authorization: `Basic ${btoa(`OPENVIDUAPP:${OPENVIDU_PASSWORD}`)}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         })
         .then((res) => {
@@ -190,7 +208,7 @@ const ShelterMypageProfile = ({ profile, onChange, onUpdate, showEditButton = tr
         })
         .catch((res) => {
           let error = Object.assign({}, res);
-  
+
           if (error?.response?.status === 409) {
             resolve(sessionId);
           } else if (
@@ -202,7 +220,9 @@ const ShelterMypageProfile = ({ profile, onChange, onUpdate, showEditButton = tr
                 '"'
             )
           ) {
-            window.location.assign(APPLICATION_SERVER_URL + '/accept-certificate');
+            window.location.assign(
+              APPLICATION_SERVER_URL + "/accept-certificate"
+            );
           }
         });
     });
@@ -211,15 +231,17 @@ const ShelterMypageProfile = ({ profile, onChange, onUpdate, showEditButton = tr
   const createToken = (sessionId) => {
     return new Promise((resolve, reject) => {
       let data = {};
-  
+
       axios
         .post(
           `${APPLICATION_SERVER_URL}api/sessions/${sessionId}/connection`,
           data,
           {
             headers: {
-              Authorization: `Basic ${btoa(`OPENVIDUAPP:${OPENVIDU_PASSWORD}`)}`,
-              'Content-Type': 'application/json',
+              Authorization: `Basic ${btoa(
+                `OPENVIDUAPP:${OPENVIDU_PASSWORD}`
+              )}`,
+              "Content-Type": "application/json",
             },
           }
         )
@@ -249,15 +271,28 @@ const ShelterMypageProfile = ({ profile, onChange, onUpdate, showEditButton = tr
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Avatar sx={{ mr: 2 }} src={isEditing ? editData.image : profile.image} />
-              <Typography variant="h5">{isEditing ? editData.name : profile.name}</Typography>
+              <Avatar
+                sx={{ mr: 2 }}
+                src={isEditing ? editData.image : profile.image}
+              />
+              <Typography variant="h5">
+                {isEditing ? editData.name : profile.name}
+              </Typography>
             </Box>
             {showEditButton && (
-              <Button variant="outlined" color="primary" onClick={isEditing ? handleSave : handleEdit}>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={isEditing ? handleSave : handleEdit}
+              >
                 {isEditing ? "Save" : "Edit"}
               </Button>
             )}
-            <Button variant="outlined" color="secondary" onClick={displayDogSelectionModal}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={displayDogSelectionModal}
+            >
               방송하기
             </Button>
           </Box>
@@ -303,31 +338,64 @@ const ShelterMypageProfile = ({ profile, onChange, onUpdate, showEditButton = tr
             </>
           ) : (
             <>
-              <Typography variant="subtitle1" color="text.secondary" component="div">
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                component="div"
+              >
                 임시 프로필 번호: {profile.shelterNo}
               </Typography>
-              <Typography variant="subtitle1" color="text.secondary" component="div">
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                component="div"
+              >
                 연락처: {profile.phoneNumber}
               </Typography>
-              <Typography variant="subtitle1" color="text.secondary" component="div">
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                component="div"
+              >
                 지역: {profile.location}
               </Typography>
-              <Typography variant="subtitle1" color="text.secondary" component="div">
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                component="div"
+              >
                 사이트: {profile.siteUrl}
               </Typography>
             </>
           )}
         </CardContent>
       </Card>
-  
+
       {/* 강아지 선택 모달 */}
-      <Modal open={dogSelectionModalOpen} onClose={() => setDogSelectionModalOpen(false)}>
-        <Box sx={{ padding: 2, maxWidth: '80%', margin: '5% auto', backgroundColor: 'white', outline: 'none' }}>
-          <Typography variant="h6" marginBottom="1rem">방송할 강아지를 선택하세요:</Typography>
+      <Modal
+        open={dogSelectionModalOpen}
+        onClose={() => setDogSelectionModalOpen(false)}
+      >
+        <Box
+          sx={{
+            padding: 2,
+            maxWidth: "80%",
+            margin: "5% auto",
+            backgroundColor: "white",
+            outline: "none",
+          }}
+        >
+          <Typography variant="h6" marginBottom="1rem">
+            방송할 강아지를 선택하세요:
+          </Typography>
           {dogData && (
             <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
               {dogData.map((dog, index) => (
-                <Card key={index} sx={{ width: 300 }} onClick={() => handleDogSelection(dog)}>
+                <Card
+                  key={index}
+                  sx={{ width: 300 }}
+                  onClick={() => handleDogSelection(dog)}
+                >
                   <CardHeader title={dog.name} />
                   <CardMedia
                     component="img"
