@@ -79,7 +79,6 @@ public class Dog {
 
     // Dog |---|| a
     @Column(name = "image_path")
-    @ColumnDefault("DefaultDog.jpg")
     private String imagePath;
 
     @OneToMany(mappedBy = "dog", fetch = FetchType.LAZY)

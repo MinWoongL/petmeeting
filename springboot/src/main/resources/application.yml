@@ -3,15 +3,15 @@ spring:
   jpa:
     properties:
       hibernate:
-#        format_sql: true
-#        show_sql: true
+        format_sql: true
+        show_sql: true
 #   <H2 인메모리 DB>
 #    database-platform: org.hibernate.dialect.H2Dialect
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
 #     <H2 인메모리 DB>
 #      ddl-auto: create
-      ddl-auto: none
+      ddl-auto: create
     defer-datasource-initialization: true
 
     open-in-view: false # SSE 통신 간 HTTP Connection 열려있는 것 방지
@@ -26,7 +26,7 @@ spring:
 #    driverClassName: org.h2.Driver
 #    username: sa
 #    password:
-    url: jdbc:mariadb://i9a203.p.ssafy.io:3306/mydb
+    url: jdbc:mysql://i9A203.p.ssafy.io:3306/mydb
     username: backend
     password: Backend@1234
     driver-class-name: org.mariadb.jdbc.Driver
