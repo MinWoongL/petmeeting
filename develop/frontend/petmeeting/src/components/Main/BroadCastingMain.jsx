@@ -28,7 +28,7 @@ function BroadCastingMain() {
     const [videoDescriptions, setVideoDescriptions] = useState({});
     const [openViduSessions, setOpenViduSessions] = useState([]);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const allSlides = [...openViduSessions, ...liveBroadcasts];
+    
 
     const liveBroadcasts = [{ id: "BZcu8MK_jfo" }, { id: "zwVAKBO8rJM" }, { id: "uqkhMBJ9yrs" }];
 
