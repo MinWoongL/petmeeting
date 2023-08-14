@@ -113,9 +113,6 @@ function ShelterMyPage() {
         <button onClick={() => setView("dogs")}>강아지 목록</button>
         <button onClick={() => setView("donations")}>후원 랭킹</button>
         <button onClick={() => setView("adoption")}>입양신청내역</button>
-        <Button variant="outlined" onClick={handleEdit}>
-          {isEditing ? "Save" : "Edit"}
-        </Button>
       </div>
       {view === "dogs" ? (
         <div>
@@ -134,11 +131,7 @@ function ShelterMyPage() {
       ) : (
         <></>
       )}
-      {view === "adoption" ? (
-        <UserAdoptionList shelterNo={userNo}/>
-      ) : (
-        <></>
-      )}
+      {view === "adoption" ? <UserAdoptionList shelterNo={userNo} /> : <></>}
 
       {/* 유기견 등록용으로 사용할 버튼 */}
       <Fab
