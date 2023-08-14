@@ -64,7 +64,7 @@ function NavBar({ isLoggedIn }) {
   const buttonStyle = {
     margin: '0 10px', // 버튼 간격 조정
     fontWeight: 'bold', // 글씨 두껍게
-    fontFamily: ' sans-serif', 
+    fontFamily: 'sans-serif', 
     fontSize: '20px',
     // color: 'black', // 네브바 하얀색일때 사용
 };

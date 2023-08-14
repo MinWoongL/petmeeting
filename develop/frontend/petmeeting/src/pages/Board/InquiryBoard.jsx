@@ -49,9 +49,9 @@ function InquiryBoard() {
 
   return (
     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Typography variant="h5" gutterBottom>
+      <h1>
         문의게시판
-      </Typography>
+      </h1>
 
       {/* 문의게시글 작성 버튼 */}
       <Box sx={{

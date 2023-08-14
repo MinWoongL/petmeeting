@@ -50,7 +50,6 @@ function BroadCastingMain() {
       const sessionInstance = OV.initSession();
       // console.log('Session 잘 만들어짐? : ', sessionInstance)
 
-
       sessionInstance.on('streamCreated', (event) => {
         // console.log('구독구독')
           const subscriber = sessionInstance.subscribe(event.stream, JSON.parse(event.stream.connection.data).clientData);
@@ -168,8 +167,7 @@ function BroadCastingMain() {
     };
 
     const handleOpenViduClick = async(shelterNo) => {
-      const userData = JSON.parse(localStorage.getItem('user'))
-      const userNo = userData.userNo
+      const userNo = localStorage.getItem('userNo')
       if (userNo) { // 로그인된 상태
         const mySession = `Session${userNo}`; // 로그인된 사용자의 세션
         joinSessionSub(shelterNo, mySession);

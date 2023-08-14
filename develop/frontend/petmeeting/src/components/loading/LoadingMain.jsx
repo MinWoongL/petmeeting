@@ -1,5 +1,6 @@
 import React from "react";
 import LoadingLogo from "../../assets/images/petmeeting_logo_loading.png";
+import MovingLogo from "../../assets/images/MovingLogo.gif";
 
 const LoadingMain = () => {
 
@@ -11,7 +12,7 @@ const LoadingMain = () => {
             display: "flex", 
             justifyContent: "center", 
             alignItems: "center" }}>
-            <img src={LoadingLogo} alt="Loading Logo" style={{maxWidth: "20%", maxHeight: "100%" }}></img>
+            <img src={MovingLogo} alt="Loading Logo" style={{maxWidth: "30%", maxHeight: "100%" }}></img>
         </div>
     );
 };
