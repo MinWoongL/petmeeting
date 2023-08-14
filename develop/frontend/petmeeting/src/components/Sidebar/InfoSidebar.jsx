@@ -108,8 +108,7 @@ function InfoSidebar() {
             <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
               <Button
                 variant="contained"
-                style={{ backgroundColor: '#7a5207', fontWeight: 'bold' }}
-
+                style={{ backgroundColor: 'var(--yellow9)', fontWeight: 'bold' }}
                 component={Link}
                 to="/login"
               >
@@ -117,8 +116,7 @@ function InfoSidebar() {
               </Button>
               <Button
                 variant="contained"
-                style={{ backgroundColor: '#7a5207', fontWeight: 'bold' }}
-                
+                style={{ backgroundColor: 'var(--yellow9)', fontWeight: 'bold' }}
                 component={Link}
                 to="/signup"
               >

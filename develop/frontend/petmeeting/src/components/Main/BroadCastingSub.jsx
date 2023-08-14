@@ -39,8 +39,26 @@ function BroadCastingSub() {
             {/* Title and Description */}
             <span>
                 <img src={broadcastIcon} alt="보호소 방송국" style={{ maxHeight: '30px'}} />
-                <Button onClick={handlePrev}>Prev</Button>
-                <Button onClick={handleNext}>Next</Button>
+                <Button 
+                    variant='contained' 
+                    style={{ 
+                        backgroundColor: 'var(--yellow8)', 
+                        marginBottom: '10px',
+                        marginLeft: '20px' 
+                    }} 
+                    onClick={handlePrev}>
+                        Prev
+                </Button>
+                <Button
+                    variant='contained'
+                    style={{
+                        backgroundColor: 'var(--yellow8)',
+                        marginBottom: '10px',
+                        marginLeft: '10px',
+                    }}
+                    onClick={handleNext}>
+                        Next
+                </Button>
             </span>
             <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
                 {getVisibleCards().map((card, index) => (
