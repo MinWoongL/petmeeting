@@ -30,7 +30,7 @@ function BroadCastingMain() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     
 
-    const liveBroadcasts = [{ id: "BZcu8MK_jfo" }, { id: "zwVAKBO8rJM" }, { id: "uqkhMBJ9yrs" }, { id: "l3UcjImor28"}];
+    const liveBroadcasts = [{ id: "BZcu8MK_jfo" }, { id: "zwVAKBO8rJM" }, { id: "uqkhMBJ9yrs" }];
 
     const fetchOpenViduSessions = async () => {
       try {
@@ -50,6 +50,7 @@ function BroadCastingMain() {
       // console.log('OV 잘만들어짐? : ',OV)
       const sessionInstance = OV.initSession();
       // console.log('Session 잘 만들어짐? : ', sessionInstance)
+
 
       sessionInstance.on('streamCreated', (event) => {
         // console.log('구독구독')
@@ -242,12 +243,12 @@ function BroadCastingMain() {
                 grabCursor={true}
                 centeredSlides={true}
                 loop={true}
-                slidesPerView={2}
+                slidesPerView={'auto'}
                 coverflowEffect={{
                     rotate: 0,
                     stretch: 0,
                     depth: 100,
-                    modifier: 2.5,  
+                    modifier: 2.5,
                 }}
                 pagination={{ el: '.swiper-pagination', clickable: true }}
                 navigation={{
@@ -259,7 +260,7 @@ function BroadCastingMain() {
                 className="swiper_container"
             >
                 {/* OpenVidu 세션의 SwiperSlide */}
-                {openViduSessions ? (
+                {openViduSessions && (
                   openViduSessions.map((session) => (
                     <SwiperSlide key={session.shelterNo} style={{ width: '500px', height: '350px' }}>
                       <Card onClick={() => handleOpenViduClick(session.shelterNo)} style={{ height: '100%' }}>
@@ -284,7 +285,7 @@ function BroadCastingMain() {
                       </Card>
                     </SwiperSlide>
                   ))
-                ) : null}
+                )}
 
                 {/* 기존의 라이브 스트리밍 SwiperSlides */}
                 {liveBroadcasts.map((broadcast) => (
