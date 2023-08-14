@@ -53,6 +53,8 @@ import InquiryMain from "./components/Board/InquiryMain";
 import InquiryCreate from "./components/Board/InquiryCreate";
 import ApplicationForm from "./components/Adoption/ApplicationForm";
 import PetMeetingLogo1 from "./assets/images/petmeeting_logo1.png";
+import PetMeetingLogo2 from "./assets/images/petmeeting_logo2.png";
+import PetMeetingLogo3 from "./assets/images/petmeeting_logo3.png";
 import LoadingMain from "./components/loading/LoadingMain";
 
 function NavBar({ isLoggedIn }) {
@@ -102,7 +104,7 @@ function NavBar({ isLoggedIn }) {
         >
           <Typography variant="h6" component="div">
             <img
-              src={PetMeetingLogo1}
+              src={PetMeetingLogo3}
               alt="Pet Meeting Logo"
               style={{ maxHeight: "50px", marginTop: "9px" }}
             />
