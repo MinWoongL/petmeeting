@@ -9,9 +9,17 @@ import {
   Container,
   Grid,
   Button,
+  Modal,
 } from "@mui/material";
 import { config } from "../static/config";
 import { Snackbar, Alert } from "@mui/material";
+
+const modalStyle = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
 
 const DogDetailPage = () => {
   const { dogId } = useParams();
@@ -142,7 +150,7 @@ const DogDetailPage = () => {
             </Grid>
           </Grid>
           <Typography variant="body1" paragraph>
-            Reason for Abandonment: {dogDetails.reasonAbandonment}
+            버려진 이유: {dogDetails.reasonAbandonment}
           </Typography>
           {isLoggedIn && (
             <div>
@@ -151,23 +159,42 @@ const DogDetailPage = () => {
                 type="number"
                 value={donationAmount}
                 onChange={(e) => setDonationAmount(e.target.value)}
-                placeholder="Enter donation amount"
-                style={{ marginTop: "10px", marginRight: "10px" }}
+                placeholder="후원 할 금액을 입력하세요"
+                style={{ marginTop: "15px", marginRight: "10px", height: "25px", width:"200px" }}
               />
 
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleDonate}
-                style={{ marginTop: "15px" }}
+                style={{ marginTop: "15px", backgroundColor: "#b9a178"  }}
               >
-                Donate
+                후원하기
               </Button>
             </div>
           )}
         </CardContent>
       </Card>
-      <Snackbar
+      <Modal
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        style={modalStyle}
+      >
+        <div>
+          <img
+            // src="../assets/images/dogmoney.png"
+            src="https://s7d1.scene7.com/is/image/PETCO/puppy-090517-dog-featured-355w-200h-d"
+            alt="후원 완료"
+            style={{ width: "100%", height: "auto" }}
+          />
+          <Typography variant="h4" component="div" style={{ marginTop: "10px" }}>
+            후원 감사합니다
+          </Typography>
+        </div>
+      </Modal>
+
+
+      {/* <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000} // Adjust the duration as needed
         onClose={() => setSnackbarOpen(false)}
@@ -180,7 +207,7 @@ const DogDetailPage = () => {
         <Alert severity="success" sx={{ width: "100%" }}>
           후원이 완료되었습니다!
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </Container>
   );
 };
