@@ -196,8 +196,11 @@ function InfoSidebar() {
         <Box mt={3} width="100%">
           <Button
             variant="contained"
-            color="primary"
+            // color="primary"
             fullWidth
+            // style = {{backgroundColor: '#b9a178'}}
+            style={{ backgroundColor: 'var(--yellow9)', fontWeight: 'bold' }}
+
             onClick={handleMyPageClick}
           >
             마이페이지
@@ -205,7 +208,9 @@ function InfoSidebar() {
           <Button
             variant="outlined"
             fullWidth
-            style={{ marginTop: "10px" }}
+            // style={{ marginTop: "10px", backgroundColor: '#b9a178' }}
+            style={{marginTop: "10px",  backgroundColor: 'var(--yellow9)',color: 'white' , fontWeight: 'bold' }}
+
             onClick={Logout}
           >
             로그아웃
