@@ -45,8 +45,14 @@ export default function AdoptionReviewDetail() {
   const [editedReplyContent, setEditedReplyContent] = useState("");
 
   const dogImages = [
-    defaultDog1, defaultDog2, defaultDog3, defaultDog4,
-    defaultDog5, defaultDog6, defaultDog7, defaultDog8
+    defaultDog1,
+    defaultDog2,
+    defaultDog3,
+    defaultDog4,
+    defaultDog5,
+    defaultDog6,
+    defaultDog7,
+    defaultDog8,
   ];
 
   const getRandomDogImagePath = () => {
@@ -55,14 +61,18 @@ export default function AdoptionReviewDetail() {
 
   useEffect(() => {
     // 게시글 정보 가져오기
-    axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/board/${boardNo}`)
+    axios
+      .get(`https://i9a203.p.ssafy.io/backapi/api/v1/board/${boardNo}`)
       .then((response) => {
         setSelectedReview(response.data);
         setEditedTitle(response.data.title);
         setEditedContent(response.data.content);
-        setEditedDate(response.data.modifiedTime
-          ? "작성 시간 : " + formatDateTime(response.data.modifiedTime * 1000) + " (수정됨)"
-          : "작성 시간 : " + formatDateTime(response.data.createdTime * 1000)
+        setEditedDate(
+          response.data.modifiedTime
+            ? "작성 시간 : " +
+                formatDateTime(response.data.modifiedTime * 1000) +
+                " (수정됨)"
+            : "작성 시간 : " + formatDateTime(response.data.createdTime * 1000)
         );
 
         if (!response.data.imagePath) {
@@ -70,30 +80,30 @@ export default function AdoptionReviewDetail() {
         } else {
           setImagePath(
             `https://i9a203.p.ssafy.io/backapi/api/v1/image/` +
-            response.data.imagePath +
-            "?option=board"
+              response.data.imagePath +
+              "?option=board"
           );
         }
-
       });
 
     // 댓글 정보 가져오기
-    axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/reply/${boardNo}`)
+    axios
+      .get(`https://i9a203.p.ssafy.io/backapi/api/v1/reply/${boardNo}`)
       .then((response) => {
         setReplyList(response.data);
-      })
+      });
 
     if (accessToken) {
       // 좋아요 체크
-      axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/board/like/` + boardNo,
-        {
+      axios
+        .get(`https://i9a203.p.ssafy.io/backapi/api/v1/board/like/` + boardNo, {
           headers: {
-            "AccessToken": "Bearer " + accessToken
-          }
+            AccessToken: "Bearer " + accessToken,
+          },
         })
-        .then(response => {
+        .then((response) => {
           setIsLiked(response.data.result);
-        })
+        });
     }
   }, [boardNo, accessToken]);
 
@@ -102,11 +112,13 @@ export default function AdoptionReviewDetail() {
   }
 
   // 수정되었으면 수정 시간, 그렇지 않으면 작성 시간으로 설정
-  let date =
-    "작성 시간 : " + formatDateTime(selectedReview.createdTime * 1000);
+  let date = "작성 시간 : " + formatDateTime(selectedReview.createdTime * 1000);
 
   if (selectedReview.modifiedTime) {
-    date = "작성 시간 : " + formatDateTime(selectedReview.modifiedTime * 1000) + " (수정됨)";
+    date =
+      "작성 시간 : " +
+      formatDateTime(selectedReview.modifiedTime * 1000) +
+      " (수정됨)";
   }
 
   // 로그인된 사용자와 게시물 작성자를 비교하여 수정 및 삭제 버튼을 표시 여부 결정
@@ -119,7 +131,7 @@ export default function AdoptionReviewDetail() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        marginBottom: "30px"
+        marginBottom: "30px",
       }}
     >
       <Typography variant="h5" gutterBottom>
@@ -142,7 +154,7 @@ export default function AdoptionReviewDetail() {
             justifyContent: "space-between",
             alignItems: "center",
             padding: "10px 0 0 0",
-            marginBottom: "8px"
+            marginBottom: "8px",
           }}
         >
           {isEditing ? (
@@ -169,7 +181,7 @@ export default function AdoptionReviewDetail() {
           sx={{
             display: "flex",
             justifyContent: "center",
-            marginBottom: "8px"
+            marginBottom: "8px",
           }}
         >
           <img
@@ -184,8 +196,11 @@ export default function AdoptionReviewDetail() {
           {isEditing ? (
             <>
               {/* 이미지 업로드 */}
-              <input type="file" accept=".jpg, .jpeg, .png, .gif"
-                onChange={(event) => setSelectedFile(event.target)} />
+              <input
+                type="file"
+                accept=".jpg, .jpeg, .png, .gif"
+                onChange={(event) => setSelectedFile(event.target)}
+              />
 
               {/* 내용 수정하는 곳 */}
               <TextField
@@ -194,7 +209,13 @@ export default function AdoptionReviewDetail() {
                 label="내용"
                 value={editedContent}
                 onChange={(event) => setEditedContent(event.target.value)}
-                sx={{ wordWrap: "break-word", mt: 2, maxHeight: "200px", overflowY: "auto", padding: "10px 0 0 0" }}
+                sx={{
+                  wordWrap: "break-word",
+                  mt: 2,
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                  padding: "10px 0 0 0",
+                }}
               />
             </>
           ) : (
@@ -208,10 +229,11 @@ export default function AdoptionReviewDetail() {
                   mt: 1,
                 }}
               >
-                {editedDate ?
-                  <Typography variant="body2">{editedDate}</Typography> :
+                {editedDate ? (
+                  <Typography variant="body2">{editedDate}</Typography>
+                ) : (
                   <Typography variant="body2">{date}</Typography>
-                }
+                )}
                 {selectedReview.likeCnt === 0 && (
                   <Typography variant="body2">
                     첫 좋아요를 눌러주세요
@@ -226,21 +248,44 @@ export default function AdoptionReviewDetail() {
 
               {/* 좋아요 버튼 */}
               {!isLiked && (
-                <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-                  <Button onClick={() => likeBoard(boardNo)} startIcon={<FavoriteIcon />} color="primary" variant="outlined">
+                <Box
+                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}
+                >
+                  <Button
+                    onClick={() => likeBoard(boardNo)}
+                    startIcon={<FavoriteIcon />}
+                    color="primary"
+                    variant="contained"
+                  >
                     좋아요
                   </Button>
                 </Box>
               )}
               {isLiked && (
-                <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-                  <Button onClick={() => dislikeBoard(boardNo)} startIcon={<FavoriteIcon />} color="error" variant="outlined">
+                <Box
+                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}
+                >
+                  <Button
+                    onClick={() => dislikeBoard(boardNo)}
+                    startIcon={<FavoriteIcon />}
+                    color="error"
+                    variant="outlined"
+                  >
                     좋아요 취소
                   </Button>
                 </Box>
               )}
-              <Typography variant="body1" sx={{ wordWrap: "break-word", mt: 2, maxHeight: "100px", overflowY: "auto", padding: "10px 0 0 0" }}>
-                {selectedReview.content.split('\n').map((line, index) => (
+              <Typography
+                variant="body1"
+                sx={{
+                  wordWrap: "break-word",
+                  mt: 2,
+                  maxHeight: "100px",
+                  overflowY: "auto",
+                  padding: "10px 0 0 0",
+                }}
+              >
+                {selectedReview.content.split("\n").map((line, index) => (
                   <React.Fragment key={index}>
                     {line}
                     <br />
@@ -259,20 +304,27 @@ export default function AdoptionReviewDetail() {
                 <Button
                   startIcon={<SaveIcon />}
                   color="primary"
-                  variant="outlined"
+                  variant="contained"
                   sx={{ mr: 1 }}
-                  onClick={() => updateBoard(boardNo, editedTitle, editedContent, selectedFile)}
+                  onClick={() =>
+                    updateBoard(
+                      boardNo,
+                      editedTitle,
+                      editedContent,
+                      selectedFile
+                    )
+                  }
                 >
                   저장
                 </Button>
                 <Button
                   startIcon={<CancelIcon />}
                   color="error"
-                  variant="outlined"
+                  variant="contained"
                   onClick={() => {
-                    setIsEditing(false)
-                    setEditedContent(selectedReview.content)
-                    setEditedTitle(selectedReview.title)
+                    setIsEditing(false);
+                    setEditedContent(selectedReview.content);
+                    setEditedTitle(selectedReview.title);
                   }}
                 >
                   취소
@@ -283,7 +335,7 @@ export default function AdoptionReviewDetail() {
                 <Button
                   startIcon={<EditIcon />}
                   color="primary"
-                  variant="outlined"
+                  variant="contained"
                   sx={{ mr: 1 }}
                   onClick={() => setIsEditing(true)}
                 >
@@ -292,7 +344,7 @@ export default function AdoptionReviewDetail() {
                 <Button
                   startIcon={<DeleteIcon />}
                   color="error"
-                  variant="outlined"
+                  variant="contained"
                   onClick={() => deleteBoard(boardNo)}
                 >
                   삭제
@@ -306,13 +358,16 @@ export default function AdoptionReviewDetail() {
         {replyList[0] ? (
           <>
             <Typography variant="h6" gutterBottom>
-              댓글 목록 <Typography>작성된 댓글 {replyList.length}개</Typography>
+              댓글 목록{" "}
+              <Typography>작성된 댓글 {replyList.length}개</Typography>
             </Typography>
-            <Box sx={{
-              mt: 2,
-              maxHeight: "500px",
-              overflowY: "auto"
-            }}>
+            <Box
+              sx={{
+                mt: 2,
+                maxHeight: "500px",
+                overflowY: "auto",
+              }}
+            >
               {visibleComments < replyList.length ? (
                 <Button
                   variant="outlined"
@@ -320,118 +375,137 @@ export default function AdoptionReviewDetail() {
                   sx={{
                     mt: 1,
                     height: "30px",
-                    margin: "auto"
+                    margin: "auto",
                   }}
                   onClick={loadMoreComments}
                 >
                   모든 댓글 보기
                 </Button>
-              ) : <></>}
-              {replyList.slice(replyList.length - visibleComments >= 0 ? replyList.length - visibleComments : 0, replyList.length).map((reply, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    border: "1px solid #ccc",
-                    borderRadius: "5px",
-                    padding: "8px",
-                    margin: "8px 0",
-                  }}
-                >
-                  <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    작성자: {reply.writer}
-                  </Typography>
-                  {editedReplyId === reply.replyNo ? (
-                    // Display the input field for editing
-                    <TextField
-                      fullWidth
-                      multiline
-                      label="댓글 수정"
-                      value={editedReplyContent}
-                      onChange={(event) => setEditedReplyContent(event.target.value)}
-                    />
-                  ) : (
-                    // Display the reply content
-                    <Typography variant="body2">
-                      {reply.content.split('\n').map((line, index) => (
-                        <React.Fragment key={index}>
-                          {line}
-                          <br />
-                        </React.Fragment>
-                      ))}
+              ) : (
+                <></>
+              )}
+              {replyList
+                .slice(
+                  replyList.length - visibleComments >= 0
+                    ? replyList.length - visibleComments
+                    : 0,
+                  replyList.length
+                )
+                .map((reply, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      border: "1px solid #ccc",
+                      borderRadius: "5px",
+                      padding: "8px",
+                      margin: "8px 0",
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                      작성자: {reply.writer}
                     </Typography>
-                  )}
-                  {reply.modifiedTime ? (
-                    <Typography variant="body2" sx={{ color: "#888" }}>
-                      작성 시간: {formatDateTime(reply.modifiedTime * 1000)} (수정됨)
-                    </Typography>
-                  ) : (
-                    <Typography variant="body2" sx={{ color: "#888" }}>
-                      작성 시간: {formatDateTime(reply.createdTime * 1000)}
-                    </Typography>
-                  )}
-                  {/* 이건,,, 나중에하는걸로 */}
-                  {/* <Typography variant="body2" sx={{ color: "#888" }}>
+                    {editedReplyId === reply.replyNo ? (
+                      // Display the input field for editing
+                      <TextField
+                        fullWidth
+                        multiline
+                        label="댓글 수정"
+                        value={editedReplyContent}
+                        onChange={(event) =>
+                          setEditedReplyContent(event.target.value)
+                        }
+                      />
+                    ) : (
+                      // Display the reply content
+                      <Typography variant="body2">
+                        {reply.content.split("\n").map((line, index) => (
+                          <React.Fragment key={index}>
+                            {line}
+                            <br />
+                          </React.Fragment>
+                        ))}
+                      </Typography>
+                    )}
+                    {reply.modifiedTime ? (
+                      <Typography variant="body2" sx={{ color: "#888" }}>
+                        작성 시간: {formatDateTime(reply.modifiedTime * 1000)}{" "}
+                        (수정됨)
+                      </Typography>
+                    ) : (
+                      <Typography variant="body2" sx={{ color: "#888" }}>
+                        작성 시간: {formatDateTime(reply.createdTime * 1000)}
+                      </Typography>
+                    )}
+                    {/* 이건,,, 나중에하는걸로 */}
+                    {/* <Typography variant="body2" sx={{ color: "#888" }}>
                     좋아요 개수: {reply.likeCnt}
                   </Typography> */}
-                  {reply.userNo === userNo ? (
-                    <Box sx={{
-                      display: "flex",
-                      justifyContent: "end",
-                      position: "relative",
-                    }}>
-                      {editedReplyId === reply.replyNo ? (
-                        <>
-                          <Button
-                            sx={{ margin: "0 3px 0 3px" }}
-                            variant="outlined"
-                            size="small"
-                            color="primary"
-                            onClick={() => updateReply(reply.replyNo, editedReplyContent)}
-                          >
-                            저장
-                          </Button>
-                          <Button
-                            sx={{ margin: "0 3px 0 3px" }}
-                            variant="outlined"
-                            size="small"
-                            color="error"
-                            onClick={() => cancelEdit()}
-                          >
-                            취소
-                          </Button>
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            sx={{ margin: "0 3px 0 3px" }}
-                            variant="outlined"
-                            size="small"
-                            color="primary"
-                            onClick={() => startEdit(reply.replyNo, reply.content)}
-                          >
-                            수정
-                          </Button>
-                          <Button
-                            sx={{ margin: "0 3px 0 3px" }}
-                            variant="outlined"
-                            size="small"
-                            color="error"
-                            onClick={() => deleteReply(reply.replyNo)}
-                          >
-                            삭제
-                          </Button>
-                        </>
-                      )}
-                    </Box>
-                  ) : <></>}
-                </Box>
-              ))}
+                    {reply.userNo === userNo ? (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "end",
+                          position: "relative",
+                        }}
+                      >
+                        {editedReplyId === reply.replyNo ? (
+                          <>
+                            <Button
+                              sx={{ margin: "0 3px 0 3px" }}
+                              variant="outlined"
+                              size="small"
+                              color="primary"
+                              onClick={() =>
+                                updateReply(reply.replyNo, editedReplyContent)
+                              }
+                            >
+                              저장
+                            </Button>
+                            <Button
+                              sx={{ margin: "0 3px 0 3px" }}
+                              variant="outlined"
+                              size="small"
+                              color="error"
+                              onClick={() => cancelEdit()}
+                            >
+                              취소
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              sx={{ margin: "0 3px 0 3px" }}
+                              variant="outlined"
+                              size="small"
+                              color="primary"
+                              onClick={() =>
+                                startEdit(reply.replyNo, reply.content)
+                              }
+                            >
+                              수정
+                            </Button>
+                            <Button
+                              sx={{ margin: "0 3px 0 3px" }}
+                              variant="outlined"
+                              size="small"
+                              color="error"
+                              onClick={() => deleteReply(reply.replyNo)}
+                            >
+                              삭제
+                            </Button>
+                          </>
+                        )}
+                      </Box>
+                    ) : (
+                      <></>
+                    )}
+                  </Box>
+                ))}
             </Box>
           </>
         ) : (
           <Box>작성된 댓글이 없습니다.</Box>
         )}
-
 
         {/* 댓글 입력 창 */}
         <Box sx={{ mt: 2 }}>
@@ -479,16 +553,20 @@ export default function AdoptionReviewDetail() {
       return;
     }
 
-    axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/board/like/" + boardNo,
-      {},
-      {
-        headers: {
-          "AccessToken": "Bearer " + accessToken
+    axios
+      .post(
+        "https://i9a203.p.ssafy.io/backapi/api/v1/board/like/" + boardNo,
+        {},
+        {
+          headers: {
+            AccessToken: "Bearer " + accessToken,
+          },
         }
-      }).then(() => {
+      )
+      .then(() => {
         setIsLiked(true);
         selectedReview.likeCnt++;
-      })
+      });
   }
 
   function dislikeBoard(boardNo) {
@@ -497,28 +575,33 @@ export default function AdoptionReviewDetail() {
       return;
     }
 
-    axios.delete("https://i9a203.p.ssafy.io/backapi/api/v1/board/like/" + boardNo,
-      {
-        headers: {
-          "AccessToken": "Bearer " + accessToken
+    axios
+      .delete(
+        "https://i9a203.p.ssafy.io/backapi/api/v1/board/like/" + boardNo,
+        {
+          headers: {
+            AccessToken: "Bearer " + accessToken,
+          },
         }
-      }).then(() => {
+      )
+      .then(() => {
         setIsLiked(false);
         selectedReview.likeCnt--;
-      })
+      });
   }
 
   function deleteBoard(boardNo) {
     if (window.confirm("정말 삭제하시겠습니까?")) {
-      axios.delete("https://i9a203.p.ssafy.io/backapi/api/v1/board/" + boardNo,
-        {
+      axios
+        .delete("https://i9a203.p.ssafy.io/backapi/api/v1/board/" + boardNo, {
           headers: {
-            "AccessToken": "Bearer " + accessToken
-          }
-        }).then((response) => {
-          alert(response.data.msg);
-          window.location.href = "/board/adoption-review"
+            AccessToken: "Bearer " + accessToken,
+          },
         })
+        .then((response) => {
+          alert(response.data.msg);
+          window.location.href = "/board/adoption-review";
+        });
     }
   }
 
@@ -530,36 +613,49 @@ export default function AdoptionReviewDetail() {
         const formData = new FormData();
         formData.append("image", imageFile.files[0]);
 
-        await axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/image?option=board", formData,
-          {
-            headers: {
-              "AccessToken": "Bearer " + accessToken,
-              "Content-Type": "multipart/form-data",
+        await axios
+          .post(
+            "https://i9a203.p.ssafy.io/backapi/api/v1/image?option=board",
+            formData,
+            {
+              headers: {
+                AccessToken: "Bearer " + accessToken,
+                "Content-Type": "multipart/form-data",
+              },
             }
-          }).then((response) => {
+          )
+          .then((response) => {
             imagePath = response.data;
-          })
+          });
       }
 
-      await axios.put("https://i9a203.p.ssafy.io/backapi/api/v1/board/" + boardNo,
-        {
-          title: editedTitle,
-          content: editedContent,
-          imagePath: imagePath
-        },
-        {
-          headers: {
-            "AccessToken": "Bearer " + accessToken
+      await axios
+        .put(
+          "https://i9a203.p.ssafy.io/backapi/api/v1/board/" + boardNo,
+          {
+            title: editedTitle,
+            content: editedContent,
+            imagePath: imagePath,
+          },
+          {
+            headers: {
+              AccessToken: "Bearer " + accessToken,
+            },
           }
-        }).then((response) => {
+        )
+        .then((response) => {
           setIsEditing(false);
           setSelectedReview(response.data);
-        }).then(() => {
-          setEditedDate("작성 시간 : " + formatDateTime(selectedReview.modifiedTime * 1000) + " (수정됨)");
         })
+        .then(() => {
+          setEditedDate(
+            "작성 시간 : " +
+              formatDateTime(selectedReview.modifiedTime * 1000) +
+              " (수정됨)"
+          );
+        });
     }
   }
-
 
   async function submitReply() {
     if (!userNo) {
@@ -583,7 +679,7 @@ export default function AdoptionReviewDetail() {
         requestBody,
         {
           headers: {
-            "AccessToken": "Bearer " + accessToken,
+            AccessToken: "Bearer " + accessToken,
           },
         }
       );
@@ -611,21 +707,23 @@ export default function AdoptionReviewDetail() {
   async function deleteReply(replyId) {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
-    await axios.delete(`https://i9a203.p.ssafy.io/backapi/api/v1/reply/${replyId}`,
-      {
+    await axios
+      .delete(`https://i9a203.p.ssafy.io/backapi/api/v1/reply/${replyId}`, {
         headers: {
-          "AccessToken": "Bearer " + accessToken,
+          AccessToken: "Bearer " + accessToken,
         },
-      }).then((response) => {
+      })
+      .then((response) => {
         if (response.status == 200) {
-          axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/reply/${boardNo}`)
+          axios
+            .get(`https://i9a203.p.ssafy.io/backapi/api/v1/reply/${boardNo}`)
             .then((response) => {
               setReplyList(response.data);
-            })
+            });
 
           alert("삭제 완료");
         }
-      })
+      });
   }
 
   async function updateReply(replyId, editedContent) {
@@ -636,32 +734,36 @@ export default function AdoptionReviewDetail() {
       return;
     }
 
-
     try {
-      await axios.put(
-        `https://i9a203.p.ssafy.io/backapi/api/v1/reply/${replyId}`,
-        { content: editedContent },
-        {
-          headers: {
-            "AccessToken": "Bearer " + accessToken,
-          },
-        }
-      ).then(() => {
-        const updatedReplyList = replyList.map(reply =>
-          reply.replyNo === replyId
-            ? { ...reply, content: editedContent, modifiedTime: new Date().getTime() }
-            : reply
-        );
+      await axios
+        .put(
+          `https://i9a203.p.ssafy.io/backapi/api/v1/reply/${replyId}`,
+          { content: editedContent },
+          {
+            headers: {
+              AccessToken: "Bearer " + accessToken,
+            },
+          }
+        )
+        .then(() => {
+          const updatedReplyList = replyList.map((reply) =>
+            reply.replyNo === replyId
+              ? {
+                  ...reply,
+                  content: editedContent,
+                  modifiedTime: new Date().getTime(),
+                }
+              : reply
+          );
 
-        setReplyList(updatedReplyList);
-        cancelEdit(replyId); // Clear the editing state
-        alert("수정되었습니다.");
-      });
+          setReplyList(updatedReplyList);
+          cancelEdit(replyId); // Clear the editing state
+          alert("수정되었습니다.");
+        });
     } catch (error) {
       alert("댓글 수정에 실패했습니다.");
     }
   }
-
 
   function formatDateTime(timestamp) {
     const date = new Date(timestamp);
