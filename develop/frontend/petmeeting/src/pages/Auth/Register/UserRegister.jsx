@@ -359,6 +359,9 @@ export default function SignUp() {
                         height: "100%",
                         display: "flex",
                         alignItems: "center",
+                        backgroundColor: "#b9a178", // Set background color
+    color: "white", // Set text color to white
+    fontWeight: "bold", // Add bold font weight
                       }}
                     >
                       중복확인
@@ -460,7 +463,9 @@ export default function SignUp() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 2, backgroundColor: "#b9a178", 
+              color: "white",
+              fontWeight: "bold"}}
             >
               회원 가입
             </Button>
