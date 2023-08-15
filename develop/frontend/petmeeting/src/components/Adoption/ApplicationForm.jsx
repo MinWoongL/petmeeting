@@ -13,10 +13,10 @@ export default function ApplicationForm() {
     petExperience: "",
     additional: "",
   });
-  
+
   const accessToken = JSON.parse(sessionStorage.getItem("token"))?.accessToken;
 
-  if(!accessToken) {
+  if (!accessToken) {
     alert("로그인이 필요합니다.");
     window.history.back();
   }
@@ -27,11 +27,12 @@ export default function ApplicationForm() {
   const [dogList, setDogList] = useState([]);
 
   useState(() => {
-    axios.get("https://i9a203.p.ssafy.io/backapi/api/v1/shelter?option=all")
+    axios
+      .get("https://i9a203.p.ssafy.io/backapi/api/v1/shelter?option=all")
       .then((response) => {
         setShelterList(response.data);
-      })
-  })
+      });
+  });
 
   const formContainerStyle = {
     display: "flex",
@@ -89,20 +90,25 @@ export default function ApplicationForm() {
     const selectedValue = event.target.value;
     setSelectedShelter(selectedValue);
     setSelectedDog("");
-  
+
     if (selectedValue === "") {
       setDogList([]); // 강아지 목록 초기화
     } else {
       try {
-        const response = await axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/dog?shelterNo=${selectedValue}`);
-        
-        setDogList(response.data);
+        const response = await axios.get(
+          `https://i9a203.p.ssafy.io/backapi/api/v1/dog?shelterNo=${selectedValue}`
+        );
+
+        setDogList(
+          response.data.filter((dog) => dog.adoptionAvailability === "입양가능")
+        );
+
+        console.log(dogList);
       } catch (error) {
         console.error("강아지 목록을 가져오는 중 오류 발생:", error);
       }
     }
   };
-  
 
   const handleDogChange = (event) => {
     setSelectedDog(event.target.value);
@@ -134,26 +140,29 @@ export default function ApplicationForm() {
       job: event.target.job.value,
       name: event.target.name.value,
       petExperience: event.target.petExperience.value,
-      residence: event.target.residence.value
+      residence: event.target.residence.value,
     };
-  
+
     for (const key in formData) {
-      if (key !== "additional" && (formData[key] === null || formData[key].trim() === "")) {
+      if (
+        key !== "additional" &&
+        (formData[key] === null || formData[key].trim() === "")
+      ) {
         alert("모든 항목을 입력해주세요.");
         return;
       }
     }
-    
-    await axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/adoption", 
-    formData,
-    {
-      headers: {
-        "AccessToken": "Bearer " + accessToken
-      }
-    }).then(() => {
-      window.history.back();
-      alert("신청이 완료되었습니다.")
-    })
+
+    await axios
+      .post("https://i9a203.p.ssafy.io/backapi/api/v1/adoption", formData, {
+        headers: {
+          AccessToken: "Bearer " + accessToken,
+        },
+      })
+      .then(() => {
+        window.history.back();
+        alert("신청이 완료되었습니다.");
+      });
   };
 
   const handleEmptyField = (ref) => {
@@ -195,7 +204,9 @@ export default function ApplicationForm() {
               disabled={selectedShelter === ""}
             >
               {/* 강아지 목록 */}
-              <option value="" disabled={!selectedShelter}>선택</option>
+              <option value="" disabled={!selectedShelter}>
+                선택
+              </option>
               {dogList.map((dog) => (
                 <option key={dog.dogNo} value={dog.dogNo}>
                   {dog.name}
@@ -324,7 +335,11 @@ export default function ApplicationForm() {
           </label>
           <br />
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button type="button" style={cancelButtonStyle} onClick={handleCancel}>
+            <button
+              type="button"
+              style={cancelButtonStyle}
+              onClick={handleCancel}
+            >
               취소
             </button>
             <button
