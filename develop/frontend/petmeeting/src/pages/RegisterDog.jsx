@@ -12,7 +12,7 @@ import {
   MenuItem
 } from "@mui/material";
 import ImageUploadButton from "../components/Button/ImageUploadButton";
-
+import { config } from "../static/config";
 const RegisterDog = () => {
   const [form, setForm] = useState({
     name: "",
@@ -30,6 +30,39 @@ const RegisterDog = () => {
   });
   const [imagePath, setImagePath] = useState("");
   const [ableToSelectDate, setAbleToSelectDate] = useState(false);
+  const [selectedImage, setSelectedImage] = useState();
+  const [imageUrl, setImageUrl] = useState("");
+
+  const handleImageUpload = async () => {
+    if (!selectedImage) {
+      alert("강아지 사진을 선택해주세요");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", selectedImage);
+
+    try {
+      const response = await axios.post(
+        `${config.baseURL}/api/v1/image?option=dog`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      setImagePath(response.data);
+      setImageUrl(response.data);
+      console.log(response.data)
+      console.log(imageUrl, '이미지 유알엘임')
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+    
+  
+  
 
 
   useEffect(() => {
@@ -40,17 +73,15 @@ const RegisterDog = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    
+    const newImageUrl = await handleImageUpload();
     let submitForm = { ...form };
     if (submitForm.protectionStartDate) {
       submitForm.protectionStartDate = new Date(
         submitForm.protectionStartDate
       ).getTime();
     }
-    if (submitForm.protectionEndDate) {
-      submitForm.protectionEndDate = new Date(
-        submitForm.protectionEndDate
-      ).getTime();
-    }
+    
 
     const token = JSON.parse(sessionStorage.getItem("token"));
     // Create the header
@@ -60,8 +91,9 @@ const RegisterDog = () => {
     try {
       console.log("레지스터도그 실행");
       console.log(submitForm);
+      console.log(newImageUrl)
       let jjinForm = { ...submitForm };
-      jjinForm.imagePath = `${form.imagePath}`;
+      jjinForm.imagePath = `${newImageUrl}`;
 
       const response = await axios.post(
         "https://i9a203.p.ssafy.io/backapi/api/v1/dog",
@@ -234,15 +266,15 @@ const RegisterDog = () => {
             value={form.reasonAbandonment}
             onChange={handleChange}
           />
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body1">
-              Image Path: {form.imagePath}
-            </Typography>
-          </Box>
-          <ImageUploadButton option="dog" setImagePath={setImagePath} />
-          <Button type="submit" fullWidth variant="contained" color="primary">
-            등록하기
-          </Button>
+          
+          <ImageUploadButton
+        setSelectedImage={setSelectedImage}
+        imageUrl={imageUrl}
+        option="dog"
+      />
+      <Button type="submit" fullWidth variant="contained" color="primary">
+        등록하기
+      </Button>
         </form>
       </Box>
     </Container>
