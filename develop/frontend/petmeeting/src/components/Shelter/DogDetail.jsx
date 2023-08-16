@@ -5,16 +5,9 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ShareIcon from "@mui/icons-material/Share";
 import { config } from "../../static/config";
 import { Link } from "react-router-dom";
-import LikeButton from "../Button/DogLikeButton";
-import BookmarkButton from "../Button/DogBookmarkButton";
 
 const DogDetail = ({ shelterNo }) => {
   const [dogData, setDogData] = useState(null);
@@ -73,15 +66,6 @@ const DogDetail = ({ shelterNo }) => {
                   </Typography>
                   {/* More fields can be added here */}
                 </CardContent>
-                {/* Additional content... */}
-                <CardActions disableSpacing>
-                  <LikeButton dogNo={dog.dogNo} />{" "}
-                  {/* LikeButton 컴포넌트 사용 */}
-                  <BookmarkButton dogNo={dog.dogNo}>
-                    {" "}
-                    <ShareIcon />
-                  </BookmarkButton>
-                </CardActions>
               </Card>
             </Link>
           ))}
