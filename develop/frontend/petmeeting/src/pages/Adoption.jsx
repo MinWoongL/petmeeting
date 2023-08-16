@@ -50,7 +50,7 @@ export default function Adoption() {
             {dogData.map((dog, index) => (
                 <DogListItem dog={dog} index={index} key={dog.id} />
               ))}
-          </Box>
+          </Box> 
           {/* 페이지네이션 */}
           <Stack spacing={2} mt={2}>
             <Pagination
