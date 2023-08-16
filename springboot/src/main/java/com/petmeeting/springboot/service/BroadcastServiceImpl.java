@@ -68,7 +68,7 @@ public class BroadcastServiceImpl implements BroadcastService {
 
         if(member.getHoldingToken() < 1) {
             log.error("[기기제어권] 토큰이 부족합니다.");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "토큰이 부족합니다.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "토큰이 부족합니다.");
         }
         member.spendToken(1);
         userRepository.save(member);
