@@ -184,7 +184,6 @@ const DogDetailPage = () => {
         <div>
           <img
             src={DogDonationImage}
-            // src="https://s7d1.scene7.com/is/image/PETCO/puppy-090517-dog-featured-355w-200h-d"
             alt="후원 완료"
             style={{ width: "100%", height: "auto" }}
           />

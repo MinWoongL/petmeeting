@@ -44,22 +44,42 @@ export default function Adoption() {
 
       {/* 입양신청서 목록 넣을 곳 */}
       <h1>입양 가능한 강아지</h1>
-      <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
-        {dogData
-          .filter((dog) => dog.adoptionAvailability === "입양가능")
-          .map((dog, index) => (
-            <DogListItem dog={dog} index={index} key={dog.id} />
-          ))}
-      </Box>
-      {/* 페이지네이션 */}
-      <Stack spacing={2} mt={2}>
-        <Pagination
-          count={Math.ceil(allDogs.length / pageSize)}
-          page={currentPage}
-          onChange={(event, newPage) => setCurrentPage(newPage)}
-          color="primary"
-        />
-      </Stack>
+      {dogData.length > 0 ? (
+        <>
+          <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
+            {dogData
+              .filter((dog) => dog.adoptionAvailability === "입양가능")
+              .map((dog, index) => (
+                <DogListItem dog={dog} index={index} key={dog.id} />
+              ))}
+          </Box>
+          {/* 페이지네이션 */}
+          <Stack spacing={2} mt={2}>
+            <Pagination
+              count={Math.ceil(allDogs.length / pageSize)}
+              page={currentPage}
+              onChange={(event, newPage) => setCurrentPage(newPage)}
+              color="primary"
+            />
+          </Stack>
+        </>
+      ) : (
+        <>
+          <Typography
+            variant="h5"
+            align="center"
+            style={{
+              marginTop: '20px',
+              padding: '10px',
+              borderRadius: '5px',
+              border: '0px solid #e0e0e0',
+              fontFamily: 'Jua'
+            }}>
+            입양 가능한 강아지가 없어요
+          </Typography>
+        </>
+      )}
+
     </Box>
   );
 }
