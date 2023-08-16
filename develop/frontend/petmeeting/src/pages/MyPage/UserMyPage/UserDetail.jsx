@@ -6,13 +6,15 @@ import UserLikeDog from "../../../components/MyPage/UserLikeDog";
 import UserAdoptionList from "../../../components/MyPage/UserAdoptionList";
 import { Button, Container, Typography, Alert } from "@mui/material";
 import { styled } from "@mui/system";
+import { useDispatch } from "react-redux";
+import { updatePointsAndTokens } from "../../../stores/Slices/UserSlice";
 
 const StyledButtonContainer = styled(Container)`
   display: flex;
   justify-content: center;
   gap: 10px;
   margin-top: 20px;
-  margin-bottom: 10px
+  margin-bottom: 10px;
 `;
 
 const StyledButton = styled(Button)`
@@ -21,7 +23,7 @@ const StyledButton = styled(Button)`
   &:hover {
     background-color: #6f6048;
   }
-  margin-bottom: 10px
+  margin-bottom: 10px;
 `;
 
 function UserProfilePage() {
@@ -29,7 +31,7 @@ function UserProfilePage() {
 
   const [view, setView] = useState("like");
   const token = JSON.parse(sessionStorage.getItem("token"));
-
+  const dispatch = useDispatch();
   const handleUpdate = (updatedData) => {
     setUserData(updatedData);
   };
@@ -47,6 +49,13 @@ function UserProfilePage() {
       })
       .then((res) => {
         handleUpdate(res.data);
+
+        dispatch(
+          updatePointsAndTokens({
+            points: res.data.holdingPoint, // Replace with the actual keys in the API response
+            tokens: res.data.holdingToken, // Replace with the actual keys in the API response
+          })
+        );
         console.log(res.data, "마이페이지 정보 겟받아옴");
       })
       .catch((err) => {
@@ -65,8 +74,12 @@ function UserProfilePage() {
       />
       <StyledButtonContainer>
         <StyledButton onClick={() => setView("like")}>좋아요 목록</StyledButton>
-        <StyledButton onClick={() => setView("bookmark")}>북마크 목록</StyledButton>
-        <StyledButton onClick={() => setView("adoptionList")}>입양신청내역</StyledButton>
+        <StyledButton onClick={() => setView("bookmark")}>
+          북마크 목록
+        </StyledButton>
+        <StyledButton onClick={() => setView("adoptionList")}>
+          입양신청내역
+        </StyledButton>
       </StyledButtonContainer>
       {view === "like" ? (
         <UserLikeDog likedDogs={userData.likedDogs} />

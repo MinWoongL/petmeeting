@@ -23,7 +23,8 @@ function InfoSidebar() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const holdingPoint = useSelector((state) => state.user.holdingPoint);
+  const holdingToken = useSelector((state) => state.user.holdingToken);
   const handleMyPageClick = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -104,10 +105,13 @@ function InfoSidebar() {
               }}
             />
             <Typography variant="h6">Guest</Typography>
-            <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
+            <div style={{ display: "flex", gap: "12px", marginTop: "10px" }}>
               <Button
                 variant="contained"
-                style={{ backgroundColor: 'var(--yellow9)', fontWeight: 'bold' }}
+                style={{
+                  backgroundColor: "var(--yellow9)",
+                  fontWeight: "bold",
+                }}
                 component={Link}
                 to="/login"
               >
@@ -115,7 +119,10 @@ function InfoSidebar() {
               </Button>
               <Button
                 variant="contained"
-                style={{ backgroundColor: 'var(--yellow9)', fontWeight: 'bold' }}
+                style={{
+                  backgroundColor: "var(--yellow9)",
+                  fontWeight: "bold",
+                }}
                 component={Link}
                 to="/signup"
               >
@@ -152,15 +159,27 @@ function InfoSidebar() {
             style={{ width: "80px", height: "80px", marginRight: "20px" }}
           />
 
-          <Box >
+          <Box>
             <Stack direction="row" alignItems="center" spacing={1}>
-              <Typography variant="h5" sx={{ fontFamily:'Jua', fontWeight: 'bold' }} >{user.userId}</Typography>
+              <Typography
+                variant="h5"
+                sx={{ fontFamily: "Jua", fontWeight: "bold" }}
+              >
+                {user.userId}
+              </Typography>
             </Stack>
-            <Typography variant="body2" sx={{ fontFamily:'Jua', fontWeight: 'normal' }}>
-              내 포인트: {user.holdingPoint ? user.holdingPoint : 0}
+            <Typography
+              variant="body2"
+              sx={{ fontFamily: "Jua", fontWeight: "normal" }}
+            >
+              {/* 내 포인트: {user.holdingPoint ? user.holdingPoint : 0} */}내
+              포인트: {holdingPoint ? holdingPoint : 0}
             </Typography>
-            <Typography variant="body2" sx={{ fontFamily:'Jua', fontWeight: 'normal' }}>
-              내 멍코인: {user.holdingToken ? user.holdingToken : 0}
+            <Typography
+              variant="body2"
+              sx={{ fontFamily: "Jua", fontWeight: "normal" }}
+            >
+              내 멍코인: {holdingToken ? holdingToken : 0}
             </Typography>
           </Box>
         </Box>
@@ -171,8 +190,7 @@ function InfoSidebar() {
             // color="primary"
             fullWidth
             // style = {{backgroundColor: '#b9a178'}}
-            style={{ backgroundColor: 'var(--yellow9)', fontWeight: 'bold' }}
-
+            style={{ backgroundColor: "var(--yellow9)", fontWeight: "bold" }}
             onClick={handleMyPageClick}
           >
             마이페이지
@@ -181,8 +199,12 @@ function InfoSidebar() {
             variant="outlined"
             fullWidth
             // style={{ marginTop: "10px", backgroundColor: '#b9a178' }}
-            style={{marginTop: "10px",  backgroundColor: 'var(--yellow9)',color: 'white' , fontWeight: 'bold' }}
-
+            style={{
+              marginTop: "10px",
+              backgroundColor: "var(--yellow9)",
+              color: "white",
+              fontWeight: "bold",
+            }}
             onClick={Logout}
           >
             로그아웃
