@@ -69,7 +69,7 @@ function NavBar({ isLoggedIn }) {
   };
 
   const user = JSON.parse(localStorage.getItem("user"));
-  const userType = user ? user.usertype : null;
+  const userType = user ? user.userType : null;
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -174,7 +174,7 @@ function NavBar({ isLoggedIn }) {
                 to="/mypage/ShelterMyPage"
                 style={buttonStyle}
               >
-                보호소 마이페이지
+                마이페이지
               </Button>
             ) : (
               <Button
