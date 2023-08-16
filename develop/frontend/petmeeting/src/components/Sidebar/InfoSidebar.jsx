@@ -25,6 +25,7 @@ function InfoSidebar() {
   const navigate = useNavigate();
   const [holdingPoint, setHoldingPoint] = useState(0);
   const [holdingToken, setHoldingToken] = useState(0);
+  const [userGroup, setUserGroup] = useState("user");
   const handleMyPageClick = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -54,6 +55,7 @@ function InfoSidebar() {
         // Assuming that the data returned from your API is in the "data" property of the response object
         setHoldingPoint(responsePoint.data.holdingPoint);
         setHoldingToken(responsePoint.data.holdingToken);
+        setUserGroup(responsePoint.data.userGroup);
       } catch (error) {
         console.error("Failed to fetch holding data:", error);
       }
@@ -196,8 +198,8 @@ function InfoSidebar() {
                 {user.userId}
               </Typography>
             </Stack>
-            {user.userGroup}
-            {user.userGroup === "사용자" || user.userGroup === "user" ? (
+            
+            {userGroup === "사용자" || userGroup === "user" ? (
               <>
                 <Typography
                   variant="body2"
