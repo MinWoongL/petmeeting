@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Card, CardHeader, CardMedia, CardContent, CardActions, Collapse, Typography, IconButton, Box, Button } from "@mui/material";
+import {
+  Card,
+  CardHeader,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Collapse,
+  Typography,
+  IconButton,
+  Box,
+  Button,
+} from "@mui/material";
 import { useSelector } from "react-redux";
 import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -9,6 +20,8 @@ import heartOff from "../../assets/images/pet_heart_off.png";
 import axios from "axios";
 import { BorderTop } from "@mui/icons-material";
 import reviewIcon from "./ReviewIcon.png";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -100,28 +113,30 @@ function AdoptionReview() {
 
   return (
     <Box sx={{ mt: 5, mb: 4 }}>
-      <span style={{ display: 'flex', alignItems: 'center' }}>
-        <img src={reviewIcon} alt="입양후기" style={{ maxHeight: '35px' }}/>
-        <Button
-          variant="contained" 
+      <span style={{ display: "flex", alignItems: "center" }}>
+        <img src={reviewIcon} alt="입양후기" style={{ maxHeight: "35px" }} />
+        <IconButton
+          variant="contained"
           style={{
-            backgroundColor: 'var(--yellow8)', 
-            marginBottom: '10px',
-            marginLeft: '63px'
-          }} 
-          onClick={handlePrev}>
-            Prev
-        </Button>
-        <Button
-          variant="contained" 
+            backgroundColor: "var(--yellow1)",
+            marginBottom: "10px",
+            marginLeft: "63px",
+          }}
+          onClick={handlePrev}
+        >
+          <ChevronLeftIcon />
+        </IconButton>
+        <IconButton
+          variant="contained"
           onClick={handleNext}
           style={{
-            backgroundColor: 'var(--yellow8)',
-            marginBottom: '10px',
-            marginLeft: '10px'
-          }}>
-            Next
-        </Button>
+            backgroundColor: "var(--yellow1)",
+            marginBottom: "10px",
+            marginLeft: "10px",
+          }}
+        >
+          <ChevronRightIcon />
+        </IconButton>
       </span>
       <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
         {getVisibleReviews().map((review) => (

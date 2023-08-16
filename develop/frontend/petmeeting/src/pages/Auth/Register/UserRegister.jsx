@@ -68,7 +68,7 @@ export default function SignUp() {
   const [passwordError, setPasswordError] = React.useState(false);
   const [userIdAvailable, setUserIdAvailable] = React.useState(null);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-  const [imagePath, setImagePath] = React.useState("");
+  const [imagePath, setImagePath] = React.useState("profile1.png");
 
   const [selectedProfileImage, setSelectedProfileImage] = React.useState(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
