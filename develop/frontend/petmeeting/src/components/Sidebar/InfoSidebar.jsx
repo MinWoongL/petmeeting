@@ -1,5 +1,5 @@
 // 일반, 보호소 유저에 따라 항목 다르게 보이도록
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,8 +23,8 @@ function InfoSidebar() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const holdingPoint = useSelector((state) => state.user.holdingPoint);
-  const holdingToken = useSelector((state) => state.user.holdingToken);
+  const [holdingPoint, setHoldingPoint] = useState(0);
+  const [holdingToken, setHoldingToken] = useState(0);
   const handleMyPageClick = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -34,6 +34,34 @@ function InfoSidebar() {
       navigate("/mypage");
     }
   };
+
+  useEffect(() => {
+    // Define the async function inside the useEffect
+    const fetchHoldingData = async () => {
+      try {
+        const token = JSON.parse(sessionStorage.getItem("token"));
+        const config = {
+          headers: { AccessToken: `Bearer ${token.accessToken}` },
+        };
+
+        // Replace the API endpoints with the actual endpoints of your backend
+        const responsePoint = await axios.get(
+          "https://i9a203.p.ssafy.io/backapi/api/v1/user",
+          config
+        );
+
+        console.log(responsePoint.data);
+        // Assuming that the data returned from your API is in the "data" property of the response object
+        setHoldingPoint(responsePoint.data.holdingPoint);
+        setHoldingToken(responsePoint.data.holdingToken);
+      } catch (error) {
+        console.error("Failed to fetch holding data:", error);
+      }
+    };
+
+    // Call the async function
+    fetchHoldingData();
+  }, []);
 
   const [nicknameInput, setNicknameInput] = useState("");
 
