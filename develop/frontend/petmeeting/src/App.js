@@ -56,6 +56,7 @@ import PetMeetingLogo1 from "./assets/images/petmeeting_logo1.png";
 import PetMeetingLogo2 from "./assets/images/petmeeting_logo2.png";
 import PetMeetingLogo3 from "./assets/images/petmeeting_logo3.png";
 import LoadingMain from "./components/loading/LoadingMain";
+import Page_404 from "./pages/404";
 
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -384,6 +385,8 @@ function App() {
                   <Route path="/board/usage-guide" element={<UsageGuide />} />
                   <Route path="/loading" element={<LoadingMain />} />
                   <Route path="/payment/success" element={<PaymentSuccess />} />
+
+                  <Route path="/*" element={<Page_404/>}/>
                 </Routes>
               </Box>
             </Grid>
