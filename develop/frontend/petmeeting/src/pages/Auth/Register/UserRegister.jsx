@@ -82,6 +82,10 @@ export default function SignUp() {
     `https://i9a203.p.ssafy.io/backapi/api/v1/image/profile6.png?option=member`,
   ];
 
+  function getImageSource(imagePath) {
+    return `https://i9a203.p.ssafy.io/backapi/api/v1/image/${imagePath}?option='shelter'`;
+  }
+
   const handleProfileModalOpen = () => {
     setIsProfileModalOpen(true);
   };
@@ -273,7 +277,7 @@ export default function SignUp() {
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
           >
-            <Grid container spacing={2}>
+            <Grid container rowSpacing={2}>
               <Grid item xs={12}>
                 <ToggleButtonGroup
                   color="primary"
@@ -356,12 +360,14 @@ export default function SignUp() {
                       variant="contained"
                       color="primary"
                       sx={{
+                        marginLeft: "10px",
                         height: "100%",
                         display: "flex",
                         alignItems: "center",
                         backgroundColor: "#b9a178", // Set background color
-    color: "white", // Set text color to white
-    fontWeight: "bold", // Add bold font weight
+                        color: "white", // Set text color to white
+                        fontWeight: "bold", // Add bold font weight
+                        fontSize: "13px",
                       }}
                     >
                       중복확인
@@ -442,6 +448,13 @@ export default function SignUp() {
                     />
                   </Grid>
                   <></>
+                  {imagePath ? (
+                    <Grid item xs={12} display="flex" justifyContent="center" marginTop="10px">
+                      <img src={getImageSource(imagePath)}  alt="등록 이미지" />
+                    </Grid>
+                  ) : (
+                    <></>
+                  )}
                   <Grid item xs={12}>
                     <RegisterImageUploadButton
                       option="shelter"
@@ -471,8 +484,9 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
+                이미 회원이십니까? &nbsp;
                 <Link href="/login" variant="body2">
-                  이미 회원이십니까? 로그인 하러 가기
+                  로그인 하러 가기
                 </Link>
               </Grid>
             </Grid>
