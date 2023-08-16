@@ -52,7 +52,7 @@ const DogDetailPage = () => {
     fetchUser();
   }, []);
 
-  
+
   const handleDonate = async () => {
     if (!donationAmount || isNaN(donationAmount)) {
       setError("Please enter a valid donation amount.");
@@ -178,7 +178,7 @@ const DogDetailPage = () => {
           <Typography variant="body1" paragraph>
             버려진 이유: {dogDetails.reasonAbandonment}
           </Typography>
-          {isLoggedIn && user.userGroup !== "보호소" ? (
+          {isLoggedIn && user && user.userGroup !== "보호소" ? (
             <div>
               {error && <Typography color="error">{error}</Typography>}
               <input
