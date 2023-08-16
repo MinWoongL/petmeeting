@@ -7,9 +7,36 @@ import ProfileCard from "../../../components/Shelter/ShelterMypageProfile";
 import DogDetail from "../../../components/Shelter/DogDetail"; // Replace with your actual component
 import DonationRanking from "../../../components/Shelter/DonationRanking"; // Replace with your actual component
 import ShelterAdoptionList from "../../../components/MyPage/ShelterAdoptionList";
-import Button from "@mui/material/Button";
+import { Button, Container, Typography, Alert } from "@mui/material";
 import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
+import {AddIcon, Add} from "@mui/icons-material";
+import { styled } from "@mui/system";
+
+const StyledButtonContainer = styled(Container)`
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 10px
+`;
+
+const StyledButton = styled(Button)`
+  background-color: #b9a178;
+  color: white;
+  &:hover {
+    background-color: #6f6048;
+  }
+  margin-bottom: 10px
+`;
+
+const StyledRegisterButton = styled(Button)`
+  background-color: #b9a178;
+  color: white;
+  &:hover {
+    background-color: #6f6048;
+  }
+  margin-top: 10px;
+`;
 
 function ShelterMyPage() {
   const { shelterNo } = useParams();
@@ -109,18 +136,19 @@ function ShelterMyPage() {
         onUpdate={handleProfileUpdate} // 새로운 prop을 추가합니다.
         showEditButton={true}
       />
-      <div>
-        <button onClick={() => setView("dogs")}>강아지 목록</button>
-        <button onClick={() => setView("donations")}>후원 랭킹</button>
-        <button onClick={() => setView("adoption")}>입양신청내역</button>
-      </div>
+      <StyledButtonContainer>
+        <StyledButton onClick={() => setView("dogs")}>강아지 목록</StyledButton>
+        <StyledButton onClick={() => setView("donations")}>후원 랭킹</StyledButton>
+        <StyledButton onClick={() => setView("adoption")}>입양신청내역</StyledButton>
+      </StyledButtonContainer>
       {view === "dogs" ? (
         <div>
           <DogDetail shelterNo={userNo} />
           <Link to="/register-dog">
-            <Button variant="contained" color="primary">
+            <StyledRegisterButton variant="contained">
+              <Add style={{ marginRight: "8px" }} />
               유기견 등록하기
-            </Button>
+            </StyledRegisterButton>
           </Link>
         </div>
       ) : (
@@ -132,16 +160,6 @@ function ShelterMyPage() {
         <></>
       )}
       {view === "adoption" ? <ShelterAdoptionList shelterNo={userNo} /> : <></>}
-
-      {/* 유기견 등록용으로 사용할 버튼 */}
-      <Fab
-        color="primary"
-        aria-label="add"
-        onClick={handleOpen}
-        style={{ position: "fixed", bottom: "20px", right: "20px" }}
-      >
-        <AddIcon />
-      </Fab>
     </div>
   );
 }
