@@ -180,7 +180,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
       console.error('놀아주기 요청 전송 중 오류 발생:', error);
     }
   });
-};
+  };
 
   const handleConfirmOpen = () => {
     setConfirmDialog(true);
@@ -191,16 +191,29 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
   };
 
   const handleConfirmStop = () => {
-    setIsPlaying(false);
-    setSeconds(timerLimit);
-    dispatch(setshowDevice(false));
-    setConfirmDialog(false);
+    const token = JSON.parse(sessionStorage.getItem("token"));
+    const accessToken = token.accessToken;
+  
+    axios.delete(`https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/request/${shelterNo}`, {
+      headers: {
+        AccessToken: `Bearer ${accessToken}`
+      },
+    })
+    .then(response => {
+      setIsPlaying(false);
+      setSeconds(timerLimit);
+      dispatch(setshowDevice(false));
+      setConfirmDialog(false);
+    })
+    .catch(error => {
+      console.error("놀기 종료 중 오류 발생:", error);
+      console.log(accessToken);
+    });
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-
   
 
   return (
