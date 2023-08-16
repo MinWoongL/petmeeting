@@ -30,7 +30,29 @@ const DogDetailPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = JSON.parse(sessionStorage.getItem("token"));
+      try {
+        const response = await axios.get(
+          `${config.baseURL}/api/v1/user`, // Replace with the correct endpoint to get the user data
+          {
+            headers: { AccessToken: `Bearer ${token.accessToken}` },
+          }
+        );
+
+        setUser(response.data);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  
   const handleDonate = async () => {
     if (!donationAmount || isNaN(donationAmount)) {
       setError("Please enter a valid donation amount.");
@@ -156,7 +178,7 @@ const DogDetailPage = () => {
           <Typography variant="body1" paragraph>
             버려진 이유: {dogDetails.reasonAbandonment}
           </Typography>
-          {isLoggedIn && (
+          {isLoggedIn && user.userGroup !== "보호소" ? (
             <div>
               {error && <Typography color="error">{error}</Typography>}
               <input
@@ -176,7 +198,8 @@ const DogDetailPage = () => {
                 후원하기
               </Button>
             </div>
-          )}
+            ) : null}
+          
         </CardContent>
       </Card>
       <Modal
