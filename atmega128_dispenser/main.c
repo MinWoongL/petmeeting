@@ -11,6 +11,9 @@
 #define MYUBRR FOSC/16/BAUD-1
 
 // USART IO
+void USART0_Init( unsigned int ubrr );
+void USART0_Transmit( char data );
+unsigned char USART0_Receive( void );
 
 void USART1_Init( unsigned int ubrr );
 void USART1_Transmit( char data );
@@ -18,24 +21,16 @@ unsigned char USART1_Receive( void );
 unsigned char USART1_Receive_Bound( char data );
 
 void USART1_Transmit_String( char * string );
+void USART1_Transmit_String_USART0_Echo( char * string );
+void USART1_Transmit_String_USART0_Echo_Force( char * string );
+void USART1_Receive_String_USART0_Echo( char end_character );
+void USART1_Receive_String_USART0_Echo_Bound( char end_character );
 
 unsigned int Get_String_Length( char * string );
 
-// motor commands
-#define COMMANDS 5
+// motor
 void processCommand(unsigned char cmd);
-void forwardAMotor();
-void forwardBMotor();
-void stopAMotor();
-void stopBMotor();
-void reverseAMotor();
-void reverseBMotor();
-void moveForward();
-void moveBackward();
-void stopMotors();
-void rightTurn();
-void leftTurn();
-void pivotTurn();
+int opened = 0;
 
 // PWM
 void Init_PWM();
@@ -46,6 +41,7 @@ volatile unsigned char last_char = 0;
 ISR(USART1_RX_vect)
 {
 	last_char = UDR1;
+	USART0_Transmit(last_char);
 }
 
 char str_pre[5][100] = {
@@ -57,17 +53,16 @@ char str_pre[5][100] = {
 };
 char str_main[2][200] = {
 	"AT+CIPSEND=78\r\n",
-	"GET /iot/1t HTTP/1.1\r\nHost: i9a203.p.ssafy.io:3010\r\nConnection: keep-alive\r\n\r\n"
+	"GET /iot/1d HTTP/1.1\r\nHost: i9a203.p.ssafy.io:3010\r\nConnection: keep-alive\r\n\r\n"
 };
 
 int main( void )
 {
 	// initialization
 	cli();
+	USART0_Init ( MYUBRR );
 	USART1_Init ( MYUBRR );
 	sei();
-	
-	Init_Moter();
 	
 	Init_PWM();
 	
@@ -96,6 +91,35 @@ int main( void )
 }
 
 // USART
+
+void USART0_Init( unsigned int ubrr )
+{
+	/* Set baud rate */
+	UBRR0H = (unsigned char)(ubrr>>8);
+	UBRR0L = (unsigned char)ubrr;
+	/* Enable receiver and transmitter */
+	UCSR0B = (1<<RXEN)|(1<<TXEN);
+	/* Set frame format: 8data, 2stop bit */
+	UCSR0C = (1<<USBS)|(3<<UCSZ0);
+}
+
+void USART0_Transmit( char data )
+{
+	/* Wait for empty transmit buffer */
+	while ( !( UCSR0A & (1<<UDRE0)) )
+	;
+	/* Put data into buffer, sends the data */
+	UDR0 = data;
+}
+
+unsigned char USART0_Receive( void )
+{
+	/* Wait for data to be received */
+	while ( !(UCSR0A & (1<<RXC0)) )
+	;
+	/* Get and return received data from buffer */
+	return UDR0;
+}
 
 void USART1_Init( unsigned int ubrr )
 {
@@ -148,6 +172,50 @@ void USART1_Transmit_String( char * string )
 	}
 }
 
+void USART1_Transmit_String_USART0_Echo( char * string )
+{
+	/* Transmit data to USART1 and transmit echo to USART0 character by character */
+	unsigned int i = 0;
+	const unsigned int string_length = Get_String_Length(string);
+	while( i < string_length ) {
+		USART1_Transmit(string[i++]);
+		USART0_Transmit(USART1_Receive());
+	}
+}
+
+void USART1_Transmit_String_USART0_Echo_Force( char * string )
+{
+	/* Transmit data to USART1 and transmit echo to USART0 character by character */
+	unsigned int i = 0;
+	const unsigned int string_length = Get_String_Length(string);
+	while( i < string_length ) {
+		USART1_Transmit(string[i]);
+		USART0_Transmit(string[i++]);
+	}
+}
+
+void USART1_Receive_String_USART0_Echo( char end_character )
+{
+	/* Receive data from USART1 and transmit echo to USART0 character by character */
+	unsigned char ch;
+	do {
+		ch = USART1_Receive();
+		USART0_Transmit(ch);
+	}
+	while(ch != end_character);
+}
+
+void USART1_Receive_String_USART0_Echo_Bound( char end_character )
+{
+	/* Receive data from USART1 and transmit echo to USART0 character by character */
+	unsigned char ch;
+	do {
+		ch = USART1_Receive_Bound(end_character);
+		USART0_Transmit(ch);
+	}
+	while(ch != end_character);
+}
+
 unsigned int Get_String_Length( char * string )
 {
 	/* Count string length */
@@ -159,130 +227,43 @@ unsigned int Get_String_Length( char * string )
 	return -1;
 }
 
+
 // moter
 
-void Init_Moter()
+void Open_Door_Once()
 {
-	/* use PORT C */
-	DDRC |= (1 << PC0) | (1 << PC1) | (1 << PC2) | (1 << PC3);
+	if(opened)
+	{
+		return;
+	}
+	opened = 1;
+	OCR0 = 0xFF;
+	_delay_ms(1000);
+	OCR0 = 0x00;
 }
 
-void processCommand(unsigned char cmd)
+void Close_Door()
 {
-	/* switch cases by command */
+	opened = 0;
+	OCR0 = 0x00;
+}
+
+void processCommand(unsigned char cmd) {
 	switch (cmd) {
 		case '0':
-		stopMotors();
+		Close_Door();
 		break;
 		case '1':
-		moveForward();
+		Open_Door_Once();
 		break;
-		case '2':
-		stopMotors();
-		break;
-		case '3':
-		moveBackward();
-		break;
-		case '4':
-		rightTurn();
-		break;
-		case '5':
-		leftTurn();
-		break;
-		case '6':
-		pivotTurn();
 		default:
-		stopMotors();
+		Close_Door();
 		for(int string_no = 3; string_no < 5; ++string_no) {
 			USART1_Transmit_String(str_pre[string_no]);
 			_delay_ms(1000);
 		}
 		break;
 	}
-}
-
-// A모터를 전진
-void forwardAMotor()
-{
-	PORTC &= ~(1 << PC0);
-	PORTC |= (1 << PC1);
-}
-
-// A모터를 정지
-void stopAMotor()
-{
-	PORTC &= ~(1 << PC0);
-	PORTC &= ~(1 << PC1);
-}
-
-// A모터를 후진
-void reverseAMotor()
-{
-	PORTC |= (1 << PC0);
-	PORTC &= ~(1 << PC1);
-}
-
-// B모터를 전진
-void forwardBMotor()
-{
-	PORTC |= (1 << PC2);
-	PORTC &= ~(1 << PC3);
-}
-
-// B모터를 정지
-void stopBMotor()
-{
-	PORTC &= ~(1 << PC2);
-	PORTC &= ~(1 << PC3);
-}
-
-// B모터를 후진
-void reverseBMotor()
-{
-	PORTC &= ~(1 << PC2);
-	PORTC |= (1 << PC3);
-}
-
-// 전진 (A모터 전진, B모터 전진)
-void moveForward()
-{
-	forwardAMotor();
-	forwardBMotor();
-}
-
-// 정지 (A모터 정지, B모터 정지)
-void stopMotors()
-{
-	stopAMotor();
-	stopBMotor();
-}
-
-// 후진 (A모터 후진, B모터 후진)
-void moveBackward()
-{
-	reverseAMotor();
-	reverseBMotor();
-}
-
-// 우회전 (A모터 전진, B모터 정지)
-void rightTurn()
-{
-	forwardAMotor();
-	stopBMotor();
-}
-
-// 좌회전 (A모터 정지, B모터 전진)
-void leftTurn()
-{
-	stopAMotor();
-	forwardBMotor();
-}
-
-// 제자리 걷기 (A모터 전진, B모터 후진)
-void pivotTurn()
-{
-	forwardAMotor();
-	reverseBMotor();
 }
 
 // PWM

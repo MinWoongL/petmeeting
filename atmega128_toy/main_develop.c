@@ -56,22 +56,21 @@ ISR(USART1_RX_vect)
 	USART0_Transmit(last_char);
 }
 
+char str_pre[5][100] = {
+	"AT+RST\r\n",
+	"AT+CWMODE=3\r\n",
+	"AT+CWJAP=\"i9a203\",\"12345678\"\r\n",
+	//"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
+	"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
+	"AT+CIPMODE=0\r\n"
+};
+char str_main[2][200] = {
+	"AT+CIPSEND=77\r\n",
+	"GET /iot/1 HTTP/1.1\r\nHost: i9a203.p.ssafy.io:3010\r\nConnection: keep-alive\r\n\r\n"
+};
 
 int main( void )
 {
-	char str_pre[5][100] = {
-		"AT+RST\r\n",
-		"AT+CWMODE=3\r\n",
-		"AT+CWJAP=\"i9a203\",\"12345678\"\r\n",
-		//"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
-		"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
-		"AT+CIPMODE=0\r\n"
-	};
-	char str_main[2][200] = {
-		"AT+CIPSEND=77\r\n",
-		"GET /iot/1 HTTP/1.1\r\nHost: i9a203.p.ssafy.io:3010\r\nConnection: keep-alive\r\n\r\n"
-	};
-	
 	// initialization
 	cli();
 	USART0_Init ( MYUBRR );
