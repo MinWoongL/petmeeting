@@ -40,7 +40,7 @@ function DeviceOperation() {
       console.log('커맨드종류', commandValue)
       const token = JSON.parse(sessionStorage.getItem("token"));
       const accessToken = token.accessToken;
-      console.log('토큰', accessToken)
+    //   console.log('토큰', accessToken)
 
       axios.post(`https://i9a203.p.ssafy.io/backapi/api/v1/iot/${shelterNo}`, {
         command: commandValue

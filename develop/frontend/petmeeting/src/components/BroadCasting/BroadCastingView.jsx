@@ -146,10 +146,6 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
   };
 
   const handlePlayClick = () => {
-    setIsPlaying(true);
-    setSeconds(timerLimit);
-    dispatch(setshowDevice(true));
-
     const token = JSON.parse(sessionStorage.getItem("token"));
     const accessToken = token.accessToken
 
@@ -159,11 +155,30 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
     }
   })
   .then(response => {
-    console.log('기기조작요청 response', response)
-    console.log('놀아주기 요청이 성공적으로 전송되었습니다.');
+    if (response.status === 200) {
+      setIsPlaying(true);
+      setSeconds(timerLimit);
+      dispatch(setshowDevice(true));
+      console.log('기기조작요청 response', response)
+      console.log('놀아주기 요청이 성공적으로 전송되었습니다.');
+    }
+    
   })
   .catch(error => {
-    console.error('놀아주기 요청 전송 중 오류 발생:', error);
+    if (error.response && error.response.status) {
+      switch (error.response.status) {
+        case 403:
+          alert('이미 다른분과 놀고있어요');
+          break;
+        case 409:
+          alert('토큰이 부족해요');
+          break;
+        default:
+          console.error('놀아주기 요청 전송 중 오류 발생:', error);
+      }
+    } else {
+      console.error('놀아주기 요청 전송 중 오류 발생:', error);
+    }
   });
 };
 
