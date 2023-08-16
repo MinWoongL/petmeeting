@@ -9,6 +9,8 @@ import heartOff from "../../assets/images/pet_heart_off.png";
 import axios from "axios";
 import { BorderTop } from "@mui/icons-material";
 import reviewIcon from "./ReviewIcon.png";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -102,26 +104,26 @@ function AdoptionReview() {
     <Box sx={{ mt: 5, mb: 4 }}>
       <span style={{ display: 'flex', alignItems: 'center' }}>
         <img src={reviewIcon} alt="입양후기" style={{ maxHeight: '35px' }}/>
-        <Button
+        <IconButton
           variant="contained" 
           style={{
-            backgroundColor: 'var(--yellow8)', 
+            backgroundColor: 'var(--yellow1)', 
             marginBottom: '10px',
             marginLeft: '63px'
           }} 
           onClick={handlePrev}>
-            Prev
-        </Button>
-        <Button
+            <ChevronLeftIcon />
+        </IconButton>
+        <IconButton
           variant="contained" 
           onClick={handleNext}
           style={{
-            backgroundColor: 'var(--yellow8)',
+            backgroundColor: 'var(--yellow1)',
             marginBottom: '10px',
             marginLeft: '10px'
           }}>
-            Next
-        </Button>
+            <ChevronRightIcon />
+        </IconButton>
       </span>
       <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
         {getVisibleReviews().map((review) => (
