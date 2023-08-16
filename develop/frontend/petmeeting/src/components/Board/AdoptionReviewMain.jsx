@@ -70,8 +70,8 @@ export default function AdoptionReviewDetail() {
         setEditedDate(
           response.data.modifiedTime
             ? "작성 시간 : " +
-                formatDateTime(response.data.modifiedTime * 1000) +
-                " (수정됨)"
+            formatDateTime(response.data.modifiedTime * 1000) +
+            " (수정됨)"
             : "작성 시간 : " + formatDateTime(response.data.createdTime * 1000)
         );
 
@@ -80,8 +80,8 @@ export default function AdoptionReviewDetail() {
         } else {
           setImagePath(
             `https://i9a203.p.ssafy.io/backapi/api/v1/image/` +
-              response.data.imagePath +
-              "?option=board"
+            response.data.imagePath +
+            "?option=board"
           );
         }
       });
@@ -163,6 +163,9 @@ export default function AdoptionReviewDetail() {
               label="제목"
               value={editedTitle}
               onChange={(event) => setEditedTitle(event.target.value)}
+              inputProps={{
+                maxLength: 50,
+              }}
             />
           ) : (
             <>
@@ -414,10 +417,16 @@ export default function AdoptionReviewDetail() {
                         onChange={(event) =>
                           setEditedReplyContent(event.target.value)
                         }
+                        inputProps={{
+                          maxLength: 50,
+                        }}
                       />
                     ) : (
                       // Display the reply content
-                      <Typography variant="body2">
+                      <Typography variant="body2" sx={{
+                        wordWrap: "break-word",
+                        overflowY: "auto",
+                      }}>
                         {reply.content.split("\n").map((line, index) => (
                           <React.Fragment key={index}>
                             {line}
@@ -518,6 +527,9 @@ export default function AdoptionReviewDetail() {
             label="댓글 내용"
             value={replyContent}
             onChange={(event) => setReplyContent(event.target.value)}
+            inputProps={{
+              maxLength: 50,
+            }}
           />
           <Button
             variant="outlined"
@@ -608,13 +620,13 @@ export default function AdoptionReviewDetail() {
   async function updateBoard(boardNo, editedTitle, editedContent, imageFile) {
     if (window.confirm("변경된 내용을 저장하시겠습니까?")) {
       let imagePath = null;
-
+  
       if (imageFile) {
         const formData = new FormData();
         formData.append("image", imageFile.files[0]);
-
-        await axios
-          .post(
+  
+        try {
+          const imageResponse = await axios.post(
             "https://i9a203.p.ssafy.io/backapi/api/v1/image?option=board",
             formData,
             {
@@ -623,14 +635,17 @@ export default function AdoptionReviewDetail() {
                 "Content-Type": "multipart/form-data",
               },
             }
-          )
-          .then((response) => {
-            imagePath = response.data;
-          });
+          );
+  
+          imagePath = imageResponse.data;
+        } catch (error) {
+          console.error("이미지 업로드 오류:", error);
+          return;
+        }
       }
-
-      await axios
-        .put(
+  
+      try {
+        const response = await axios.put(
           "https://i9a203.p.ssafy.io/backapi/api/v1/board/" + boardNo,
           {
             title: editedTitle,
@@ -642,20 +657,21 @@ export default function AdoptionReviewDetail() {
               AccessToken: "Bearer " + accessToken,
             },
           }
-        )
-        .then((response) => {
-          setIsEditing(false);
-          setSelectedReview(response.data);
-        })
-        .then(() => {
-          setEditedDate(
-            "작성 시간 : " +
-              formatDateTime(selectedReview.modifiedTime * 1000) +
-              " (수정됨)"
-          );
-        });
+        );
+  
+        setIsEditing(false);
+        setSelectedReview(response.data);
+        setEditedDate(
+          "작성 시간 : " +
+            formatDateTime(response.data.modifiedTime * 1000) +
+            " (수정됨)"
+        );
+      } catch (error) {
+        console.error("게시글 업데이트 오류:", error);
+      }
     }
   }
+  
 
   async function submitReply() {
     if (!userNo) {
@@ -728,42 +744,44 @@ export default function AdoptionReviewDetail() {
 
   async function updateReply(replyId, editedContent) {
     if (!window.confirm("저장하시겠습니까?")) return;
-
+  
     if (editedContent.trim() === "") {
       alert("댓글 내용을 입력해주세요.");
       return;
     }
-
+  
     try {
-      await axios
-        .put(
-          `https://i9a203.p.ssafy.io/backapi/api/v1/reply/${replyId}`,
-          { content: editedContent },
-          {
-            headers: {
-              AccessToken: "Bearer " + accessToken,
-            },
-          }
-        )
-        .then(() => {
-          const updatedReplyList = replyList.map((reply) =>
-            reply.replyNo === replyId
-              ? {
-                  ...reply,
-                  content: editedContent,
-                  modifiedTime: new Date().getTime(),
-                }
-              : reply
-          );
-
-          setReplyList(updatedReplyList);
-          cancelEdit(replyId); // Clear the editing state
-          alert("수정되었습니다.");
-        });
+      let updateReply;
+      await axios.put(
+        `https://i9a203.p.ssafy.io/backapi/api/v1/reply/${replyId}`,
+        { content: editedContent },
+        {
+          headers: {
+            AccessToken: "Bearer " + accessToken,
+          },
+        }
+      ).then((response) => {
+        updateReply = response.data;
+      });
+  
+      const updatedReplyList = replyList.map((reply) =>
+        updateReply.replyNo === reply.replyNo
+          ? {
+              ...reply,
+              content: editedContent,
+              modifiedTime: updateReply.modifiedTime,
+            }
+          : reply
+      );
+  
+      setReplyList(updatedReplyList);
+      cancelEdit(); // Clear the editing state
+      alert("댓글이 수정되었습니다.");
     } catch (error) {
       alert("댓글 수정에 실패했습니다.");
     }
   }
+  
 
   function formatDateTime(timestamp) {
     const date = new Date(timestamp);

@@ -216,7 +216,7 @@ export default function ApplicationForm() {
           </label>
           <br />
           <label>
-            이름:
+            신청자 이름:
             <input
               type="text"
               name="name"
@@ -225,11 +225,14 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 홍길동"
               ref={nameInputRef}
+              inputProps={{
+                maxLength: 10,
+              }}
             />
           </label>
           <br />
           <label>
-            성별:
+            신청자 성별:
             <select
               name="gender"
               value={formData.gender}
@@ -244,7 +247,7 @@ export default function ApplicationForm() {
           </label>
           <br />
           <label>
-            나이:
+            신청자 나이:
             <input
               type="number"
               name="age"
@@ -253,6 +256,8 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 28"
               ref={ageInputRef}
+              min={0}
+              max={100}
             />
           </label>
           <br />
@@ -266,6 +271,9 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 010-1234-5678"
               ref={phoneNumberInputRef}
+              inputProps={{
+                maxLength: 13,
+              }}
             />
           </label>
           <br />
@@ -279,6 +287,9 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 오후 5시"
               ref={callTimeInputRef}
+              inputProps={{
+                maxLength: 20,
+              }}
             />
           </label>
           <br />
@@ -292,6 +303,9 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 경기, 서울 등"
               ref={residenceInputRef}
+              inputProps={{
+                maxLength: 15,
+              }}
             />
           </label>
           <br />
@@ -305,6 +319,9 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 무직, 자영업 등"
               ref={jobInputRef}
+              inputProps={{
+                maxLength: 15,
+              }}
             />
           </label>
           <br />
@@ -328,9 +345,16 @@ export default function ApplicationForm() {
             <textarea
               name="additional"
               value={formData.additional}
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                resize: "none",
+                width: "95%",
+                height: "30px",
+                overflowY: "auto",
+              }}
               onChange={handleInputChange}
               placeholder="자유롭게 입력해주세요"
+              
             />
           </label>
           <br />

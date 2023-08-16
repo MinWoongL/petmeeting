@@ -119,6 +119,9 @@ export default function InquiryMain() {
               label="제목"
               value={editedTitle}
               onChange={(event) => setEditedTitle(event.target.value)}
+              inputProps={{
+                maxLength: 50,
+              }}
             />
           ) : (
             <>
@@ -302,8 +305,8 @@ export default function InquiryMain() {
         .then(() => {
           setEditedDate(
             "작성 시간 : " +
-              formatDateTime(selectedInquiry.modifiedTime * 1000) +
-              " (수정됨)"
+            formatDateTime(selectedInquiry.modifiedTime * 1000) +
+            " (수정됨)"
           );
         });
     }
