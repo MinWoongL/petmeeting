@@ -18,6 +18,8 @@ import { config } from "../../static/config";
 function RankSide() {
   const [dogs, setDogs] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
+  const [randomDogs, setRandomDogs] = useState([]);
+  const [displayedDogs, setDisplayDogs] = useState([]);
 
   const fetchDogData = async () => {
     try {
@@ -32,32 +34,39 @@ function RankSide() {
     }
   };
 
+  const fetchRandomDogData = async () => {
+    try {
+      const response = await axios.get(
+        `${config.baseURL}/api/v1/dog?option=random&max=5`
+      );
+      const data = response.data;
+      setRandomDogs(data);
+    } catch (error) {
+      console.error("Error fetching Random dog data:", error);
+    }
+  };
+
+  const fetchData = async () => {
+    const fetchedData = await fetchDogData();
+    setDogs(fetchedData || []);
+  };
+
   useEffect(() => {
-      const fetchData = async () => {
-        const fetchedData = await fetchDogData();
-        setDogs(fetchedData || []);
-      };
       fetchData();
   }, []);
 
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
-
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
+    
+    if (currentTab === 1) {
+      fetchRandomDogData();
+      setDisplayDogs(randomDogs.slice(0, Math.min(4, randomDogs.length)));
+    } else {
+      fetchData();
+      setDisplayDogs(dogs.slice(0, Math.min(4, dogs.length)));
+    }
   };
 
-  let displayedDogs = dogs.slice(0, Math.min(4, dogs.length)); // Display the top 4 liked dogs
-
-  if (currentTab === 1) {
-    const shuffledDogs = shuffleArray([...dogs]);
-    displayedDogs = shuffledDogs.slice(0, 4); // Display the top 4 shuffled dogs
-  }
   return (
   <Box
     sx={{
@@ -120,9 +129,6 @@ function RankSide() {
             <TableCell sx={{ fontWeight: "bold", fontFamily: "Poor Story", fontSize: "1.2rem" }}>
               이름
             </TableCell>
-            <TableCell align="right" sx={{ fontWeight: "bold", fontFamily: "Poor Story", fontSize: "1.2rem" }}>
-              좋아요
-            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -136,7 +142,6 @@ function RankSide() {
                 />
               </TableCell>
               <TableCell sx={{ fontFamily: "Poor Story", fontSize: "1.1rem" }}>{dog.name}</TableCell>
-              <TableCell align="right" sx={{ fontFamily: "Poor Story" }}>{dog.likes}</TableCell>
             </TableRow>
           ))}
         </TableBody>
