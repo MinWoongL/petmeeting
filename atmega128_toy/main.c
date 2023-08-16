@@ -6,13 +6,16 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-#define FOSC 16588800 // Clock Speed
+#define FOSC 16588800// Clock Speed
 #define BAUD 115200
 #define MYUBRR FOSC/16/BAUD-1
 
 // USART IO
+
 void USART1_Init( unsigned int ubrr );
 void USART1_Transmit( char data );
+unsigned char USART1_Receive( void );
+unsigned char USART1_Receive_Bound( char data );
 
 void USART1_Transmit_String( char * string );
 
@@ -52,13 +55,12 @@ int main( void )
 		"AT+RST\r\n",
 		"AT+CWMODE=3\r\n",
 		"AT+CWJAP=\"i9a203\",\"12345678\"\r\n",
-		//"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
 		"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
 		"AT+CIPMODE=0\r\n"
 	};
 	char str_main[2][200] = {
-		"AT+CIPSEND=77\r\n",
-		"GET /iot/1 HTTP/1.1\r\nHost: i9a203.p.ssafy.io:3010\r\nConnection: keep-alive\r\n\r\n"
+		"AT+CIPSEND=78\r\n",
+		"GET /iot/1t HTTP/1.1\r\nHost: i9a203.p.ssafy.io:3010\r\nConnection: keep-alive\r\n\r\n"
 	};
 	
 	// initialization
@@ -116,6 +118,27 @@ void USART1_Transmit( char data )
 	UDR1 = data;
 }
 
+unsigned char USART1_Receive( void )
+{
+	/* Wait for data to be received */
+	while ( !(UCSR1A & (1<<RXC)) )
+	;
+	/* Get and return received data from buffer */
+	return UDR1;
+}
+
+unsigned char USART1_Receive_Bound( char data )
+{
+	/* Wait for data to be received */
+	int i = 0;
+	while ( !(UCSR1A & (1<<RXC)) && ++i < MAX_ITERATION)
+	;
+	
+	if(MAX_ITERATION <= i) {return data;}
+	/* Get and return received data from buffer */
+	return UDR1;
+}
+
 void USART1_Transmit_String( char * string )
 {
 	/* Transmit data to USART1 */
@@ -145,98 +168,120 @@ void Init_Moter()
 	DDRC |= (1 << PC0) | (1 << PC1) | (1 << PC2) | (1 << PC3);
 }
 
-void processCommand(unsigned char cmd) {
+void processCommand(unsigned char cmd)
+{
+	/* switch cases by command */
 	switch (cmd) {
+		case '0':
+		stopMotors();
+		break;
 		case '1':
-		moveForward(); // 전진
+		moveForward();
 		break;
 		case '2':
-		stopMotors(); // 정지
+		stopMotors();
 		break;
 		case '3':
-		moveBackward(); // 후진
+		moveBackward();
 		break;
 		case '4':
-		rightTurn(); // 우회전
+		rightTurn();
 		break;
 		case '5':
-		leftTurn(); // 좌회전
+		leftTurn();
 		break;
 		case '6':
-		pivotTurn(); // 제자리 회전
+		pivotTurn();
 		default:
-		// 알 수 없는 명령어 처리 (예외 처리 등)
+		stopMotors();
+		for(int string_no = 3; string_no < 5; ++string_no) {
+			USART1_Transmit_String(str_pre[string_no]);
+			_delay_ms(1000);
+		}
 		break;
 	}
 }
+
 // A모터를 전진
-void forwardAMotor() {
+void forwardAMotor()
+{
 	PORTC &= ~(1 << PC0);
 	PORTC |= (1 << PC1);
 }
 
 // A모터를 정지
-void stopAMotor() {
+void stopAMotor()
+{
 	PORTC &= ~(1 << PC0);
 	PORTC &= ~(1 << PC1);
 }
 
 // A모터를 후진
-void reverseAMotor() {
+void reverseAMotor()
+{
 	PORTC |= (1 << PC0);
 	PORTC &= ~(1 << PC1);
 }
 
 // B모터를 전진
-void forwardBMotor() {
+void forwardBMotor()
+{
 	PORTC |= (1 << PC2);
 	PORTC &= ~(1 << PC3);
 }
 
 // B모터를 정지
-void stopBMotor() {
+void stopBMotor()
+{
 	PORTC &= ~(1 << PC2);
 	PORTC &= ~(1 << PC3);
 }
 
 // B모터를 후진
-void reverseBMotor() {
+void reverseBMotor()
+{
 	PORTC &= ~(1 << PC2);
 	PORTC |= (1 << PC3);
 }
 
 // 전진 (A모터 전진, B모터 전진)
-void moveForward() {
+void moveForward()
+{
 	forwardAMotor();
 	forwardBMotor();
 }
 
 // 정지 (A모터 정지, B모터 정지)
-void stopMotors() {
+void stopMotors()
+{
 	stopAMotor();
 	stopBMotor();
 }
 
 // 후진 (A모터 후진, B모터 후진)
-void moveBackward() {
+void moveBackward()
+{
 	reverseAMotor();
 	reverseBMotor();
 }
 
 // 우회전 (A모터 전진, B모터 정지)
-void rightTurn() {
+void rightTurn()
+{
 	forwardAMotor();
 	stopBMotor();
 }
 
 // 좌회전 (A모터 정지, B모터 전진)
-void leftTurn() {
+void leftTurn()
+{
 	stopAMotor();
 	forwardBMotor();
 }
 
 // 제자리 걷기 (A모터 전진, B모터 후진)
-void pivotTurn() {
+void pivotTurn()
+{
 	forwardAMotor();
 	reverseBMotor();
 }

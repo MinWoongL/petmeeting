@@ -6,7 +6,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-#define FOSC 16588800 // Clock Speed
+#define FOSC 16588800// Clock Speed
 #define BAUD 115200
 #define MYUBRR FOSC/16/BAUD-1
 
@@ -251,98 +251,120 @@ void Init_Moter()
 	DDRC |= (1 << PC0) | (1 << PC1) | (1 << PC2) | (1 << PC3);
 }
 
-void processCommand(unsigned char cmd) {
+void processCommand(unsigned char cmd)
+{
+	/* switch cases by command */
 	switch (cmd) {
+		case '0':
+		stopMotors();
+		break;
 		case '1':
-		moveForward(); // 전진
+		moveForward();
 		break;
 		case '2':
-		stopMotors(); // 정지
+		stopMotors();
 		break;
 		case '3':
-		moveBackward(); // 후진
+		moveBackward();
 		break;
 		case '4':
-		rightTurn(); // 우회전
+		rightTurn();
 		break;
 		case '5':
-		leftTurn(); // 좌회전
+		leftTurn();
 		break;
 		case '6':
-		pivotTurn(); // 제자리 회전
+		pivotTurn();
 		default:
-		// 알 수 없는 명령어 처리 (예외 처리 등)
+		stopMotors();
+		for(int string_no = 3; string_no < 5; ++string_no) {
+			USART1_Transmit_String(str_pre[string_no]);
+			_delay_ms(1000);
+		}
 		break;
 	}
 }
+
 // A모터를 전진
-void forwardAMotor() {
+void forwardAMotor()
+{
 	PORTC &= ~(1 << PC0);
 	PORTC |= (1 << PC1);
 }
 
 // A모터를 정지
-void stopAMotor() {
+void stopAMotor()
+{
 	PORTC &= ~(1 << PC0);
 	PORTC &= ~(1 << PC1);
 }
 
 // A모터를 후진
-void reverseAMotor() {
+void reverseAMotor()
+{
 	PORTC |= (1 << PC0);
 	PORTC &= ~(1 << PC1);
 }
 
 // B모터를 전진
-void forwardBMotor() {
+void forwardBMotor()
+{
 	PORTC |= (1 << PC2);
 	PORTC &= ~(1 << PC3);
 }
 
 // B모터를 정지
-void stopBMotor() {
+void stopBMotor()
+{
 	PORTC &= ~(1 << PC2);
 	PORTC &= ~(1 << PC3);
 }
 
 // B모터를 후진
-void reverseBMotor() {
+void reverseBMotor()
+{
 	PORTC &= ~(1 << PC2);
 	PORTC |= (1 << PC3);
 }
 
 // 전진 (A모터 전진, B모터 전진)
-void moveForward() {
+void moveForward()
+{
 	forwardAMotor();
 	forwardBMotor();
 }
 
 // 정지 (A모터 정지, B모터 정지)
-void stopMotors() {
+void stopMotors()
+{
 	stopAMotor();
 	stopBMotor();
 }
 
 // 후진 (A모터 후진, B모터 후진)
-void moveBackward() {
+void moveBackward()
+{
 	reverseAMotor();
 	reverseBMotor();
 }
 
 // 우회전 (A모터 전진, B모터 정지)
-void rightTurn() {
+void rightTurn()
+{
 	forwardAMotor();
 	stopBMotor();
 }
 
 // 좌회전 (A모터 정지, B모터 전진)
-void leftTurn() {
+void leftTurn()
+{
 	stopAMotor();
 	forwardBMotor();
 }
 
 // 제자리 걷기 (A모터 전진, B모터 후진)
-void pivotTurn() {
+void pivotTurn()
+{
 	forwardAMotor();
 	reverseBMotor();
 }
