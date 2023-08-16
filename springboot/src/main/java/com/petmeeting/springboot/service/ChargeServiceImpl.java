@@ -122,7 +122,7 @@ public class ChargeServiceImpl implements ChargeService {
         log.info("[결제검증] 결제 검증 요청 응답받음");
 
         int chargePrice = kakaoApproveResDto.getAmount().getTotal();
-        int chargeToken = chargePrice <= 10000 ? 1 : (chargePrice <= 50000 ? 2 : 3); // 토큰 개수를 직접 입력받거나 표를 정해야 함.
+        int chargeToken = chargePrice <= 5000 ? 2 : (chargePrice <= 10000 ? 5 : 10); // 토큰 개수를 직접 입력받거나 표를 정해야 함.
 
         Charge charge = Charge.builder()
                 .member(member)
