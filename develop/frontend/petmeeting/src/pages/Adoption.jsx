@@ -44,12 +44,10 @@ export default function Adoption() {
 
       {/* 입양신청서 목록 넣을 곳 */}
       <h1>입양 가능한 강아지</h1>
-      {true ? (
+      {dogData.length > 0 ? (
         <>
           <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
-            {dogData
-              .filter((dog) => dog.adoptionAvailability === "입양가능")
-              .map((dog, index) => (
+            {dogData.map((dog, index) => (
                 <DogListItem dog={dog} index={index} key={dog.id} />
               ))}
           </Box>
