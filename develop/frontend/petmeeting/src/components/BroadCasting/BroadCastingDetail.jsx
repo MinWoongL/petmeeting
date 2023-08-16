@@ -4,16 +4,11 @@ import HomeIcon from '@mui/icons-material/Home';  // 보호소 가기 아이콘
 import FavoriteIcon from '@mui/icons-material/Favorite';  // 좋아요 아이콘
 import BookmarkIcon from '@mui/icons-material/Bookmark';  // 찜하기 아이콘
 import PaymentIcon from '@mui/icons-material/Payment';  // 후원하기 아이콘
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { config } from '../../static/config';
 
 
 function BroadCastingDetail() {
-    const location = useLocation();
-    const title = location.state?.title;
-    const description = location.state?.description;
-    const thumbnail = location.state?.thumbnail;
 
     const [shelterNo, setShelterNo] = useState(null);
     const [dogNo, setDogNo] = useState(null);
@@ -67,13 +62,13 @@ function BroadCastingDetail() {
     }, [shelterNo])
 
     return (
-      <Box sx={{ padding: 3, width: '80%', margin: 'auto', mt: 1 }}>
+      <Box sx={{ padding: 3, width: '80%', margin: 'auto', mt: 1, fontFamily: 'Jua' }}>
         <Grid container alignItems="center" spacing={2}>
           <Grid item>
             <Avatar src={`${config.baseURL}/api/v1/image/${dogData?.imagePath}?option=dog`} sx={{ width: 65, height: 65 }} />
           </Grid>
           <Grid item>
-            <Typography variant="h4" fontFamily={'Jua'}>{shelterData?.name}</Typography>
+            <Typography variant="h4">{shelterData?.name}</Typography>
           </Grid>
         </Grid>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mb: 2 }}>
@@ -82,38 +77,43 @@ function BroadCastingDetail() {
           <Button variant="outlined" startIcon={<FavoriteIcon />} sx={{ borderColor: 'gray', boxShadow: '1px 1px 3px rgba(0,0,0,0.1)', borderRadius: '50px' }}>좋아요</Button>
           <Button variant="outlined" startIcon={<BookmarkIcon />} sx={{ borderColor: 'gray', boxShadow: '1px 1px 3px rgba(0,0,0,0.1)', borderRadius: '50px' }}>찜하기</Button>
         </Box>
-        <Card sx={{ mb: 3, fontFamily: 'Jua', boxShadow: '0 4px 8px rgba(0,0,0,0.2)', border: '1px solid var(--yellow8)' }}>
+        <Card sx={{ mb: 3, boxShadow: '0 4px 8px rgba(0,0,0,0.2)', border: '1px solid var(--yellow8)' }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
               <CardMedia
                 component="img"
-                height="320"
+                height="300"
                 image={`${config.baseURL}/api/v1/image/${dogData?.imagePath}?option=dog`}
                 alt={dogData?.name}
-                sx={{ borderRadius: '4px', border: '1px solid var(--yellow8)' }}
+                sx={{ borderRadius: '4px' }}
               />
             </Grid>
             <Grid item xs={12} md={8}>
               <CardContent>
-                <Typography variant="h5" gutterBottom>
+                <Typography variant="h4" gutterBottom sx={{ border: '0px solid #ccc', padding: '0.5rem', borderRadius: '4px', fontFamily: 'Jua' }}>
                   {dogData?.name}
                 </Typography>
-                <Typography>종류: {dogData?.dogSpecies}</Typography>
-                <Typography>크기: {dogData?.dogSize}</Typography>
-                <Typography>성별: {dogData?.gender === 'M' ? '남자' : '여자'}</Typography>
-                <Typography>무게: {dogData?.weight} kg</Typography>
-                <Typography>나이: {dogData?.age}세</Typography>
-                <Typography>성격: {dogData?.personality}</Typography>
-                <Typography>입양 가능 여부: {dogData?.adoptionAvailability}</Typography>
-                <Typography>현재 상태: {dogData?.currentStatus}</Typography>
-                <Typography>포기 이유: {dogData?.reasonAbandonment}</Typography>
-                <Typography>예방 접종 여부: {dogData?.isInoculated ? '예' : '아니오'}</Typography>
+                <Grid container spacing={2} sx={{ border: '1px solid #ccc', padding: '0.5rem', borderRadius: '4px' }}>
+                  <Grid item xs={6} sx={{ border: '0px solid #ccc', padding: '0.5rem', borderRadius: '4px' }}>
+                    <Box sx={{ border: '0px solid #ccc', padding: '0.5rem', borderRadius: '4px' }}>
+                      <Typography sx={{ fontSize: '1.5rem', fontFamily: 'Poor Story' }}>종류: {dogData?.dogSpecies}</Typography>
+                      <Typography sx={{ fontSize: '1.5rem', fontFamily: 'Poor Story' }}>성별: {dogData?.gender === 'M' ? '남자' : '여자'}</Typography>
+                      <Typography sx={{ fontSize: '1.5rem', fontFamily: 'Poor Story' }}>나이: {dogData?.age}세</Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Box sx={{ border: '0px solid #ccc', padding: '0.5rem', borderRadius: '4px' }}>
+                      <Typography sx={{ fontSize: '1.5rem', fontFamily: 'Poor Story' }}>성격: {dogData?.personality}</Typography>
+                      <Typography sx={{ fontSize: '1.5rem', fontFamily: 'Poor Story' }}>입양 가능 여부: {dogData?.adoptionAvailability}</Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
               </CardContent>
             </Grid>
           </Grid>
         </Card>
       </Box>
-    );    
+    );     
 }
 
 export default BroadCastingDetail;
