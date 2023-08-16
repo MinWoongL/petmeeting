@@ -1,10 +1,28 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import UserInformation from "../../../components/MyPage/UserInformation";
-import Button from "@mui/material/Button";
 import UserBookmarkDog from "../../../components/MyPage/UserBookmarkDog";
 import UserLikeDog from "../../../components/MyPage/UserLikeDog";
 import UserAdoptionList from "../../../components/MyPage/UserAdoptionList";
+import { Button, Container, Typography, Alert } from "@mui/material";
+import { styled } from "@mui/system";
+
+const StyledButtonContainer = styled(Container)`
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 10px
+`;
+
+const StyledButton = styled(Button)`
+  background-color: #b9a178;
+  color: white;
+  &:hover {
+    background-color: #6f6048;
+  }
+  margin-bottom: 10px
+`;
 
 function UserProfilePage() {
   const [userData, setUserData] = useState(null);
@@ -45,12 +63,11 @@ function UserProfilePage() {
         isEditing={isEditing}
         onChange={handleEditingChange}
       />
-
-      <div>
-        <Button onClick={() => setView("like")}>좋아요 한 개 보기</Button>
-        <Button onClick={() => setView("bookmark")}>북마크한 개 보기</Button>
-        <Button onClick={() => setView("adoptionList")}>입양신청내역 보기</Button>
-      </div>
+      <StyledButtonContainer>
+        <StyledButton onClick={() => setView("like")}>좋아요 목록</StyledButton>
+        <StyledButton onClick={() => setView("bookmark")}>북마크 목록</StyledButton>
+        <StyledButton onClick={() => setView("adoptionList")}>입양신청내역</StyledButton>
+      </StyledButtonContainer>
       {view === "like" ? (
         <UserLikeDog likedDogs={userData.likedDogs} />
       ) : view === "bookmark" ? (
