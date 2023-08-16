@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { config } from "../static/config";
 import { Snackbar, Alert } from "@mui/material";
+import DogDonationImage from "../assets/images/dogmoney.png"
 
 const modalStyle = {
   display: "flex",
@@ -182,8 +183,8 @@ const DogDetailPage = () => {
       >
         <div>
           <img
-            // src="../assets/images/dogmoney.png"
-            src="https://s7d1.scene7.com/is/image/PETCO/puppy-090517-dog-featured-355w-200h-d"
+            src={DogDonationImage}
+            // src="https://s7d1.scene7.com/is/image/PETCO/puppy-090517-dog-featured-355w-200h-d"
             alt="후원 완료"
             style={{ width: "100%", height: "auto" }}
           />
