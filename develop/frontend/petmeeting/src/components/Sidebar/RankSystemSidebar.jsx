@@ -18,8 +18,6 @@ import { config } from "../../static/config";
 function RankSide() {
   const [dogs, setDogs] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
-  const [randomDogs, setRandomDogs] = useState([]);
-  const [displayedDogs, setDisplayDogs] = useState([]);
 
   const fetchDogData = async () => {
     try {
@@ -34,39 +32,34 @@ function RankSide() {
     }
   };
 
-  const fetchRandomDogData = async () => {
-    try {
-      const response = await axios.get(
-        `${config.baseURL}/api/v1/dog?option=random&max=5`
-      );
-      const data = response.data;
-      setRandomDogs(data);
-    } catch (error) {
-      console.error("Error fetching Random dog data:", error);
-    }
-  };
-
   const fetchData = async () => {
     const fetchedData = await fetchDogData();
     setDogs(fetchedData || []);
   };
-
+  
   useEffect(() => {
       fetchData();
   }, []);
 
-  const handleTabChange = (event, newValue) => {
-    setCurrentTab(newValue);
-    
-    if (currentTab === 1) {
-      fetchRandomDogData();
-      setDisplayDogs(randomDogs.slice(0, Math.min(4, randomDogs.length)));
-    } else {
-      fetchData();
-      setDisplayDogs(dogs.slice(0, Math.min(4, dogs.length)));
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
+    return array;
   };
 
+  const handleTabChange = (event, newValue) => {
+    fetchData();
+    setCurrentTab(newValue);
+  };
+
+  let displayedDogs = dogs.slice(0, Math.min(4, dogs.length)); // Display the top 4 liked dogs
+
+  if (currentTab === 1) {
+    const shuffledDogs = shuffleArray([...dogs]);
+    displayedDogs = shuffledDogs.slice(0, 4); // Display the top 4 shuffled dogs
+  }
   return (
   <Box
     sx={{
