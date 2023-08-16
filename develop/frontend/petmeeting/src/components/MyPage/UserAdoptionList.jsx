@@ -6,11 +6,12 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Typography
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
 export default function UserAdoptionList() {
     const accessToken = JSON.parse(sessionStorage.getItem("token"))?.accessToken;
-    const [isDetail, setIsDetail] = useState(false);
     const [adoptionList, setAdoptionList] = useState([]);
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
     const [selectedAdoptionNo, setSelectedAdoptionNo] = useState(null);
@@ -62,9 +63,43 @@ export default function UserAdoptionList() {
 
     return (
         <Box>
-            {isDetail ? (
-                // 입양신청 상세
-                <Box></Box>
+            {adoptionList.length == 0 ? (
+                <Typography
+                    variant="h5"
+                    align="center"
+                    style={{
+                        marginTop: '20px',
+                        padding: '10px',
+                        borderRadius: '5px',
+                        border: '0px solid #e0e0e0',
+                        fontFamily: 'Jua'
+                    }}
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center">
+                    아직 신청한 내역이 없습니다.
+                    <Link
+                        to="/adoption/form"
+                        style={{
+                            display: "block",
+                            marginTop: "10px",
+                            backgroundColor: "#948060",
+                            color: "white",
+                            padding: "10px 20px",
+                            width: "90px",
+                            fontSize: "18px",
+                            borderRadius: "5px",
+                            textDecoration: "none",
+                            transition: "background-color 0.3s",
+                            fontFamily: 'Jua',
+                            textAlign: "center",
+                            cursor: "pointer",
+                        }}
+                    >
+                        입양하러가기
+                    </Link>
+                </Typography>
             ) : (
                 // 입양신청목록
                 <TableContainer component={Paper}>
