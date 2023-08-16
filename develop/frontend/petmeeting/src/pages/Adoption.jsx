@@ -18,14 +18,17 @@ export default function Adoption() {
     try {
       axios.get(`${config.baseURL}/api/v1/dog?option=all`).then((response) => {
         setAllDogs(response.data);
-        const startIndex = (currentPage - 1) * pageSize;
-        const endIndex = startIndex + pageSize;
-        setDogData(allDogs.slice(startIndex, endIndex));
       });
     } catch (exception) {
       console.log(exception);
     }
   }, []);
+
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    setDogData(allDogs.slice(startIndex, endIndex));
+  }, [allDogs, currentPage, pageSize]);
 
   return (
     <Box
