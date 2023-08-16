@@ -82,10 +82,6 @@ export default function SignUp() {
     `https://i9a203.p.ssafy.io/backapi/api/v1/image/profile6.png?option=member`,
   ];
 
-  function getImageSource(imagePath) {
-    return `https://i9a203.p.ssafy.io/backapi/api/v1/image/${imagePath}?option='shelter'`;
-  }
-
   const handleProfileModalOpen = () => {
     setIsProfileModalOpen(true);
   };
@@ -448,13 +444,6 @@ export default function SignUp() {
                     />
                   </Grid>
                   <></>
-                  {imagePath ? (
-                    <Grid item xs={12} display="flex" justifyContent="center" marginTop="10px">
-                      <img src={getImageSource(imagePath)}  alt="등록 이미지" />
-                    </Grid>
-                  ) : (
-                    <></>
-                  )}
                   <Grid item xs={12}>
                     <RegisterImageUploadButton
                       option="shelter"

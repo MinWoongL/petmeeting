@@ -100,11 +100,14 @@ const DogDetailPage = () => {
   if (!dogDetails) return <div>Loading...</div>;
 
   return (
-    <Container>
-      <Card sx={{ maxWidth: "100%" }}>
+    <Container sx={{display:"flex", justifyContent:"center"}}>
+      <Card sx={{ width: "70%", maxWidth: "100%" }}>
         <CardMedia
           component="img"
-          height="400"
+          height= "500px"
+          sx = {{
+            objectFit: "contain"
+          }}
           image={
             config.baseURL +
             "/api/v1/image/" +
