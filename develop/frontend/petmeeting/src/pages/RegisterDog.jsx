@@ -22,7 +22,6 @@ const RegisterDog = () => {
     age: 0,
     personality: "",
     protectionStartDate: "",
-    protectionEndDate: "",
     currentStatus: "",
     dogSpecies: "",
     reasonAbandonment: "",
@@ -188,23 +187,6 @@ const RegisterDog = () => {
             InputProps={{
               inputProps: {
                 max: form.protectionEndDate,
-              },
-            }}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            disabled={!ableToSelectDate}
-            required
-            fullWidth
-            label="Protection End Date"
-            name="protectionEndDate"
-            type="date"
-            value={form.protectionEndDate}
-            onChange={handleChange}
-            InputProps={{
-              inputProps: {
-                min: form.protectionStartDate,
               },
             }}
           />

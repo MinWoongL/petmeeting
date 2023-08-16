@@ -44,7 +44,7 @@ export default function Adoption() {
 
       {/* 입양신청서 목록 넣을 곳 */}
       <h1>입양 가능한 강아지</h1>
-      {dogData.length > 0 ? (
+      {true ? (
         <>
           <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
             {dogData
