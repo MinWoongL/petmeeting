@@ -196,19 +196,26 @@ function InfoSidebar() {
                 {user.userId}
               </Typography>
             </Stack>
-            <Typography
-              variant="body2"
-              sx={{ fontFamily: "Jua", fontWeight: "normal" }}
-            >
-              {/* 내 포인트: {user.holdingPoint ? user.holdingPoint : 0} */}내
-              포인트: {holdingPoint ? holdingPoint : 0}
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{ fontFamily: "Jua", fontWeight: "normal" }}
-            >
-              내 멍코인: {holdingToken ? holdingToken : 0}
-            </Typography>
+            {user.userGroup}
+            {user.userGroup === "사용자" || user.userGroup === "user" ? (
+              <>
+                <Typography
+                  variant="body2"
+                  sx={{ fontFamily: "Jua", fontWeight: "normal" }}
+                >
+                  {/* 내 포인트: {user.holdingPoint ? user.holdingPoint : 0} */}
+                  내 포인트: {holdingPoint ? holdingPoint : 0}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ fontFamily: "Jua", fontWeight: "normal" }}
+                >
+                  내 멍코인: {holdingToken ? holdingToken : 0}
+                </Typography>
+              </>
+            ) : (
+              <div></div>
+            )}
           </Box>
         </Box>
 
