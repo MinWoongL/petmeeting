@@ -59,13 +59,25 @@ public class IotServiceImpl implements IotService {
         }
 
         Integer command = iotReqDto.getCommand();
-        if (user instanceof Shelter) {
-            log.info("[기기조작] (보호소) 기기 조작 명령을 내립니다.");
-            vop.set("iot1", String.valueOf(command), 2, TimeUnit.SECONDS);
+        if(command <= 6) {
+            if (user instanceof Shelter) {
+                log.info("[기기조작] (보호소) 기기 조작 명령을 내립니다.");
+                vop.set("iot1t", String.valueOf(command), 2, TimeUnit.SECONDS);
+            } else {
+                log.info("[기기조작] (사용자) 기기 조작 명령을 내립니다.");
+                vop.set("iot1t", String.valueOf(command), Long.valueOf(endTime) - System.currentTimeMillis() / 1000L, TimeUnit.SECONDS);
+            }
         } else {
-            log.info("[기기조작] (사용자) 기기 조작 명령을 내립니다.");
-            vop.set("iot1", String.valueOf(command), Long.valueOf(endTime) - System.currentTimeMillis() / 1000L, TimeUnit.SECONDS);
-        }
+            if(command == 7) command = 1;
+            else if (command == 8) command = 0;
 
+            if (user instanceof Shelter) {
+                log.info("[기기조작] (보호소) 기기 조작 명령을 내립니다.");
+                vop.set("iot1d", String.valueOf(command), 2, TimeUnit.SECONDS);
+            } else {
+                log.info("[기기조작] (사용자) 기기 조작 명령을 내립니다.");
+                vop.set("iot1d", String.valueOf(command), Long.valueOf(endTime) - System.currentTimeMillis() / 1000L, TimeUnit.SECONDS);
+            }
+        }
     }
 }
