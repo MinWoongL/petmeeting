@@ -35,7 +35,6 @@ function InfoSidebar() {
   };
 
   const [nicknameInput, setNicknameInput] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -153,45 +152,18 @@ function InfoSidebar() {
             style={{ width: "80px", height: "80px", marginRight: "20px" }}
           />
 
-          <Box>
+          <Box >
             <Stack direction="row" alignItems="center" spacing={1}>
-              <Typography variant="h6">{user.userId}</Typography>
-              <IconButton size="small" onClick={() => setIsEditing(!isEditing)}>
-                <EditIcon fontSize="small" />
-              </IconButton>
+              <Typography variant="h5" sx={{ fontFamily:'Jua', fontWeight: 'bold' }} >{user.userId}</Typography>
             </Stack>
-            <Typography variant="body2">
-              내 포인트: {user.holdingPoint}
+            <Typography variant="body2" sx={{ fontFamily:'Jua', fontWeight: 'normal' }}>
+              내 포인트: {user.holdingPoint ? user.holdingPoint : 0}
             </Typography>
-            <Typography variant="body2">
-              내 멍코인: {user.holdingToken}
+            <Typography variant="body2" sx={{ fontFamily:'Jua', fontWeight: 'normal' }}>
+              내 멍코인: {user.holdingToken ? user.holdingToken : 0}
             </Typography>
           </Box>
         </Box>
-
-        {isEditing && (
-          <form
-            onSubmit={handleSubmit}
-            style={{ width: "100%", marginTop: "20px" }}
-          >
-            <TextField
-              variant="outlined"
-              size="small"
-              fullWidth
-              label="Change Nickname"
-              value={nicknameInput}
-              onChange={(e) => setNicknameInput(e.target.value)}
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              style={{ marginTop: "10px", width: "100%" }}
-            >
-              Save
-            </Button>
-          </form>
-        )}
 
         <Box mt={3} width="100%">
           <Button
