@@ -134,7 +134,6 @@ public class Dog {
         this.personality = updateDogReqDto.getPersonality() == null ? personality : updateDogReqDto.getPersonality();
         this.protectionStartDate = updateDogReqDto.getProtectionStartDate() == null ? protectionStartDate : updateDogReqDto.getProtectionStartDate();
         this.protectionEndDate = updateDogReqDto.getProtectionEndDate() == null ? protectionEndDate : updateDogReqDto.getProtectionEndDate();
-        this.adoptionAvailability = updateDogReqDto.getAdoptionAvailability() == null ? adoptionAvailability : AdoptionAvailability.getAvailability(updateDogReqDto.getAdoptionAvailability());
         this.currentStatus = updateDogReqDto.getCurrentStatus() == null ? currentStatus : updateDogReqDto.getCurrentStatus();
         this.dogSpecies = updateDogReqDto.getDogSpecies() == null ? dogSpecies : updateDogReqDto.getDogSpecies();
         this.reasonAbandonment = updateDogReqDto.getReasonAbandonment() == null ? reasonAbandonment : updateDogReqDto.getReasonAbandonment();
