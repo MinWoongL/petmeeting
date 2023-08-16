@@ -232,6 +232,7 @@ public class DogServiceImpl implements DogService {
         log.info("[유기견 조건 검색] 유기견 조건 검색 완료");
 
         return dogQueryDslRepository.findByCondition(condition).stream()
+                .filter(dog -> dog.getAdoptionAvailability().equals(AdoptionAvailability.ADOPT_POSSIBLE))
                 .map(dog -> DogResDto.entityToDto(dog))
                 .collect(Collectors.toList());
     }
@@ -246,6 +247,7 @@ public class DogServiceImpl implements DogService {
         log.info("[유기견 전체 검색] 유기견 전체 검색");
 
         return dogRepository.findDogByIsDeletedFalse().stream()
+                .filter(dog -> dog.getAdoptionAvailability().equals(AdoptionAvailability.ADOPT_POSSIBLE))
                 .map(dog -> DogResDto.entityToDto(dog))
                 .collect(Collectors.toList());
     }
@@ -260,6 +262,7 @@ public class DogServiceImpl implements DogService {
         log.info("[랭크 옵션에 따른 유기견 검색] 유기견 랭크 검색");
 
         return dogRepository.selectAllOrderByLikeCnt().stream()
+                .filter(dog -> dog.getAdoptionAvailability().equals(AdoptionAvailability.ADOPT_POSSIBLE))
                 .map(dog -> DogResDto.entityToDto(dog))
                 .collect(Collectors.toList());
     }
@@ -274,6 +277,7 @@ public class DogServiceImpl implements DogService {
         log.info("[랜덤 옵션에 따른 유기견 검색] 유기견 랜덤 검색");
 
         return dogRepository.selectAllByRandom().stream()
+                .filter(dog -> dog.getAdoptionAvailability().equals(AdoptionAvailability.ADOPT_POSSIBLE))
                 .map(dog -> DogResDto.entityToDto(dog))
                 .collect(Collectors.toList());
     }
@@ -448,6 +452,7 @@ public class DogServiceImpl implements DogService {
         log.info("[유기견 찜 리스트 조회] 로그인한 사용자의 유기견 찜 리스트 전체조회 완료");
 
         return dogRepository.selectAllFromBookmarkDog(userNo).stream()
+                .filter(dog -> dog.getAdoptionAvailability().equals(AdoptionAvailability.ADOPT_POSSIBLE))
                 .map(dog -> DogResDto.entityToDto(dog))
                 .collect(Collectors.toList());
     }
@@ -466,6 +471,7 @@ public class DogServiceImpl implements DogService {
         log.info("[유기견 좋아요 리스트 조회] 로그인한 사용자의 유기견 좋아요 리스트 전체조회 완료");
 
         return dogRepository.selectAllFromLikeDog(userNo).stream()
+                .filter(dog -> dog.getAdoptionAvailability().equals(AdoptionAvailability.ADOPT_POSSIBLE))
                 .map(dog -> DogResDto.entityToDto(dog))
                 .collect(Collectors.toList());
     }
