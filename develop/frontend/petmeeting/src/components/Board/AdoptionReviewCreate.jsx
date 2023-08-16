@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"; // 추가
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setAdoptionReview } from "../../stores/Slices/AdoptionReviewSlice";
+import imageUploadButton from "../Button/ImageUploadButton";
 
 export default function AdoptionReviewCreate() {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ export default function AdoptionReviewCreate() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFileName, setSelectedFileName] = useState(""); // 선택한 파일명 상태
 
   const accessToken = JSON.parse(sessionStorage.getItem("token"))?.accessToken;
 
@@ -38,36 +40,45 @@ export default function AdoptionReviewCreate() {
 
     try {
       let imagePath = null; // default image 경로 넣어주면 좋을 듯
-      
-      if(selectedFile) {
+
+      if (selectedFile) {
         const formData = new FormData();
         formData.append("image", selectedFile);
 
-        await axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/image?option=board", formData,
-        {
-          headers: {
-            "AccessToken": "Bearer " + accessToken,
-            "Content-Type": "multipart/form-data",
-          }
-        }).then((response) => {
-          imagePath = response.data;
-        });
+        await axios
+          .post(
+            "https://i9a203.p.ssafy.io/backapi/api/v1/image?option=board",
+            formData,
+            {
+              headers: {
+                AccessToken: "Bearer " + accessToken,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then((response) => {
+            imagePath = response.data;
+          });
       }
 
-      await axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/board",
-      {
-        title: title,
-        content: content,
-        imagePath: imagePath
-      },
-      {
-        headers: {
-          "AccessToken": "Bearer " + accessToken
-        }
-      }).then((response) => {
-        window.location.href="/board/adoption-review/" + response.data.boardNo;
-      })
-
+      await axios
+        .post(
+          "https://i9a203.p.ssafy.io/backapi/api/v1/board",
+          {
+            title: title,
+            content: content,
+            imagePath: imagePath,
+          },
+          {
+            headers: {
+              AccessToken: "Bearer " + accessToken,
+            },
+          }
+        )
+        .then((response) => {
+          window.location.href =
+            "/board/adoption-review/" + response.data.boardNo;
+        });
     } catch (error) {
       console.log("에러 발생: " + error);
     }
@@ -110,6 +121,9 @@ export default function AdoptionReviewCreate() {
             value={title}
             onChange={handleTitleChange}
             sx={{ marginBottom: "16px" }}
+            inputProps={{
+              maxLength: 60,
+            }}
           />
 
           {/* 내용 */}
@@ -123,7 +137,7 @@ export default function AdoptionReviewCreate() {
               wordWrap: "break-word",
               maxHeight: "400px",
               overflowY: "auto",
-              margin: "20px 0 20px 0"
+              margin: "20px 0 20px 0",
             }}
           />
           {/* 버튼들 모음 */}
@@ -135,12 +149,34 @@ export default function AdoptionReviewCreate() {
               marginBottom: "16px", // 아래 여백 추가
             }}
           >
-            {/* 이미지 업로드 */}
             <input
               type="file"
               accept=".jpg, .jpeg, .png, .gif"
               onChange={handleFileChange}
+              style={{
+                display: "none",
+              }}
+              id="image-upload-input"
             />
+
+            <label htmlFor="image-upload-input">
+              <Button
+                component="span"
+                variant="contained"
+                color="primary"
+                sx={{
+                  mt: 2,
+                  fontWeight: "bold",
+                  fontSize: "14px",
+                }}
+              >
+                이미지 업로드
+              </Button>
+            </label>
+
+            {selectedFileName && ( // 파일명이 있을 때만 표시
+              <p>선택한 파일: {selectedFileName}</p>
+            )}
 
             {/* 게시 및 취소 버튼 */}
             <Box>
@@ -165,7 +201,6 @@ export default function AdoptionReviewCreate() {
               </Button>
             </Box>
           </Box>
-
         </form>
       </Box>
     </Box>

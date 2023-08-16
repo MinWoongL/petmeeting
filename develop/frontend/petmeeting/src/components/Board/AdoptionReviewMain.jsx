@@ -67,13 +67,13 @@ export default function AdoptionReviewDetail() {
         setSelectedReview(response.data);
         setEditedTitle(response.data.title);
         setEditedContent(response.data.content);
-        setEditedDate(
-          response.data.modifiedTime
+        setEditedDate((prevEditedDate) => {
+          return response.data.modifiedTime
             ? "작성 시간 : " +
                 formatDateTime(response.data.modifiedTime * 1000) +
                 " (수정됨)"
-            : "작성 시간 : " + formatDateTime(response.data.createdTime * 1000)
-        );
+            : prevEditedDate;
+        });
 
         if (!response.data.imagePath) {
           setImagePath(getRandomDogImagePath());
@@ -87,11 +87,12 @@ export default function AdoptionReviewDetail() {
       });
 
     // 댓글 정보 가져오기
-    axios
-      .get(`https://i9a203.p.ssafy.io/backapi/api/v1/reply/${boardNo}`)
-      .then((response) => {
+    axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/reply/${boardNo}`).then(
+      (response) => {
         setReplyList(response.data);
-      });
+      },
+      [boardNo]
+    );
 
     if (accessToken) {
       // 좋아요 체크
