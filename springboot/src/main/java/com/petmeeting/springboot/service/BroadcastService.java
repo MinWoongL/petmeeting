@@ -12,5 +12,5 @@ public interface BroadcastService {
     void startBroadcast(BroadcastReqDto broadcastReqDto, String token);
     void stopBroadcast(String token);
     BroadcastCheckResDto checkControlUser(Integer shelterNo);
-
+    Map<String, String> breakControl(Integer shelterNo, String token);
 }

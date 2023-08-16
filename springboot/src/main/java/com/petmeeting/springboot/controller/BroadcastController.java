@@ -40,6 +40,18 @@ public class BroadcastController {
     }
 
     @Operation(
+            summary = "기기 조작 중지",
+            description = "기기 조작을 중지합니다. 5분으로 설정"
+    )
+    @DeleteMapping("/request/{shelterNo}")
+    public ResponseEntity<Map<String, String>> breakControl(@PathVariable Integer shelterNo, @RequestHeader(ACCESS_TOKEN) String token) {
+        Map<String, String> result = broadcastService.breakControl(shelterNo, token);
+
+        sseEmitters.sendMessage(result.get("userId"), 0L);
+        return ResponseEntity.ok(result);
+    }
+
+    @Operation(
             summary = "방송 중인 보호소 가져오기",
             description = "방송 중인 보호소 정보를 가져옵니다."
     )

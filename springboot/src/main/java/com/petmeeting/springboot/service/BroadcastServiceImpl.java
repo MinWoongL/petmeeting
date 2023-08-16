@@ -85,6 +85,49 @@ public class BroadcastServiceImpl implements BroadcastService {
         return map;
     }
 
+    @Override
+    public Map<String, String> breakControl(Integer shelterNo, String token) {
+        log.info("[기기제어 종료] 기기제어 종료 요청. shelterNo : {}, token : {}", shelterNo, token);
+        int userNo = jwtUtils.getUserNo(token);
+
+        log.info("[기기제어 종료] 방송 중인 보호소 불러오기");
+        Shelter shelter = shelterRepository.findShelterByOnBroadCastTitleNotNull()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "방송 중인 보호소가 없습니다."));
+
+        if (!shelter.getId().equals(shelterNo)) {
+            log.error("[기기제어 종료] 방송 중인 보호소가 아닙니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "방송 중인 보호소가 아닙니다.");
+        }
+
+        ValueOperations<String, String> vop = redisTemplate.opsForValue();
+
+        if (vop.get("controlUser" + shelter.getId()) == null) {
+            log.error("[기기제어 종료] 이미 종료되었습니다..");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이미 종료되었습니다.");
+        }
+
+        log.info("[기기제어 종료] 멤버 불러오기");
+        Member member = (Member) userRepository.findById(userNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "올바르지 않은 유저입니다."));
+
+        if(member.getName().equals(vop.get("controlUser" + shelter.getId()))) {
+            log.error("[기기제어 종료] 사용자가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "사용자가 일치하지 않습니다.");
+        }
+        member.spendToken(1);
+        userRepository.save(member);
+
+        log.info("[기기제어 종료] 기기제어 종료. controlUser : {}", member.getName());
+        vop.getAndDelete("controlUser" + shelter.getId());
+        vop.getAndDelete("remainTime" + shelter.getId());
+
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", member.getName());
+
+        log.info("[기기제어 종료] 기기조작 종료 완료");
+        return map;
+    }
+
     /**
      * 방송 중인 보호소 정보를 가져옵니다
      * @return BroadcastShelterResDto
@@ -199,4 +242,5 @@ public class BroadcastServiceImpl implements BroadcastService {
                 .remainTime(remainTime - System.currentTimeMillis() / 1000L)
                 .build();
     }
+
 }
