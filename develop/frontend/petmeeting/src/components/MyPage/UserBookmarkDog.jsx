@@ -17,7 +17,7 @@ import LikeButton from "../Button/DogLikeButton";
 import BookmarkButton from "../Button/DogBookmarkButton";
 
 const UserBookmarkDog = ({ shelterNo }) => {
-  const [dogData, setDogData] = useState(null);
+  const [dogData, setDogData] = useState([]);
 
   const handleLikeClick = (reviewId, event) => {
     event.stopPropagation(); // 이벤트 전파 중단
@@ -45,7 +45,7 @@ const UserBookmarkDog = ({ shelterNo }) => {
 
   return (
     <div>
-      {dogData && (
+      {dogData.length > 0 ? (
         <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
           {dogData.map((dog, index) => (
             <Link
@@ -92,6 +92,19 @@ const UserBookmarkDog = ({ shelterNo }) => {
             </Link>
           ))}
         </Box>
+      ) : (
+        <Typography 
+          variant="h5" 
+          align="center" 
+          style={{ 
+            marginTop: '20px',
+            padding: '10px',
+            borderRadius: '5px',
+            border: '0px solid #e0e0e0',
+            fontFamily: 'Jua'
+          }}>
+          자주 보고 싶은 친구들을 등록해주세요!
+        </Typography>
       )}
     </div>
   );

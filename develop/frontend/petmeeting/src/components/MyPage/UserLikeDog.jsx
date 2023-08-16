@@ -99,7 +99,7 @@ const UserLikeDog = ({ shelterNo }) => {
             border: '0px solid #e0e0e0',
             fontFamily: 'Jua'
           }}>
-          아직 좋아요한 강아지가 없어요
+          관심가는 친구들을 등록해주세요!
         </Typography>
       )}
     </div>
