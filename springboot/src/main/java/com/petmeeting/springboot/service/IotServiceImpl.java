@@ -52,7 +52,7 @@ public class IotServiceImpl implements IotService {
             if (user instanceof Shelter && !userNo.equals(shelterNo)) {
                 log.error("[기기조작] (보호소) 자신의 기기만 조작할 수 있습니다.");
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "자신의 방송에서만 기기 조작을 할 수 있습니다.");
-            } else if (controlUser == null || !userNo.equals(Integer.valueOf(controlUser))) {
+            } else if (controlUser == null || !String.valueOf(userNo).equals(controlUser)) {
                 log.error("[기기조작] (사용자) 조작이 허용된 사용자만 조작할 수 있습니다.");
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "조작이 허용된 사용자만 조작할 수 있습니다.");
             }
@@ -62,10 +62,10 @@ public class IotServiceImpl implements IotService {
         if(command <= 6) {
             if (user instanceof Shelter) {
                 log.info("[기기조작] (보호소) 기기 조작 명령을 내립니다.");
-                vop.set("iot1t", String.valueOf(command), 2, TimeUnit.SECONDS);
+                vop.set("iot1t", String.valueOf(command));
             } else {
                 log.info("[기기조작] (사용자) 기기 조작 명령을 내립니다.");
-                vop.set("iot1t", String.valueOf(command), Long.valueOf(endTime) - System.currentTimeMillis() / 1000L, TimeUnit.SECONDS);
+                vop.set("iot1t", String.valueOf(command));
             }
         } else {
             if(command == 7) command = 1;
@@ -73,10 +73,10 @@ public class IotServiceImpl implements IotService {
 
             if (user instanceof Shelter) {
                 log.info("[기기조작] (보호소) 기기 조작 명령을 내립니다.");
-                vop.set("iot1d", String.valueOf(command), 2, TimeUnit.SECONDS);
+                vop.set("iot1d", String.valueOf(command));
             } else {
                 log.info("[기기조작] (사용자) 기기 조작 명령을 내립니다.");
-                vop.set("iot1d", String.valueOf(command), Long.valueOf(endTime) - System.currentTimeMillis() / 1000L, TimeUnit.SECONDS);
+                vop.set("iot1d", String.valueOf(command));
             }
         }
     }
