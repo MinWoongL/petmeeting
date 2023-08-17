@@ -118,26 +118,30 @@ const UserInformation = ({
                 label="Name"
                 value={editData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
+                style={{ marginBottom: "10px" }}
               />
               <TextField
                 fullWidth
                 label="Phone Number"
                 value={editData.phoneNumber}
                 onChange={(e) => handleChange("phoneNumber", e.target.value)}
+                style={{ marginBottom: "10px" }}
               />
               <TextField
                 fullWidth
                 label="Email"
                 value={editData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
+                style={{ marginBottom: "10px" }}
               />
               <TextField
                 fullWidth
                 type="password"
                 label="Password"
                 onChange={(e) => handleChange("password", e.target.value)}
+                style={{ marginBottom: "30px" }}
               />
-              <Button variant="contained" color="primary" onClick={handleSave}>
+              <Button variant="contained" color="primary" onClick={handleSave} style={{backgroundColor: "var(--yellow5)"}}>
                 Save
               </Button>
             </>
