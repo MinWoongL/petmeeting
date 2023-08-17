@@ -127,9 +127,18 @@ function ChatSidebar({ shelterNo }) {
       </div>
       <TextField
         label="새 채팅"
+        variant="outlined"
         value={newChat}
         onChange={(e) => setNewChat(e.target.value)}
         onKeyDown={handleKeyDown}
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "var(--yellow8)",
+          },
+        }}
+        InputLabelProps={{
+          style: { color: "var(--yellow9)" },
+        }}
         style={{
           backgroundColor: "white", 
           marginLeft: "10px", 
@@ -138,7 +147,7 @@ function ChatSidebar({ shelterNo }) {
           borderRadius: "5px"
         }}
       />
-      <Button onClick={handleChatSubmit} variant="contained" color="primary" style={{ marginTop: "7px", minHeight: "40px"}}>
+      <Button onClick={handleChatSubmit} variant="contained" style={{ backgroundColor: "var(--yellow9)", fontWeight: "bold", marginTop: "7px", minHeight: "40px"}}>
         전송
       </Button>
     </div>
