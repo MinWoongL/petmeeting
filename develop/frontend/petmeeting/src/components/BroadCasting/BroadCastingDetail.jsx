@@ -46,18 +46,19 @@ function BroadCastingDetail() {
       axios.get("https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/shelter")
         .then(response => {
           const matchedData = response.data.find(item => item.shelterNo.toString() === broadcastId);
-
+    
           if (matchedData) {
             setShelterNo(matchedData.shelterNo);
             setDogNo(matchedData.dogNo);
           } else {
-            console.error("customSessionId와 일치하는 shelterNo를 찾을 수 없습니다.");
+            console.error(`broadcastId(${broadcastId})와 일치하는 shelterNo를 찾을 수 없습니다.`);
           }
         })
         .catch(error => {
           console.error("shelterNo를 가져오는 중 오류 발생:", error);
         });
     }, []);
+    
 
     useEffect(() => {
       if (dogNo) {

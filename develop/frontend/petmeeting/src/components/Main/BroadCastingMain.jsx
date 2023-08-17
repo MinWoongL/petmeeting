@@ -31,7 +31,7 @@ function BroadCastingMain() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     
 
-    const liveBroadcasts = [{ id: "BZcu8MK_jfo" }, { id: "zwVAKBO8rJM" }, { id: "uqkhMBJ9yrs" }, { id: "l3UcjImor28"}];
+    const liveBroadcasts = [{ id: "BZcu8MK_jfo" }, { id: "zwVAKBO8rJM" }, { id: "Annof_ATfIc" }, { id: "l3UcjImor28"}];
 
     const fetchOpenViduSessions = async () => {
       try {
