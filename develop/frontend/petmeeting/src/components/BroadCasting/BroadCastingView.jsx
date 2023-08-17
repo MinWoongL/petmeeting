@@ -90,6 +90,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
         const token = JSON.parse(sessionStorage.getItem("token"));
         const accessToken = token?.accessToken;
         try {
+            // Here we use await to make the request synchronous
             await axios.delete('https://i9a203.p.ssafy.io/backapi/api/v1/broadcast', {
                 headers: {
                     AccessToken: `Bearer ${accessToken}`
@@ -116,34 +117,25 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
   }, [sessionInstance2, navigate]);
 
 
-  
+
+  // 페이지 이동 감지해서 axios.delete 요청 보내기
   useEffect(() => {
-    const currentPath = location.pathname;
-
-    return () => {
-      if (location.pathname !== currentPath) {
-        // 주소가 변경되었을 때
-
-        // OpenVidu 세션 종료
-        if (sessionInstance2) {
-          sessionInstance2.disconnect();
-        }
-
-        // axios.delete 요청
-        const token = JSON.parse(sessionStorage.getItem("token"));
-        const accessToken = token?.accessToken;
-        try {
-            axios.delete('https://i9a203.p.ssafy.io/backapi/api/v1/broadcast', {
-                headers: {
-                    AccessToken: `Bearer ${accessToken}`
-                }
-            });
-        } catch (error) {
-            console.error("Axios delete 요청 중 오류 발생:", error);
-        }
+    const sendDeleteRequest = async () => {
+      const token = JSON.parse(sessionStorage.getItem("token"));
+      const accessToken = token?.accessToken;
+      try {
+        await axios.delete('https://i9a203.p.ssafy.io/backapi/api/v1/broadcast', {
+          headers: {
+            AccessToken: `Bearer ${accessToken}`
+          }
+        });
+      } catch (error) {
+        console.error("Axios delete 요청 중 오류 발생:", error);
       }
     };
-  }, [location, sessionInstance2]);
+    
+    sendDeleteRequest();
+  }, [location.pathname]);
 
 
 
