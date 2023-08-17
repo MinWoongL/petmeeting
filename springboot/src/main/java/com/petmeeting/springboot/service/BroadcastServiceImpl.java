@@ -154,6 +154,7 @@ public class BroadcastServiceImpl implements BroadcastService {
                     .name(shelter.getName())
                     .onBroadcastTitle(shelter.getOnBroadCastTitle())
                     .dogNo(shelter.getDogNo())
+                    .imagePath(dogRepository.findById(shelter.getDogNo()).get().getImagePath())
                     .build();
             })).collect(Collectors.toList());
     }
