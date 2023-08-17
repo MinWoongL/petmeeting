@@ -10,7 +10,7 @@ import {
   Grid,
   Button,
   Modal,
-  TextField
+  TextField,
 } from "@mui/material";
 import { config } from "../static/config";
 import { Snackbar, Alert } from "@mui/material";
@@ -71,7 +71,11 @@ const DogDetailPage = () => {
       return;
     }
 
-    if (!window.confirm(`${dogDetails.name}에게 ${donationAmount} 포인트를 후원할까요?`)) {
+    if (
+      !window.confirm(
+        `${dogDetails.name}에게 ${donationAmount} 포인트를 후원할까요?`
+      )
+    ) {
       return;
     }
 
@@ -198,22 +202,23 @@ const DogDetailPage = () => {
                 value={donationAmount}
                 onChange={(e) => {
                   e.target.value = e.target.value < 0 ? 0 : e.target.value;
-                  setDonationAmount(e.target.value)
-                }
-                }
+                  setDonationAmount(e.target.value);
+                }}
                 label="후원 할 금액을 입력하세요"
                 variant="outlined"
                 size="small"
                 sx={{
                   width: "200px",
                   margin: "15px 15px 0 0",
-                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "var(--yellow8)",
-                  },
-                  "& .MuiInput-input[type='number']::-webkit-inner-spin-button, .MuiInput-input[type='number']::-webkit-outer-spin-button": {
-                    WebkitAppearance: "none",
-                    margin: 0,
-                  },
+                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: "var(--yellow8)",
+                    },
+                  "& .MuiInput-input[type='number']::-webkit-inner-spin-button, .MuiInput-input[type='number']::-webkit-outer-spin-button":
+                    {
+                      WebkitAppearance: "none",
+                      margin: 0,
+                    },
                   "& .MuiInput-input[type='number']": {
                     "-moz-appearance": "textfield",
                   },

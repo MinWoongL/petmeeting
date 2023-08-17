@@ -9,14 +9,11 @@ import {
   Typography,
   Button,
   Stack,
-  TextField,
   Card,
   CardContent,
-  IconButton,
   Snackbar,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-import EditIcon from "@mui/icons-material/Edit";
 import { logout, updateNickName } from "../../stores/Slices/UserSlice";
 
 function InfoSidebar() {
@@ -27,6 +24,7 @@ function InfoSidebar() {
   const [holdingToken, setHoldingToken] = useState(0);
   const [userGroup, setUserGroup] = useState("user");
   const pointFromStore = useSelector((state) => state.point);
+  const tokenFromStore = useSelector((state) => state.token);
 
   const handleMyPageClick = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -37,6 +35,11 @@ function InfoSidebar() {
       navigate("/mypage");
     }
   };
+  useEffect(() => {
+    if (tokenFromStore !== holdingToken) {
+      setHoldingToken(tokenFromStore);
+    }
+  }, [tokenFromStore]);
 
   useEffect(() => {
     if (pointFromStore !== holdingPoint) {

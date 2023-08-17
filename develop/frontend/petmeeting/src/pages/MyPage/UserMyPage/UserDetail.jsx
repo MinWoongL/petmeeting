@@ -8,6 +8,8 @@ import { Button, Container, Typography, Alert } from "@mui/material";
 import { styled } from "@mui/system";
 import { useDispatch } from "react-redux";
 import { updatePointsAndTokens } from "../../../stores/Slices/UserSlice";
+import { setPoint } from "../../../stores/Slices/pointSlice";
+import { setToken } from "../../../stores/Slices/tokenSlice";
 
 const StyledButtonContainer = styled(Container)`
   display: flex;
@@ -56,6 +58,10 @@ function UserProfilePage() {
             tokens: res.data.holdingToken, // Replace with the actual keys in the API response
           })
         );
+
+        dispatch(setPoint(res.data.holdingPoint));
+        dispatch(setToken(res.data.holdingToken));
+
         console.log(res.data, "마이페이지 정보 겟받아옴");
       })
       .catch((err) => {
