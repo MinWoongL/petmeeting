@@ -114,16 +114,18 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
     // userNo 값 확인 및 숫자로 변환
     const userNo = userData && userData.userNo ? Number(userData.userNo) : null;
-
-    if (getshelterNo === userNo.toString()) {
-      console.log("getshelterNo와 userNo가 일치합니다.");
-      setIsUserMatched(true);
-    } else {
-      console.log("getshelterNo와 userNo가 일치하지 않습니다.");
-      console.log(getshelterNo);
-      console.log(userData);
-      console.log(userNo);
+    if (userNo) {
+      if (getshelterNo === userNo.toString()) {
+        console.log("getshelterNo와 userNo가 일치합니다.");
+        setIsUserMatched(true);
+      } else {
+        console.log("getshelterNo와 userNo가 일치하지 않습니다.");
+        console.log(getshelterNo);
+        console.log(userData);
+        console.log(userNo);
+      }
     }
+    
   }, [getshelterNo]);
 
   useEffect(() => {
@@ -138,7 +140,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
     if(!token) {
       window.alert("로그인이 필요합니다.")
-      navigate("/");
+      navigate("/login");
       return;
     }
 
