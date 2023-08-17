@@ -29,7 +29,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
   const currentUser = useSelector((state) => state.user);
   const isLoggedIn = currentUser.isLoggedIn;
-  const currentUserId = currentUser.userId;
+  const [currentUserId, setCurrentUserId] = useState(currentUser.userId);
 
   const [isUserMatched, setIsUserMatched] = useState(false);
 
@@ -54,6 +54,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
       const { userId, remainTime } = JSON.parse(data); // 문자열을 JSON으로 파싱
 
       console.log("userName : " + userId);
+      setCurrentUserId(userId);
       setIsPlaying(true);
       setSeconds(remainTime);
     });
@@ -62,6 +63,11 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
       sse.close();
     };
   }
+  useEffect(() => {
+    if (!isPlaying) {
+      setCurrentUserId(currentUser.userId);
+    }
+  }, [isPlaying]);
 
   // useEffect를 사용하여 페이지가 처음 렌더링될 때 connect 함수 호출
   useEffect(() => {
@@ -280,7 +286,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
           )}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", backgroundColor: "red", padding: "0.5rem", borderRadius: "8px" }}>
-          {isPlaying && (
+          {isPlaying && currentUserId === currentUser.userId && (
             <Button variant="contained" color="secondary" sx={{ mr: 2, fontSize: "0.75rem", textTransform: "none" }} onClick={handleConfirmOpen}>
               그만놀기
             </Button>
