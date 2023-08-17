@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  sessionInstance: "",
-  subscribers: ""
+  sessionInstance: null,
+  subscribers: [],
+  publisher: null  // 여기에 publisher를 추가합니다.
 };
 
 const sessionSlice = createSlice({
@@ -10,13 +11,16 @@ const sessionSlice = createSlice({
   initialState,
   reducers: {
     setSessionInstance: (state, action) => {
-      state.sessionInstance = action.payload
+      state.sessionInstance = action.payload;
     },
     setSubscribers: (state, action) => {
-      state.subscribers = action.payload
+      state.subscribers = action.payload;
+    },
+    setPublisher: (state, action) => {  // 새로운 액션 추가
+      state.publisher = action.payload;
     }
-  } // 여기서 필요한 액션을 추가할 수 있습니다.
+  }
 });
 
-export const { setSessionInstance, setSubscribers } = sessionSlice.actions
+export const { setSessionInstance, setSubscribers, setPublisher } = sessionSlice.actions;
 export default sessionSlice.reducer;
