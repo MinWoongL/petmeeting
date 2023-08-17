@@ -310,7 +310,7 @@ export default function SignUp() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: "var(--yellow8)" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -330,8 +330,8 @@ export default function SignUp() {
                   exclusive
                   onChange={handleUserTypeChange}
                 >
-                  <ToggleButton value="사용자">사용자</ToggleButton>
-                  <ToggleButton value="보호소">보호소</ToggleButton>
+                  <ToggleButton value="사용자" style={{color: "var(--yellow9)"}}>사용자</ToggleButton>
+                  <ToggleButton value="보호소" style={{color: "var(--yellow9)"}}>보호소</ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
               <Grid item xs={12} align="center">

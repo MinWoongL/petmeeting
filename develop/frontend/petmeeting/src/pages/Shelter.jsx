@@ -10,7 +10,7 @@ import {
 import { Link } from "react-router-dom";
 import { Table, TableBody, TableContainer } from "@mui/material";
 
-import Pagination from "@mui/material/Pagination";
+import { Pagination as MuiPagination } from "@mui/material";
 
 function DataTable() {
   const [tableData, setTableData] = useState([]);
@@ -55,7 +55,7 @@ function DataTable() {
   );
 
   const tableInstance = useTable(
-    { columns, data, initialState: { pageIndex: 0 } },
+    { columns, data, initialState: { pageIndex: 0, pageSize: 4 } },
     useGlobalFilter,
     useSortBy,
     usePagination
@@ -95,11 +95,13 @@ function DataTable() {
       <div
         style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}
       >
-        <Pagination
-          count={pageCount} // 전체 페이지 수
-          page={pageIndex + 1} // 현재 페이지 (0-based 인덱스이므로 +1)
+        {/* MuiPagination으로 변경 */}
+        <MuiPagination
+          count={pageCount}
+          page={pageIndex + 1}
           onChange={(event, value) => {
-            gotoPage(value - 1); // 선택한 페이지로 이동 (0-based 인덱스이므로 -1)
+            gotoPage(value - 1);
+            window.scrollTo(0, 0);
           }}
         />
       </div>
