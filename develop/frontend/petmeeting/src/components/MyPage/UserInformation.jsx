@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Box,
   Card,
@@ -23,6 +24,10 @@ const UserInformation = ({
   const [pgToken, setPgToken] = useState(null);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const token = JSON.parse(sessionStorage.getItem("token"));
+  const user = useSelector((state) => state.user);
+
+  let image = user?.imagePath ? user.imagePath : "profile2.png";
+  const imagePath = `https://i9a203.p.ssafy.io/backapi/api/v1/image/${image}?option=member`;
 
   const handleEdit = () => {
     setEditData(profile);
@@ -76,24 +81,34 @@ const UserInformation = ({
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Avatar sx={{ mr: 2 }} src={profile.avatar} />
+              <Avatar sx={{ mr: 2 }} src={imagePath} />
               <Typography variant="h5">{profile.name}</Typography>
             </Box>
-            {showEditButton && (
-              <Button variant="outlined" color="primary" onClick={handleEdit}>
-                Edit
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {showEditButton && (
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: "var(--yellow5)",
+                    color: "var(--dark)",
+                    marginRight: "8px"
+                  }}
+                  onClick={handleEdit}
+                >
+                  Edit
+                </Button>
+              )}
+              <Button
+                variant="contained"
+                onClick={handleCharge}
+                style={{
+                  backgroundColor: "var(--yellow5)",
+                  color: "var(--dark)",
+                }}
+              >
+                충전하기
               </Button>
-            )}
-            <Button
-              variant="contained"
-              onClick={handleCharge}
-              style={{
-                backgroundColor: "var(--yellow5)",
-                color: "var(--dark)",
-              }}
-            >
-              충전하기
-            </Button>
+            </Box>
           </Box>
           <Divider sx={{ my: 2 }} />
           {isEditing ? (
@@ -110,7 +125,6 @@ const UserInformation = ({
                 value={editData.phoneNumber}
                 onChange={(e) => handleChange("phoneNumber", e.target.value)}
               />
-
               <TextField
                 fullWidth
                 label="Email"
@@ -136,13 +150,12 @@ const UserInformation = ({
               >
                 연락처: {profile.phoneNumber}
               </Typography>
-
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
                 component="div"
               >
-                보유 포인트1: {profile.holdingPoint}
+                보유 포인트: {profile.holdingPoint}
               </Typography>
               <Typography
                 variant="subtitle1"

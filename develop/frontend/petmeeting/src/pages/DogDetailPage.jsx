@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
   Card,
@@ -9,11 +9,21 @@ import {
   Container,
   Grid,
   Button,
+  Modal,
 } from "@mui/material";
 import { config } from "../static/config";
 import { Snackbar, Alert } from "@mui/material";
+import DogDonationImage from "../assets/images/dogmoney.png";
+import { useDispatch } from "react-redux";
+import { setPoint } from "../stores/Slices/pointSlice";
+const modalStyle = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
 
 const DogDetailPage = () => {
+  const dispatch = useDispatch();
   const { dogId } = useParams();
   const [dogDetails, setDogDetails] = useState(null);
   const [donationAmount, setDonationAmount] = useState(""); // State for donation amount input
@@ -21,6 +31,29 @@ const DogDetailPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [user, setUser] = useState(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = JSON.parse(sessionStorage.getItem("token"));
+      try {
+        const response = await axios.get(
+          `${config.baseURL}/api/v1/user`, // Replace with the correct endpoint to get the user data
+          {
+            headers: { AccessToken: `Bearer ${token.accessToken}` },
+          }
+        );
+
+        setUser(response.data);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleDonate = async () => {
     if (!donationAmount || isNaN(donationAmount)) {
@@ -54,6 +87,7 @@ const DogDetailPage = () => {
       setError(""); // Clear any previous error messages
       setSnackbarMessage("후원에 성공했습니다!");
       setSnackbarOpen(true);
+      dispatch(setPoint(response.data.holdingPoint));
     } catch (error) {
       if (error.response.status === 403) {
         setError("후원 할 포인트가 충분하지 않습니다.");
@@ -82,6 +116,8 @@ const DogDetailPage = () => {
         setDogDetails(response.data);
       } catch (error) {
         console.error("Failed to fetch dog details:", error);
+        alert("로그인이 필요한 페이지 입니다.");
+        navigate("/login");
       }
     };
 
@@ -91,11 +127,14 @@ const DogDetailPage = () => {
   if (!dogDetails) return <div>Loading...</div>;
 
   return (
-    <Container>
-      <Card sx={{ maxWidth: "100%" }}>
+    <Container sx={{ display: "flex", justifyContent: "center" }}>
+      <Card sx={{ width: "70%", maxWidth: "100%" }}>
         <CardMedia
           component="img"
-          height="400"
+          height="500px"
+          sx={{
+            objectFit: "contain",
+          }}
           image={
             config.baseURL +
             "/api/v1/image/" +
@@ -142,32 +181,58 @@ const DogDetailPage = () => {
             </Grid>
           </Grid>
           <Typography variant="body1" paragraph>
-            Reason for Abandonment: {dogDetails.reasonAbandonment}
+            버려진 이유: {dogDetails.reasonAbandonment}
           </Typography>
-          {isLoggedIn && (
+          {isLoggedIn && user && user.userGroup !== "보호소" ? (
             <div>
               {error && <Typography color="error">{error}</Typography>}
               <input
                 type="number"
                 value={donationAmount}
                 onChange={(e) => setDonationAmount(e.target.value)}
-                placeholder="Enter donation amount"
-                style={{ marginTop: "10px", marginRight: "10px" }}
+                placeholder="후원 할 금액을 입력하세요"
+                style={{
+                  marginTop: "15px",
+                  marginRight: "10px",
+                  height: "25px",
+                  width: "200px",
+                }}
               />
 
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleDonate}
-                style={{ marginTop: "15px" }}
+                style={{ marginTop: "15px", backgroundColor: "#b9a178" }}
               >
-                Donate
+                후원하기
               </Button>
             </div>
-          )}
+          ) : null}
         </CardContent>
       </Card>
-      <Snackbar
+      <Modal
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        style={modalStyle}
+      >
+        <div>
+          <img
+            src={DogDonationImage}
+            alt="후원 완료"
+            style={{ width: "100%", height: "auto" }}
+          />
+          <Typography
+            variant="h4"
+            component="div"
+            style={{ marginTop: "10px" }}
+          >
+            후원 감사합니다
+          </Typography>
+        </div>
+      </Modal>
+
+      {/* <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000} // Adjust the duration as needed
         onClose={() => setSnackbarOpen(false)}
@@ -180,7 +245,7 @@ const DogDetailPage = () => {
         <Alert severity="success" sx={{ width: "100%" }}>
           후원이 완료되었습니다!
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </Container>
   );
 };

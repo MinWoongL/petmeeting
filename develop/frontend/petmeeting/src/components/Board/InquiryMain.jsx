@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Button, TextField, Input } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -6,10 +6,13 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import { styled } from "@mui/material/styles";
 import axios from "axios";
 
 export default function InquiryMain() {
+  const titleInputRef = useRef(null);
+  const contentInputRef = useRef(null);
+
   const { inquiryNo } = useParams();
   const userNo = JSON.parse(localStorage.getItem("user"))?.userNo;
 
@@ -23,15 +26,40 @@ export default function InquiryMain() {
   const [editedContent, setEditedContent] = useState("");
   const [editedDate, setEditedDate] = useState(null);
 
+  const StyledPrimaryButton = styled(Button)({
+    backgroundColor: "#1976D2",
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#1565C0",
+    },
+  });
+
+  const StyledSecondaryButton = styled(Button)({
+    backgroundColor: "#E57373",
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#D32F2F",
+    },
+  });
+
+  const StyledBackButton = styled(Button)({
+    backgroundColor: "#9E9E9E",
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#757575",
+    },
+  });
+
   useEffect(() => {
     // 게시글 정보 가져오기
-    axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/inquiry/` + inquiryNo)
+    axios
+      .get(`https://i9a203.p.ssafy.io/backapi/api/v1/inquiry/` + inquiryNo)
       .then((response) => {
         setSelectedInquiry(response.data);
         setEditedTitle(response.data.title);
         setEditedContent(response.data.content);
       });
-    }, inquiryNo);
+  }, inquiryNo);
 
   if (!selectedInquiry) {
     return <div>게시글을 찾을 수 없습니다.</div>;
@@ -42,7 +70,10 @@ export default function InquiryMain() {
     "작성 시간 : " + formatDateTime(selectedInquiry.createdTime * 1000);
 
   if (selectedInquiry.modifiedTime) {
-    date = "작성 시간 : " + formatDateTime(selectedInquiry.modifiedTime * 1000) + " (수정됨)";
+    date =
+      "작성 시간 : " +
+      formatDateTime(selectedInquiry.modifiedTime * 1000) +
+      " (수정됨)";
   }
 
   // 로그인된 사용자와 게시물 작성자를 비교하여 수정 및 삭제 버튼을 표시 여부 결정
@@ -55,10 +86,10 @@ export default function InquiryMain() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        marginBottom: "30px"
+        marginBottom: "30px",
       }}
     >
-      <Typography variant="h5" gutterBottom style={{fontFamily: 'Jua'}}>
+      <Typography variant="h5" gutterBottom style={{ fontFamily: "Jua" }}>
         문의게시글 상세보기
       </Typography>
 
@@ -78,15 +109,19 @@ export default function InquiryMain() {
             justifyContent: "space-between",
             alignItems: "center",
             padding: "10px 0 0 0",
-            marginBottom: "8px"
+            marginBottom: "8px",
           }}
         >
           {isEditing ? (
             <TextField
+              inputRef={titleInputRef}
               fullWidth
               label="제목"
               value={editedTitle}
               onChange={(event) => setEditedTitle(event.target.value)}
+              inputProps={{
+                maxLength: 50,
+              }}
             />
           ) : (
             <>
@@ -103,12 +138,19 @@ export default function InquiryMain() {
             <>
               {/* 내용 수정하는 곳 */}
               <TextField
+                inputRef={contentInputRef}
                 fullWidth
                 multiline
                 label="내용"
                 value={editedContent}
                 onChange={(event) => setEditedContent(event.target.value)}
-                sx={{ wordWrap: "break-word", mt: 2, maxHeight: "200px", overflowY: "auto", padding: "10px 0 0 0"}}
+                sx={{
+                  wordWrap: "break-word",
+                  mt: 2,
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                  padding: "10px 0 0 0",
+                }}
               />
             </>
           ) : (
@@ -122,24 +164,31 @@ export default function InquiryMain() {
                   mt: 1,
                 }}
               >
-                {editedDate ?
-                  <Typography variant="body2">{editedDate}</Typography> :
+                {editedDate ? (
+                  <Typography variant="body2">{editedDate}</Typography>
+                ) : (
                   <Typography variant="body2">{date}</Typography>
-                }
-
+                )}
               </Box>
 
-              <Typography variant="body1" sx={{ wordWrap: "break-word", mt: 2, maxHeight: "100px", overflowY: "auto", padding: "10px 0 0 0" }}>
-                {selectedInquiry.content.split('\n').map((line, index) => (
+              <Typography
+                variant="body1"
+                sx={{
+                  wordWrap: "break-word",
+                  mt: 2,
+                  maxHeight: "100px",
+                  overflowY: "auto",
+                  padding: "10px 0 0 0",
+                }}
+              >
+                {selectedInquiry.content.split("\n").map((line, index) => (
                   <React.Fragment key={index}>
                     {line}
                     <br />
                   </React.Fragment>
                 ))}
               </Typography>
-
             </>
-
           )}
         </Box>
 
@@ -148,54 +197,52 @@ export default function InquiryMain() {
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
             {isEditing ? (
               <>
-                <Button
+                <StyledPrimaryButton
                   startIcon={<SaveIcon />}
-                  color="primary"
-                  variant="outlined"
+                  variant="contained"
                   sx={{ mr: 1 }}
-                  onClick={() => updateInquiry(inquiryNo, editedTitle, editedContent)}
+                  onClick={() =>
+                    updateInquiry(inquiryNo, editedTitle, editedContent)
+                  }
                 >
                   저장
-                </Button>
-                <Button
+                </StyledPrimaryButton>
+                <StyledSecondaryButton
                   startIcon={<CancelIcon />}
-                  color="error"
-                  variant="outlined"
+                  variant="contained"
                   onClick={() => {
-                    setIsEditing(false)
-                    setEditedContent(selectedInquiry.content)
-                    setEditedTitle(selectedInquiry.title)
+                    setIsEditing(false);
+                    setEditedContent(selectedInquiry.content);
+                    setEditedTitle(selectedInquiry.title);
                   }}
                 >
                   취소
-                </Button>
+                </StyledSecondaryButton>
               </>
             ) : (
               <>
-                <Button
+                <StyledPrimaryButton
                   startIcon={<EditIcon />}
-                  color="primary"
-                  variant="outlined"
+                  variant="contained"
                   sx={{ mr: 1 }}
                   onClick={() => setIsEditing(true)}
                 >
                   수정
-                </Button>
-                <Button
+                </StyledPrimaryButton>
+                <StyledSecondaryButton
                   startIcon={<DeleteIcon />}
-                  color="error"
-                  variant="outlined"
+                  variant="contained"
                   onClick={() => deleteInquiry(inquiryNo)}
                 >
                   삭제
-                </Button>
+                </StyledSecondaryButton>
               </>
             )}
           </Box>
         )}
 
         {/* 목록으로 가기 버튼 */}
-        <Button
+        <StyledBackButton
           component="a"
           href="/board/inquiry"
           startIcon={<ArrowBackIcon />}
@@ -203,44 +250,65 @@ export default function InquiryMain() {
           sx={{ mt: 2 }}
         >
           목록으로 가기
-        </Button>
+        </StyledBackButton>
       </Box>
     </Box>
   );
 
   function deleteInquiry(inquiryNo) {
     if (window.confirm("정말 삭제하시겠습니까?")) {
-      axios.delete("https://i9a203.p.ssafy.io/backapi/api/v1/inquiry/" + inquiryNo,
-        {
-          headers: {
-            "AccessToken": "Bearer " + accessToken
+      axios
+        .delete(
+          "https://i9a203.p.ssafy.io/backapi/api/v1/inquiry/" + inquiryNo,
+          {
+            headers: {
+              AccessToken: "Bearer " + accessToken,
+            },
           }
-        }).then((response) => {
-            window.location.href = "/board/inquiry"
+        )
+        .then((response) => {
+          window.location.href = "/board/inquiry";
           alert(response.data.msg);
-
-        })
+        });
     }
   }
 
   async function updateInquiry(inquiryNo, editedTitle, editedContent) {
-    if (window.confirm("변경된 내용을 저장하시겠습니까?")) {
+    if (!editedTitle || editedTitle.trim() === "") {
+      alert("제목을 작성해주세요.");
+      titleInputRef.current.focus();
+      return;
+    } else if (!editedContent || editedContent.trim() === "") {
+      alert("내용을 작성해주세요.");
+      contentInputRef.current.focus();
+      return;
+    }
 
-      await axios.put("https://i9a203.p.ssafy.io/backapi/api/v1/inquiry/" + inquiryNo,
-        {
-          title: editedTitle,
-          content: editedContent
-        },
-        {
-          headers: {
-            "AccessToken": "Bearer " + accessToken
+    if (window.confirm("변경된 내용을 저장하시겠습니까?")) {
+      await axios
+        .put(
+          "https://i9a203.p.ssafy.io/backapi/api/v1/inquiry/" + inquiryNo,
+          {
+            title: editedTitle,
+            content: editedContent,
+          },
+          {
+            headers: {
+              AccessToken: "Bearer " + accessToken,
+            },
           }
-        }).then((response) => {
+        )
+        .then((response) => {
           setIsEditing(false);
           setSelectedInquiry(response.data);
-        }).then(() => {
-          setEditedDate("작성 시간 : " + formatDateTime(selectedInquiry.modifiedTime * 1000) + " (수정됨)");
         })
+        .then(() => {
+          setEditedDate(
+            "작성 시간 : " +
+            formatDateTime(selectedInquiry.modifiedTime * 1000) +
+            " (수정됨)"
+          );
+        });
     }
   }
 

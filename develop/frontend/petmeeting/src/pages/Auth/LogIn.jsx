@@ -129,7 +129,7 @@ export default function Login() {
       container
       justifyContent="center"
       alignItems="center"
-      style={{ height: "100vh" }}
+      style={{ height: "100vh", backgroundColor: "#f5f5f5" }}
     >
       <Grid item xs={11} md={4}>
         <Paper elevation={3} style={{ padding: "20px" }}>
@@ -147,8 +147,8 @@ export default function Login() {
               />
               {/* <LockOutlinedIcon /> */}
             </Avatar>
-            <Typography variant="h5" style={{ marginTop: "12px" }}>
-              Login
+            <Typography variant="h5" style={{ marginTop: "12px", fontWeight: "bold" }}>
+              로그인
             </Typography>
           </Box>
 
@@ -174,6 +174,14 @@ export default function Login() {
               InputProps={{
                 startAdornment: <LockOutlinedIcon />,
               }}
+              sx={{
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--yellow8)",
+                },
+              }}
+              InputLabelProps={{
+                style: { color: "var(--yellow9)" },
+              }}
             />
             <TextField
               fullWidth
@@ -187,6 +195,14 @@ export default function Login() {
               InputProps={{
                 startAdornment: <LockOutlinedIcon />,
               }}
+              sx={{
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--yellow8)",
+                },
+              }}
+              InputLabelProps={{
+                style: { color: "var(--yellow9)" },
+              }}
             />
 
             <Button
@@ -194,7 +210,7 @@ export default function Login() {
               variant="contained"
               color="primary"
               fullWidth
-              style={{ marginTop: "15px" }}
+              style={{ marginTop: "15px", backgroundColor: "#b9a178", fontWeight: "bold"  }}
             >
               로그인
             </Button>
@@ -204,7 +220,7 @@ export default function Login() {
               variant="text"
               color="primary"
               fullWidth
-              style={{ marginTop: "10px" }}
+              style={{ marginTop: "10px" , backgroundColor: "#b9a178", fontWeight: "bold", color: "white" }}
               // 회원가입 모달을 여는 함수나 회원가입 페이지로 이동하는 로직을 여기에 넣으세요.
             >
               회원가입

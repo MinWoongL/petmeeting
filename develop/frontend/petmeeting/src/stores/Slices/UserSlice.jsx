@@ -5,10 +5,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   avatarUrl:
     "https://www.urbanbrush.net/web/wp-content/uploads/edd/2019/01/urbanbrush-20190108131811238895.png",
-  userId: "Duhee",
+  userId: "Duhui",
   password: "",
   points: 0,
-  holdingPoint: 0,
+  holdingPoint: 1,
   holdingToken: 0,
 
   isLoggedIn: false,
@@ -49,6 +49,10 @@ const userSlice = createSlice({
     setPassword: (state, action) => {
       state.password = action.payload;
     },
+    updatePointsAndTokens: (state, action) => {
+      state.holdingPoint = action.payload.points;
+      state.holdingToken = action.payload.tokens;
+    },
     // 여기에 추가적인 액션을 정의할 수 있습니다.
   },
 });
@@ -60,6 +64,7 @@ export const {
   updateNickName,
   setPassword,
   resetToInitialState,
+  updatePointsAndTokens,
 } = userSlice.actions;
 
 export default userSlice.reducer;

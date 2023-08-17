@@ -16,7 +16,7 @@ import UserVideoComponent from './OpenVidu/UserVideoComponent'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
-function BroadCastingView({ timerLimit = 20, isLiveSession = false, token }) {
+function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
   const dispatch = useDispatch();
 
   const [seconds, setSeconds] = useState(timerLimit);
@@ -36,6 +36,7 @@ function BroadCastingView({ timerLimit = 20, isLiveSession = false, token }) {
   const sessionInstance2 = useSelector(state => state.session.sessionInstance)
   const subscribers2 = useSelector(state => state.session.subscribers)
   const [subscribers, setSubscribers] = useState([]);
+  const [shelterNo, setshelterNo] = useState(null);
 
   const navigate = useNavigate();
 
@@ -69,6 +70,7 @@ function BroadCastingView({ timerLimit = 20, isLiveSession = false, token }) {
     axios.get("https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/shelter")
       .then(response => {
         const shelterNo = response.data.shelterNo;
+        setshelterNo(shelterNo)
         
         // localStorage에서 user 데이터 파싱
         let userData;
@@ -144,9 +146,40 @@ function BroadCastingView({ timerLimit = 20, isLiveSession = false, token }) {
   };
 
   const handlePlayClick = () => {
-    setIsPlaying(true);
-    setSeconds(timerLimit);
-    dispatch(setshowDevice(true));
+    const token = JSON.parse(sessionStorage.getItem("token"));
+    const accessToken = token.accessToken
+
+    axios.post(`https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/request/${shelterNo}`, {}, {
+    headers: {
+      AccessToken: `Bearer ${accessToken}`
+    }
+  })
+  .then(response => {
+    if (response.status === 200) {
+      setIsPlaying(true);
+      setSeconds(timerLimit);
+      dispatch(setshowDevice(true));
+      console.log('기기조작요청 response', response)
+      console.log('놀아주기 요청이 성공적으로 전송되었습니다.');
+    }
+    
+  })
+  .catch(error => {
+    if (error.response && error.response.status) {
+      switch (error.response.status) {
+        case 403:
+          alert('이미 다른분과 놀고있어요');
+          break;
+        case 409:
+          alert('토큰이 부족해요');
+          break;
+        default:
+          console.error('놀아주기 요청 전송 중 오류 발생:', error);
+      }
+    } else {
+      console.error('놀아주기 요청 전송 중 오류 발생:', error);
+    }
+  });
   };
 
   const handleConfirmOpen = () => {
@@ -158,16 +191,29 @@ function BroadCastingView({ timerLimit = 20, isLiveSession = false, token }) {
   };
 
   const handleConfirmStop = () => {
-    setIsPlaying(false);
-    setSeconds(timerLimit);
-    dispatch(setshowDevice(false));
-    setConfirmDialog(false);
+    const token = JSON.parse(sessionStorage.getItem("token"));
+    const accessToken = token.accessToken;
+  
+    axios.delete(`https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/request/${shelterNo}`, {
+      headers: {
+        AccessToken: `Bearer ${accessToken}`
+      },
+    })
+    .then(response => {
+      setIsPlaying(false);
+      setSeconds(timerLimit);
+      dispatch(setshowDevice(false));
+      setConfirmDialog(false);
+    })
+    .catch(error => {
+      console.error("놀기 종료 중 오류 발생:", error);
+      console.log(accessToken);
+    });
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-
   
 
   return (

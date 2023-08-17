@@ -266,36 +266,42 @@ const ShelterMypageProfile = ({
         <CardContent>
           <Box
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Avatar
-                sx={{ mr: 2 }}
-                src={isEditing ? editData.image : profile.image}
-              />
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Avatar sx={{ mr: 2 }} src={isEditing ? editData.image : profile.image} />
               <Typography variant="h5">
                 {isEditing ? editData.name : profile.name}
               </Typography>
             </Box>
-            {showEditButton && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {showEditButton && (
+                <Button
+                  variant="contained"
+                  onClick={isEditing ? handleSave : handleEdit}
+                  style={{
+                    backgroundColor: 'var(--yellow5)',
+                    color: 'var(--dark)',
+                    marginRight: '8px',
+                  }}
+                >
+                  {isEditing ? 'Save' : 'Edit'}
+                </Button>
+              )}
               <Button
-                variant="outlined"
-                color="primary"
-                onClick={isEditing ? handleSave : handleEdit}
+                variant="contained"
+                onClick={displayDogSelectionModal}
+                style={{
+                  backgroundColor: 'var(--yellow5)',
+                  color: 'var(--dark)',
+                }}
               >
-                {isEditing ? "Save" : "Edit"}
+                방송하기
               </Button>
-            )}
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={displayDogSelectionModal}
-            >
-              방송하기
-            </Button>
+            </Box>
           </Box>
           <Divider sx={{ my: 2 }} />
           {isEditing ? (
@@ -380,10 +386,10 @@ const ShelterMypageProfile = ({
         <Box
           sx={{
             padding: 2,
-            maxWidth: "80%",
-            margin: "5% auto",
-            backgroundColor: "white",
-            outline: "none",
+            maxWidth: '80%',
+            margin: '5% auto',
+            backgroundColor: 'white',
+            outline: 'none',
           }}
         >
           <Typography variant="h6" marginBottom="1rem">
@@ -404,20 +410,6 @@ const ShelterMypageProfile = ({
                     image={`${config.baseURL}/api/v1/image/${dog.imagePath}?option=dog`}
                     alt={dog.name}
                   />
-                  {/* <CardContent>
-                    <Typography variant="body2" color="text.secondary">
-                      {`Dog Size: ${dog.dogSize}`}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {`Gender: ${dog.gender}`}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {`Weight: ${dog.weight}`}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {`Age: ${dog.age}`}
-                    </Typography>
-                  </CardContent> */}
                 </Card>
               ))}
             </Box>

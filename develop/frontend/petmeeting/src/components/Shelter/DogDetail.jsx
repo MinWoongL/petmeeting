@@ -23,6 +23,10 @@ const DogDetail = ({ shelterNo }) => {
     event.stopPropagation(); // 이벤트 전파 중단
     // 좋아요 동작 처리
   };
+  const isUser = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user && user.userType === '사용자';
+  };
 
   useEffect(() => {
     console.log(shelterNo, "쉘터넘 엑시오스");
@@ -74,14 +78,14 @@ const DogDetail = ({ shelterNo }) => {
                   {/* More fields can be added here */}
                 </CardContent>
                 {/* Additional content... */}
-                <CardActions disableSpacing>
-                  <LikeButton dogNo={dog.dogNo} />{" "}
-                  {/* LikeButton 컴포넌트 사용 */}
-                  <BookmarkButton dogNo={dog.dogNo}>
-                    {" "}
-                    <ShareIcon />
-                  </BookmarkButton>
-                </CardActions>
+                {isUser() && (
+                  <CardActions disableSpacing>
+                    <LikeButton dogNo={dog.dogNo} />
+                    <BookmarkButton dogNo={dog.dogNo}>
+                      <ShareIcon />
+                    </BookmarkButton>
+                  </CardActions>
+                )}
               </Card>
             </Link>
           ))}

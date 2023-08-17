@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { config } from "../../static/config";
+import { Link } from "react-router-dom";
 
 function RankSide() {
   const [dogs, setDogs] = useState([]);
@@ -32,12 +33,13 @@ function RankSide() {
     }
   };
 
+  const fetchData = async () => {
+    const fetchedData = await fetchDogData();
+    setDogs(fetchedData || []);
+  };
+
   useEffect(() => {
-      const fetchData = async () => {
-        const fetchedData = await fetchDogData();
-        setDogs(fetchedData || []);
-      };
-      fetchData();
+    fetchData();
   }, []);
 
   const shuffleArray = (array) => {
@@ -49,6 +51,7 @@ function RankSide() {
   };
 
   const handleTabChange = (event, newValue) => {
+    fetchData();
     setCurrentTab(newValue);
   };
 
@@ -72,9 +75,9 @@ function RankSide() {
     >
       <Typography
         component="h1"
-        variant="h5"
+        variant="h4" // 크기를 조절
         gutterBottom
-        style={{ fontFamily: "Poor Story" }}
+        style={{ fontFamily: "Jua" }} // Jua 폰트 적용 및 색상 변경
       >
         오늘의 인기 강아지
       </Typography>
@@ -91,6 +94,8 @@ function RankSide() {
             marginBottom: "0px",
             borderBottom: "1px solid #e0e0e0",
             "& .Mui-selected": {
+              fontFamily: "Poor Story",
+              fontSize: "1.2rem",
               color: "var(--dark)",
               fontWeight: "bold",
             },
@@ -98,8 +103,10 @@ function RankSide() {
               backgroundColor: "var(--yellow7)",
             },
             "& .MuiTab-root": {
+              fontFamily: "Poor Story",
+              fontSize: "1.2rem",
               "&:hover": {
-                backgroundColor: "var(--yellow8)", // Or any other hover effect you want
+                backgroundColor: "var(--yellow8)",
               },
             },
           }}
@@ -110,10 +117,23 @@ function RankSide() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontWeight: "bold" }}>강아지</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>이름</TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                좋아요
+              <TableCell
+                sx={{
+                  fontWeight: "bold",
+                  fontFamily: "Poor Story",
+                  fontSize: "1.2rem",
+                }}
+              >
+                강아지
+              </TableCell>
+              <TableCell
+                sx={{
+                  fontWeight: "bold",
+                  fontFamily: "Poor Story",
+                  fontSize: "1.2rem",
+                }}
+              >
+                이름
               </TableCell>
             </TableRow>
           </TableHead>
@@ -124,11 +144,23 @@ function RankSide() {
                   <Avatar
                     src={`https://i9a203.p.ssafy.io/backapi/api/v1/image/${dog.imagePath}?option=dog`}
                     alt={dog.name}
-                    sx={{ width: 60, height: 60 }}
+                    sx={{ width: 60, height: 60, border: "2px solid #FF5733" }} // 보더 추가
                   />
                 </TableCell>
-                <TableCell>{dog.name}</TableCell>
-                <TableCell align="right">{dog.likes}</TableCell>
+                <TableCell
+                  sx={{ fontFamily: "Poor Story", fontSize: "1.1rem" }}
+                >
+                  <Link
+                    to={`/dog/${dog.dogNo}`}
+                    style={{
+                      textDecoration: "none",
+                      color: "inherit",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {dog.name}
+                  </Link>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

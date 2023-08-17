@@ -9,10 +9,10 @@ import {
   Container,
   Box,
   Typography,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import ImageUploadButton from "../components/Button/ImageUploadButton";
-
+import { config } from "../static/config";
 const RegisterDog = () => {
   const [form, setForm] = useState({
     name: "",
@@ -22,7 +22,6 @@ const RegisterDog = () => {
     age: 0,
     personality: "",
     protectionStartDate: "",
-    protectionEndDate: "",
     currentStatus: "",
     dogSpecies: "",
     reasonAbandonment: "",
@@ -30,8 +29,33 @@ const RegisterDog = () => {
     imagePath: "",
   });
   const [imagePath, setImagePath] = useState("");
-  const [ableToSelectDate, setAbleToSelectDate] = useState(false);
+  const [selectedImage, setSelectedImage] = useState();
+  const [imageUrl, setImageUrl] = useState("");
 
+  const handleImageUpload = async () => {
+    if (!selectedImage) {
+      alert("강아지 사진을 선택해주세요");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", selectedImage);
+
+    try {
+      const response = await axios.post(
+        `${config.baseURL}/api/v1/image?option=dog`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      setImagePath(response.data);
+      setImageUrl(response.data);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     setForm((prevForm) => ({ ...prevForm, imagePath }));
@@ -41,50 +65,61 @@ const RegisterDog = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    let submitForm = { ...form };
-    if (submitForm.protectionStartDate) {
-      submitForm.protectionStartDate = new Date(
-        submitForm.protectionStartDate
-      ).getTime();
-    }
-    if (submitForm.protectionEndDate) {
-      submitForm.protectionEndDate = new Date(
-        submitForm.protectionEndDate
-      ).getTime();
+
+    const newImageUrl = await handleImageUpload();
+
+    // Check if any required fields are empty or null
+    if (
+      !form.name ||
+      !form.dogSize ||
+      !form.gender ||
+      form.weight === null ||
+      form.age === null ||
+      !form.personality ||
+      !form.protectionStartDate ||
+      form.isInoculated === null ||
+      !form.currentStatus ||
+      !form.dogSpecies ||
+      !form.reasonAbandonment ||
+      !newImageUrl
+    ) {
+      alert("필수 항목을 모두 입력해주세요.");
+      return;
     }
 
+    let submitForm = { ...form };
+    submitForm.protectionStartDate = new Date(
+      submitForm.protectionStartDate
+    ).getTime();
+
     const token = JSON.parse(sessionStorage.getItem("token"));
-    // Create the header
     const config = {
       headers: { AccessToken: `Bearer ${token.accessToken}` },
     };
+
     try {
-      console.log("레지스터도그 실행");
-      console.log(submitForm);
       let jjinForm = { ...submitForm };
-      jjinForm.imagePath = `${form.imagePath}`;
+      jjinForm.imagePath = newImageUrl;
 
       const response = await axios.post(
         "https://i9a203.p.ssafy.io/backapi/api/v1/dog",
-
         jjinForm,
         config
       );
 
       if (response.status === 201) {
-        console.log("갈거지?");
         navigate(-1);
-        console.log("성공했는데 네비게이트 안됨...?");
       }
     } catch (error) {
-      console.log(error.data);
       console.error("Failed to register the dog:", error);
     }
   };
 
   const handleChange = (event) => {
-    if(event.target.name === "protectionStartDate") {
-      setAbleToSelectDate(true);
+    if (event.target.name === "age" || event.target.name === "weight") {
+      event.target.value = event.target.value < 0 ? 0 : event.target.value;
+      event.target.value = event.target.value > 100 ? 100 : event.target.value;
+      event.target.value = Math.floor(event.target.value);
     }
 
     setForm({
@@ -102,17 +137,29 @@ const RegisterDog = () => {
         <Typography component="h1" variant="h5">
           유기견 등록하기
         </Typography>
+        <Typography variant="body2" color="textSecondary" gutterBottom>
+          이미지를 포함하여 * 표시 된 항목은 필수로 입력해주셔야 합니다.
+        </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            label="Name"
+            label="이름"
             name="name"
             value={form.name}
             onChange={handleChange}
             autoFocus
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             select
@@ -120,10 +167,19 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Dog Size"
+            label="크기"
             name="dogSize"
             value={form.dogSize}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           >
             <MenuItem value="소형">소형견</MenuItem>
             <MenuItem value="중형">중형견</MenuItem>
@@ -135,10 +191,19 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Gender"
+            label="성별"
             name="gender"
             value={form.gender}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           >
             <MenuItem value="M">남</MenuItem>
             <MenuItem value="F">여</MenuItem>
@@ -148,64 +213,87 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Weight"
+            label="무게 (정수 단위로 입력해주세요)"
             name="weight"
             type="number"
             value={form.weight}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            label="Age"
+            label="추정나이"
             name="age"
             type="number"
             value={form.age}
             onChange={handleChange}
+            step={1}
+            min={0}
+            max={100}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            label="Personality"
+            label="성격"
             name="personality"
             value={form.personality}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            label="Protection Start Date"
+            label="보호 시작 날짜"
             name="protectionStartDate"
             type="date"
             value={form.protectionStartDate}
             onChange={handleChange}
             InputProps={{
               inputProps: {
-                max: form.protectionEndDate,
+                max: new Date().toISOString().split("T")[0], // 오늘 날짜 이후의 값은 못들어가게
               },
             }}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            disabled={!ableToSelectDate}
-            required
-            fullWidth
-            label="Protection End Date"
-            name="protectionEndDate"
-            type="date"
-            value={form.protectionEndDate}
-            onChange={handleChange}
-            InputProps={{
-              inputProps: {
-                min: form.protectionStartDate,
-              },
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+              shrink: true,
             }}
           />
           <TextField
@@ -214,10 +302,19 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="isInoculated"
+            label="접종여부"
             name="isInoculated"
             value={form.isInoculated}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           >
             <MenuItem value="true">접종완료</MenuItem>
             <MenuItem value="false">미접종</MenuItem>
@@ -227,38 +324,73 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Current Status"
+            label="현재 상태"
             name="currentStatus"
             value={form.currentStatus}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            label="Dog Species"
+            label="품종"
             name="dogSpecies"
             value={form.dogSpecies}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            label="Reason for Abandonment"
+            label="유기된 이유"
             name="reasonAbandonment"
             value={form.reasonAbandonment}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body1">
-              Image Path: {form.imagePath}
-            </Typography>
-          </Box>
-          <ImageUploadButton option="dog" setImagePath={setImagePath} />
-          <Button type="submit" fullWidth variant="contained" color="primary">
+
+          <ImageUploadButton
+            setSelectedImage={setSelectedImage}
+            imageUrl={imageUrl}
+            option="dog"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            style={{
+              backgroundColor: "#948060",
+              marginTop: "15px",
+            }}
+          >
             등록하기
           </Button>
         </form>

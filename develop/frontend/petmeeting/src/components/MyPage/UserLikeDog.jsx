@@ -17,7 +17,7 @@ import LikeButton from "../Button/DogLikeButton";
 import BookmarkButton from "../Button/DogBookmarkButton";
 
 const UserLikeDog = ({ shelterNo }) => {
-  const [dogData, setDogData] = useState(null);
+  const [dogData, setDogData] = useState([]);
 
   const handleLikeClick = (reviewId, event) => {
     event.stopPropagation(); // 이벤트 전파 중단
@@ -45,7 +45,7 @@ const UserLikeDog = ({ shelterNo }) => {
 
   return (
     <div>
-      {dogData && (
+      {dogData.length > 0 ? (
         <Box display="flex" flexDirection="row" gap={2} flexWrap="wrap">
           {dogData.map((dog, index) => (
             <Link
@@ -77,14 +77,10 @@ const UserLikeDog = ({ shelterNo }) => {
                   <Typography variant="body2" color="text.secondary">
                     {`Age: ${dog.age}`}
                   </Typography>
-                  {/* More fields can be added here */}
                 </CardContent>
-                {/* Additional content... */}
                 <CardActions disableSpacing>
-                  <LikeButton dogNo={dog.dogNo} />{" "}
-                  {/* LikeButton 컴포넌트 사용 */}
+                  <LikeButton dogNo={dog.dogNo} />
                   <BookmarkButton dogNo={dog.dogNo}>
-                    {" "}
                     <ShareIcon />
                   </BookmarkButton>
                 </CardActions>
@@ -92,9 +88,22 @@ const UserLikeDog = ({ shelterNo }) => {
             </Link>
           ))}
         </Box>
+      ) : (
+        <Typography 
+          variant="h5" 
+          align="center" 
+          style={{ 
+            marginTop: '20px',
+            padding: '10px',
+            borderRadius: '5px',
+            border: '0px solid #e0e0e0',
+            fontFamily: 'Jua'
+          }}>
+          관심가는 친구들을 등록해주세요!
+        </Typography>
       )}
     </div>
-  );
+  );  
 };
 
 export default UserLikeDog;

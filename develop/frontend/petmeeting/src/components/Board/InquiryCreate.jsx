@@ -22,31 +22,36 @@ export default function InquiryCreate() {
     setContent(event.target.value);
   };
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!window.confirm("게시글을 등록하시겠습니까?")) return;
 
-    if (!title || !content) {
-      alert("제목과 내용을 입력해주세요.");
+    if (!title || title.trim() === "") {
+      alert("제목을 입력해주세요.");
+      return;
+    }
+    if (!content || content.trim() === "") {
+      alert("내용을 입력해주세요.");
       return;
     }
 
     try {
-
-      await axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/inquiry",
-      {
-        title: title,
-        content: content
-      },
-      {
-        headers: {
-          "AccessToken": "Bearer " + accessToken
-        }
-      }).then((response) => {
-        window.location.href="/board/inquiry/" + response.data.inquiryNo;
-      })
-
+      await axios
+        .post(
+          "https://i9a203.p.ssafy.io/backapi/api/v1/inquiry",
+          {
+            title: title,
+            content: content,
+          },
+          {
+            headers: {
+              AccessToken: "Bearer " + accessToken,
+            },
+          }
+        )
+        .then((response) => {
+          window.location.href = "/board/inquiry/" + response.data.inquiryNo;
+        });
     } catch (error) {
       console.log("에러 발생: " + error);
     }
@@ -88,6 +93,9 @@ export default function InquiryCreate() {
             value={title}
             onChange={handleTitleChange}
             sx={{ marginBottom: "16px" }}
+            inputProps={{
+              maxLength: 50,
+            }}
           />
 
           {/* 내용 */}
@@ -101,7 +109,7 @@ export default function InquiryCreate() {
               wordWrap: "break-word",
               maxHeight: "400px",
               overflowY: "auto",
-              margin: "20px 0 20px 0"
+              margin: "20px 0 20px 0",
             }}
           />
           {/* 버튼들 모음 */}
@@ -136,7 +144,6 @@ export default function InquiryCreate() {
               </Button>
             </Box>
           </Box>
-
         </form>
       </Box>
     </Box>

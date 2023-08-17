@@ -65,8 +65,8 @@ const PaymentModal = ({ open, onClose }) => {
     const requestBody = {
       selectPoint: selectPoint,
       approvalUrl: `${baseUrl}/payment/success`,
-      cancelUrl: `${baseUrl}/payment/cancel`,
-      failUrl: `${baseUrl}/payment/fail`,
+      cancelUrl: `${baseUrl}/mypage`,
+      failUrl: `${baseUrl}/mypage`,
     };
 
     axios({
@@ -81,6 +81,8 @@ const PaymentModal = ({ open, onClose }) => {
       .then((response) => {
         const url = response.data.nextRedirectPcUrl;
         setNextRedirectPcUrl(url);
+        console.log(url)
+
         window.localStorage.setItem("tid", response.data.tid);
         window.location.href = url; // 해당 경로로 이동
       })
@@ -113,7 +115,7 @@ const PaymentModal = ({ open, onClose }) => {
         <Grid container spacing={5} alignItems="flex-end">
           {tiers.map((tier, index) => (
             <Grid item key={tier.title} xs={12} sm={6} md={4}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', minHeight: 360 }}>
                 <CardHeader title={tier.title} titleTypographyProps={{ align: 'center' }} />
                 <CardMedia component="img" image={images[index]} alt={tier.title} height="140" />
                 <CardContent sx={{ flexGrow: 1 }}>
@@ -135,10 +137,10 @@ const PaymentModal = ({ open, onClose }) => {
             </Grid>
           ))}
           <Grid item xs={12} sm={6} md={4}>
-            <Card>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', minHeight: 360 }}>
               <CardHeader title={customTier.title} titleTypographyProps={{ align: 'center' }} />
               <CardMedia component="img" image={image3} alt={customTier.title} height="140" />
-              <CardContent>
+              <CardContent sx={{ flexGrow: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', mb: 2 }}>
                     <TextField
                       type="number"

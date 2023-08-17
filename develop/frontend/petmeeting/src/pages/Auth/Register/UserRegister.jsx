@@ -63,12 +63,16 @@ export default function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [userType, setUserType] = React.useState("사용자");
+  const [userId, setUserId] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
   const [userIdAvailable, setUserIdAvailable] = React.useState(null);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [imagePath, setImagePath] = React.useState("");
+  const [checkedId, setCheckedId] = React.useState("");
+
+  const [snackbarMessage, setSnackbarMessage] = React.useState("");
 
   const [selectedProfileImage, setSelectedProfileImage] = React.useState(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
@@ -112,6 +116,11 @@ export default function SignUp() {
     setPassword(event.target.value);
   };
 
+  const handleIdChange = (event) => {
+    setUserId(event.target.value);
+    setUserIdAvailable(0);
+  }
+
   const handleConfirmPasswordChange = (event) => {
     setConfirmPassword(event.target.value);
     setPasswordError(event.target.value !== password);
@@ -125,34 +134,77 @@ export default function SignUp() {
   };
 
   const handleUserIdCheck = async (userId) => {
+    if (!userId || userId.trim() === "") {
+      setSnackbarMessage("ID를 입력해주세요");
+      setSnackbarOpen(true);
+      return;
+    }
+
     try {
       const response = await axios.get(
         `https://i9a203.p.ssafy.io/backapi/api/v1/user/check/${userId}`
       );
-      console.log(response.data.result);
 
       if (!response.data.result) {
-        console.log("들어왔음");
-        // alert("아이디가 이미 사용중입니다.");
-
-        setUserIdAvailable(false);
+        setUserIdAvailable(2);
       } else {
-        handleSnackbarOpen(); // 스낵바 열기
-        setUserIdAvailable(true);
+        setCheckedId(userId);
+        setUserIdAvailable(1);
       }
     } catch (error) {
-      console.log("중복!");
       setUserIdAvailable(false);
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     const data = new FormData(event.target);
 
-    try {
-      console.log(userType);
+    if(userIdAvailable !== 1) {
+      setSnackbarMessage("중복체크를 진행해주세요");
+      setSnackbarOpen(true);
+      return;
+    }
 
+    const fieldChecks = {
+      userId: data.get("userId"),
+      password: data.get("password"),
+      confirmPassword: data.get("confirmPassword"),
+      name: data.get("name"),
+      phoneNumber: data.get("phoneNumber"),
+      location: data.get("location"),
+      siteUrl: data.get("siteUrl"),
+    };
+
+    // 필드별로 공백 체크 수행
+    if(userType === "보호소") {
+      for (const field in fieldChecks) {
+        if (!fieldChecks[field] || fieldChecks[field].trim() === "") {
+          setSnackbarMessage("모든 내용을 입력해주세요"); // 스낵바 메시지 설정
+          setSnackbarOpen(true); // 스낵바 열기
+          return; // 제출 중단
+        }
+      }
+    } else {
+      for (const field in fieldChecks) {
+        if (!fieldChecks[field] || fieldChecks[field].trim() === "") {
+          if(field === "location" || field === "siteUrl") continue;
+
+          setSnackbarMessage("모든 내용을 입력해주세요"); // 스낵바 메시지 설정
+          setSnackbarOpen(true); // 스낵바 열기
+          return; // 제출 중단
+        }
+      }
+    }
+
+    if(data.get("userId").length < 4) {
+      setSnackbarMessage("아이디는 4글자 이상 입력해주세요"); // 스낵바 메시지 설정
+      setSnackbarOpen(true); // 스낵바 열기
+      return; // 제출 중단
+    }
+
+    try {
       let postData = {
         userId: data.get("userId"),
         password: data.get("password"),
@@ -170,7 +222,6 @@ export default function SignUp() {
           siteUrl: data.get("siteUrl"),
           registImagePath: imagePath,
         };
-        console.log(postData);
       }
       const response = await axios.post(
         "https://i9a203.p.ssafy.io/backapi/api/v1/user/sign-up",
@@ -178,7 +229,6 @@ export default function SignUp() {
       );
 
       if (response.status === 201) {
-        console.log("회원가입 성공!");
         const userId = data.get("userId");
         const password = data.get("password");
 
@@ -206,7 +256,6 @@ export default function SignUp() {
 
           // console.log("axios 로직에서 터지나?1");
           if (loginResponse.status === 200) {
-            console.log("로그인 성공!");
             dispatch(
               login({
                 userId: loginResponse.data.name,
@@ -273,7 +322,7 @@ export default function SignUp() {
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
           >
-            <Grid container spacing={2}>
+            <Grid container rowSpacing={2}>
               <Grid item xs={12}>
                 <ToggleButtonGroup
                   color="primary"
@@ -344,6 +393,19 @@ export default function SignUp() {
                       label="아이디"
                       name="userId"
                       autoComplete="username"
+                      inputProps={{
+                        minLength: 4,
+                        maxLength: 15,
+                      }}
+                      onChange={handleIdChange}
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "var(--yellow8)",
+                        },
+                      }}
+                      InputLabelProps={{
+                        style: { color: "var(--yellow9)" },
+                      }}
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -356,20 +418,31 @@ export default function SignUp() {
                       variant="contained"
                       color="primary"
                       sx={{
+                        marginLeft: "10px",
                         height: "100%",
                         display: "flex",
                         alignItems: "center",
+                        backgroundColor: "#b9a178", // Set background color
+                        color: "white", // Set text color to white
+                        fontWeight: "bold", // Add bold font weight
+                        fontSize: "13px",
                       }}
                     >
                       중복확인
                     </Button>
                   </Grid>
                 </Grid>
-                {userIdAvailable === false && (
-                  <Typography variant="body2" color="error">
-                    아이디가 이미 사용 중입니다.
+                {userIdAvailable === 1 ? (
+                  <Typography variant="body2" color="green" fontSize="15px">
+                    　　사용 가능한 아이디입니다.
                   </Typography>
-                )}
+                ) : userIdAvailable === 2 ? (
+                  <Typography variant="body2" color="error" fontSize="15px">
+                    　　아이디가 이미 사용 중입니다.
+                  </Typography>
+                ) :
+                  <Typography variant="body2" color="error" fontSize="15px">　</Typography>
+                }
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -381,6 +454,18 @@ export default function SignUp() {
                   id="password"
                   onChange={handlePasswordChange}
                   autoComplete="new-password"
+                  inputProps={{
+                    minLength: 4,
+                    maxLength: 15,
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "var(--yellow8)",
+                    },
+                  }}
+                  InputLabelProps={{
+                    style: { color: "var(--yellow9)" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -396,6 +481,14 @@ export default function SignUp() {
                   helperText={
                     passwordError ? "비밀번호가 일치하지 않습니다." : ""
                   }
+                  sx={{
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "var(--yellow8)",
+                    },
+                  }}
+                  InputLabelProps={{
+                    style: { color: "var(--yellow9)" },
+                  }}
                 />
               </Grid>
 
@@ -407,6 +500,18 @@ export default function SignUp() {
                   label="닉네임"
                   name="name"
                   autoComplete="name"
+                  inputProps={{
+                    minLength: 4,
+                    maxLength: 15,
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "var(--yellow8)",
+                    },
+                  }}
+                  InputLabelProps={{
+                    style: { color: "var(--yellow9)" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -416,6 +521,17 @@ export default function SignUp() {
                   id="phoneNumber"
                   label="전화번호"
                   name="phoneNumber"
+                  inputProps={{
+                    maxLength: 13,
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "var(--yellow8)",
+                    },
+                  }}
+                  InputLabelProps={{
+                    style: { color: "var(--yellow9)" },
+                  }}
                 />
               </Grid>
               {userType === "보호소" && (
@@ -427,6 +543,17 @@ export default function SignUp() {
                       id="location"
                       label="주소"
                       name="location"
+                      inputProps={{
+                        maxLength: 15,
+                      }}
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "var(--yellow8)",
+                        },
+                      }}
+                      InputLabelProps={{
+                        style: { color: "var(--yellow9)" },
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -436,6 +563,17 @@ export default function SignUp() {
                       id="siteUrl"
                       label="홈페이지 주소"
                       name="siteUrl"
+                      inputProps={{
+                        maxLength: 20,
+                      }}
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "var(--yellow8)",
+                        },
+                      }}
+                      InputLabelProps={{
+                        style: { color: "var(--yellow9)" },
+                      }}
                     />
                   </Grid>
                   <></>
@@ -447,27 +585,24 @@ export default function SignUp() {
                   </Grid>
                 </>
               )}
-              {/* <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid> */}
             </Grid>
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{
+                mt: 3, mb: 2, backgroundColor: "#b9a178",
+                color: "white",
+                fontWeight: "bold"
+              }}
             >
               회원 가입
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
+                이미 회원이십니까? &nbsp;
                 <Link href="/login" variant="body2">
-                  이미 회원이십니까? 로그인 하러 가기
+                  로그인 하러 가기
                 </Link>
               </Grid>
             </Grid>
@@ -477,11 +612,12 @@ export default function SignUp() {
       </Container>
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)} // 스낵바 닫기
+        anchorOrigin={{ vertical: "top", horizontal: "center" }} // 스낵바 위치 수정
       >
-        <Alert onClose={handleSnackbarClose} severity="success">
-          회원가입 가능한 아이디입니다!
+        <Alert onClose={() => setSnackbarOpen(false)} severity="error">
+          {snackbarMessage}
         </Alert>
       </Snackbar>
     </ThemeProvider>

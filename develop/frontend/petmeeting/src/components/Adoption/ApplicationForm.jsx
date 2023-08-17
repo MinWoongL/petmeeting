@@ -13,10 +13,10 @@ export default function ApplicationForm() {
     petExperience: "",
     additional: "",
   });
-  
+
   const accessToken = JSON.parse(sessionStorage.getItem("token"))?.accessToken;
 
-  if(!accessToken) {
+  if (!accessToken) {
     alert("로그인이 필요합니다.");
     window.history.back();
   }
@@ -27,11 +27,12 @@ export default function ApplicationForm() {
   const [dogList, setDogList] = useState([]);
 
   useState(() => {
-    axios.get("https://i9a203.p.ssafy.io/backapi/api/v1/shelter?option=all")
+    axios
+      .get("https://i9a203.p.ssafy.io/backapi/api/v1/shelter?option=all")
       .then((response) => {
         setShelterList(response.data);
-      })
-  })
+      });
+  });
 
   const formContainerStyle = {
     display: "flex",
@@ -89,20 +90,25 @@ export default function ApplicationForm() {
     const selectedValue = event.target.value;
     setSelectedShelter(selectedValue);
     setSelectedDog("");
-  
+
     if (selectedValue === "") {
       setDogList([]); // 강아지 목록 초기화
     } else {
       try {
-        const response = await axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/dog?shelterNo=${selectedValue}`);
-        
-        setDogList(response.data);
+        const response = await axios.get(
+          `https://i9a203.p.ssafy.io/backapi/api/v1/dog?shelterNo=${selectedValue}`
+        );
+
+        setDogList(
+          response.data.filter((dog) => dog.adoptionAvailability === "입양가능")
+        );
+
+        console.log(dogList);
       } catch (error) {
         console.error("강아지 목록을 가져오는 중 오류 발생:", error);
       }
     }
   };
-  
 
   const handleDogChange = (event) => {
     setSelectedDog(event.target.value);
@@ -134,26 +140,29 @@ export default function ApplicationForm() {
       job: event.target.job.value,
       name: event.target.name.value,
       petExperience: event.target.petExperience.value,
-      residence: event.target.residence.value
+      residence: event.target.residence.value,
     };
-  
+
     for (const key in formData) {
-      if (key !== "additional" && (formData[key] === null || formData[key].trim() === "")) {
+      if (
+        key !== "additional" &&
+        (formData[key] === null || formData[key].trim() === "")
+      ) {
         alert("모든 항목을 입력해주세요.");
         return;
       }
     }
-    
-    await axios.post("https://i9a203.p.ssafy.io/backapi/api/v1/adoption", 
-    formData,
-    {
-      headers: {
-        "AccessToken": "Bearer " + accessToken
-      }
-    }).then(() => {
-      window.history.back();
-      alert("신청이 완료되었습니다.")
-    })
+
+    await axios
+      .post("https://i9a203.p.ssafy.io/backapi/api/v1/adoption", formData, {
+        headers: {
+          AccessToken: "Bearer " + accessToken,
+        },
+      })
+      .then(() => {
+        window.history.back();
+        alert("신청이 완료되었습니다.");
+      });
   };
 
   const handleEmptyField = (ref) => {
@@ -195,7 +204,9 @@ export default function ApplicationForm() {
               disabled={selectedShelter === ""}
             >
               {/* 강아지 목록 */}
-              <option value="" disabled={!selectedShelter}>선택</option>
+              <option value="" disabled={!selectedShelter}>
+                선택
+              </option>
               {dogList.map((dog) => (
                 <option key={dog.dogNo} value={dog.dogNo}>
                   {dog.name}
@@ -205,7 +216,7 @@ export default function ApplicationForm() {
           </label>
           <br />
           <label>
-            이름:
+            신청자 이름:
             <input
               type="text"
               name="name"
@@ -214,11 +225,14 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 홍길동"
               ref={nameInputRef}
+              inputProps={{
+                maxLength: 10,
+              }}
             />
           </label>
           <br />
           <label>
-            성별:
+            신청자 성별:
             <select
               name="gender"
               value={formData.gender}
@@ -233,7 +247,7 @@ export default function ApplicationForm() {
           </label>
           <br />
           <label>
-            나이:
+            신청자 나이:
             <input
               type="number"
               name="age"
@@ -242,6 +256,9 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 28"
               ref={ageInputRef}
+              min={0}
+              max={100}
+              step={1}
             />
           </label>
           <br />
@@ -255,6 +272,9 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 010-1234-5678"
               ref={phoneNumberInputRef}
+              inputProps={{
+                maxLength: 13,
+              }}
             />
           </label>
           <br />
@@ -268,6 +288,9 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 오후 5시"
               ref={callTimeInputRef}
+              inputProps={{
+                maxLength: 20,
+              }}
             />
           </label>
           <br />
@@ -281,6 +304,9 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 경기, 서울 등"
               ref={residenceInputRef}
+              inputProps={{
+                maxLength: 15,
+              }}
             />
           </label>
           <br />
@@ -294,6 +320,9 @@ export default function ApplicationForm() {
               onChange={handleInputChange}
               placeholder="ex) 무직, 자영업 등"
               ref={jobInputRef}
+              inputProps={{
+                maxLength: 15,
+              }}
             />
           </label>
           <br />
@@ -317,14 +346,25 @@ export default function ApplicationForm() {
             <textarea
               name="additional"
               value={formData.additional}
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                resize: "none",
+                width: "95%",
+                height: "30px",
+                overflowY: "auto",
+              }}
               onChange={handleInputChange}
               placeholder="자유롭게 입력해주세요"
+              
             />
           </label>
           <br />
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button type="button" style={cancelButtonStyle} onClick={handleCancel}>
+            <button
+              type="button"
+              style={cancelButtonStyle}
+              onClick={handleCancel}
+            >
               취소
             </button>
             <button

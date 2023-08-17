@@ -7,6 +7,8 @@ import {
   Typography,
   Button,
   TextField,
+  Grid,
+  Pagination
 } from "@mui/material";
 import axios from "axios";
 import { config } from "../../static/config";
@@ -66,8 +68,20 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
   );
 
   return (
-    <Box sx={{ border: "1px solid black" }}>
-      <Card sx={{ display: "flex", flexDirection: "row" }}>
+    <Box
+      sx={{
+        border: "1px solid black",
+        backgroundColor: "var(--yellow8)", // Set background color to yellow8
+        marginBottom: "16px", // Add margin bottom
+      }}
+    >
+      <Card
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          minHeight: "200px", // Set minimum height for the card
+        }}
+      >
         <CardContent sx={{ flex: "1 0 auto" }}>
           {isEditing ? (
             <>
