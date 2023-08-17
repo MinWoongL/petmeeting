@@ -398,6 +398,14 @@ export default function SignUp() {
                         maxLength: 15,
                       }}
                       onChange={handleIdChange}
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "var(--yellow8)",
+                        },
+                      }}
+                      InputLabelProps={{
+                        style: { color: "var(--yellow9)" },
+                      }}
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -450,6 +458,14 @@ export default function SignUp() {
                     minLength: 4,
                     maxLength: 15,
                   }}
+                  sx={{
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "var(--yellow8)",
+                    },
+                  }}
+                  InputLabelProps={{
+                    style: { color: "var(--yellow9)" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -465,6 +481,14 @@ export default function SignUp() {
                   helperText={
                     passwordError ? "비밀번호가 일치하지 않습니다." : ""
                   }
+                  sx={{
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "var(--yellow8)",
+                    },
+                  }}
+                  InputLabelProps={{
+                    style: { color: "var(--yellow9)" },
+                  }}
                 />
               </Grid>
 
@@ -480,6 +504,14 @@ export default function SignUp() {
                     minLength: 4,
                     maxLength: 15,
                   }}
+                  sx={{
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "var(--yellow8)",
+                    },
+                  }}
+                  InputLabelProps={{
+                    style: { color: "var(--yellow9)" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -491,6 +523,14 @@ export default function SignUp() {
                   name="phoneNumber"
                   inputProps={{
                     maxLength: 13,
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "var(--yellow8)",
+                    },
+                  }}
+                  InputLabelProps={{
+                    style: { color: "var(--yellow9)" },
                   }}
                 />
               </Grid>
@@ -506,6 +546,14 @@ export default function SignUp() {
                       inputProps={{
                         maxLength: 15,
                       }}
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "var(--yellow8)",
+                        },
+                      }}
+                      InputLabelProps={{
+                        style: { color: "var(--yellow9)" },
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -517,6 +565,14 @@ export default function SignUp() {
                       name="siteUrl"
                       inputProps={{
                         maxLength: 20,
+                      }}
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "var(--yellow8)",
+                        },
+                      }}
+                      InputLabelProps={{
+                        style: { color: "var(--yellow9)" },
                       }}
                     />
                   </Grid>

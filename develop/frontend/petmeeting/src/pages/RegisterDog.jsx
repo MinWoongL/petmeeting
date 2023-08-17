@@ -57,11 +57,6 @@ const RegisterDog = () => {
     }
   };
 
-    
-  
-  
-
-
   useEffect(() => {
     setForm((prevForm) => ({ ...prevForm, imagePath }));
   }, [imagePath]);
@@ -151,6 +146,14 @@ const RegisterDog = () => {
             value={form.name}
             onChange={handleChange}
             autoFocus
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "var(--yellow8)",
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             select
@@ -162,6 +165,14 @@ const RegisterDog = () => {
             name="dogSize"
             value={form.dogSize}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "var(--yellow8)",
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           >
             <MenuItem value="소형">소형견</MenuItem>
             <MenuItem value="중형">중형견</MenuItem>
@@ -177,6 +188,14 @@ const RegisterDog = () => {
             name="gender"
             value={form.gender}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "var(--yellow8)",
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           >
             <MenuItem value="M">남</MenuItem>
             <MenuItem value="F">여</MenuItem>
@@ -191,6 +210,14 @@ const RegisterDog = () => {
             type="number"
             value={form.weight}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "var(--yellow8)",
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             variant="outlined"
@@ -205,6 +232,14 @@ const RegisterDog = () => {
             step={1}
             min={0}
             max={100}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "var(--yellow8)",
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             variant="outlined"
@@ -215,6 +250,14 @@ const RegisterDog = () => {
             name="personality"
             value={form.personality}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "var(--yellow8)",
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             variant="outlined"
@@ -231,6 +274,14 @@ const RegisterDog = () => {
                 max: new Date().toISOString().split('T')[0], // 오늘 날짜 이후의 값은 못들어가게
               },
             }}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "var(--yellow8)",
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             select
@@ -242,6 +293,14 @@ const RegisterDog = () => {
             name="isInoculated"
             value={form.isInoculated}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "var(--yellow8)",
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           >
             <MenuItem value="true">접종완료</MenuItem>
             <MenuItem value="false">미접종</MenuItem>
@@ -255,6 +314,14 @@ const RegisterDog = () => {
             name="currentStatus"
             value={form.currentStatus}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "var(--yellow8)",
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             variant="outlined"
@@ -265,6 +332,14 @@ const RegisterDog = () => {
             name="dogSpecies"
             value={form.dogSpecies}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "var(--yellow8)",
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           <TextField
             variant="outlined"
@@ -275,6 +350,14 @@ const RegisterDog = () => {
             name="reasonAbandonment"
             value={form.reasonAbandonment}
             onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "var(--yellow8)",
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "var(--yellow9)" },
+            }}
           />
           
           <ImageUploadButton
@@ -282,7 +365,11 @@ const RegisterDog = () => {
         imageUrl={imageUrl}
         option="dog"
       />
-      <Button type="submit" fullWidth variant="contained" color="primary">
+      <Button type="submit" fullWidth variant="contained" 
+      style={{ 
+        backgroundColor: "#948060",
+        marginTop: "15px" 
+        }}>
         등록하기
       </Button>
         </form>

@@ -8,6 +8,7 @@ function InquiryList(props) {
         <div 
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
+            style={{ color: "black" }}
         >
             <div>{props.inquiry.title}</div>
         </div>

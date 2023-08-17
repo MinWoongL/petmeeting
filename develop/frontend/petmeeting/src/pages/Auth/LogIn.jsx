@@ -174,6 +174,14 @@ export default function Login() {
               InputProps={{
                 startAdornment: <LockOutlinedIcon />,
               }}
+              sx={{
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--yellow8)",
+                },
+              }}
+              InputLabelProps={{
+                style: { color: "var(--yellow9)" },
+              }}
             />
             <TextField
               fullWidth
@@ -186,6 +194,14 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               InputProps={{
                 startAdornment: <LockOutlinedIcon />,
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--yellow8)",
+                },
+              }}
+              InputLabelProps={{
+                style: { color: "var(--yellow9)" },
               }}
             />
 
