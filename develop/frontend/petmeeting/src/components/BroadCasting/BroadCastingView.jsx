@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import UserVideoComponent from './OpenVidu/UserVideoComponent'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios'
 
 const commandMapping = {
@@ -23,6 +23,8 @@ const commandMapping = {
 
 function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getshelterNo }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [seconds, setSeconds] = useState(timerLimit);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -43,8 +45,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
   const [subscribers, setSubscribers] = useState([]);
   const publisherFromStore = useSelector(state => state.session.publisher);
 
-  const navigate = useNavigate();
-
+  
 
   // useEffect를 사용하여 페이지가 처음 렌더링될 때 connect 함수 호출
   useEffect(() => {
@@ -101,7 +102,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
         // 사용자에게 새로고침/페이지 이탈 시 경고 메시지를 표시
         e.returnValue = 'Are you sure you want to leave?';
 
-        // 루트 경로로 이동
+        // 루트 경로로 이동(여기서 실행안됌)
         navigate('/');
     };
 
@@ -113,6 +114,37 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
         window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [sessionInstance2, navigate]);
+
+
+  
+  useEffect(() => {
+    const currentPath = location.pathname;
+
+    return () => {
+      if (location.pathname !== currentPath) {
+        // 주소가 변경되었을 때
+
+        // OpenVidu 세션 종료
+        if (sessionInstance2) {
+          sessionInstance2.disconnect();
+        }
+
+        // axios.delete 요청
+        const token = JSON.parse(sessionStorage.getItem("token"));
+        const accessToken = token?.accessToken;
+        try {
+            axios.delete('https://i9a203.p.ssafy.io/backapi/api/v1/broadcast', {
+                headers: {
+                    AccessToken: `Bearer ${accessToken}`
+                }
+            });
+        } catch (error) {
+            console.error("Axios delete 요청 중 오류 발생:", error);
+        }
+      }
+    };
+  }, [location, sessionInstance2]);
+
 
 
   useEffect(() => {
@@ -147,7 +179,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
   }, [isPlaying]);
 
   useEffect(() => {
-    if (isLiveSession && token) {
+    if (isLiveSession && token && sessionInstance2) {
       const sessionInstance = sessionInstance2;
 
       sessionInstance.on('streamCreated', (event) => {
@@ -169,9 +201,11 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
           }
       };
     } else {
-        console.log('문제있는상태');
-        console.log('isLiveSession', isLiveSession);
-        console.log('받은token:', token);
+      // 새로고침시 이동은 여기서 실행중
+      navigate('/')
+      console.log('문제있는상태');
+      console.log('isLiveSession', isLiveSession);
+      console.log('받은token:', token);
     }
   }, [isLiveSession, token, sessionInstance2]);
 
@@ -192,9 +226,6 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
         setIsUserMatched(true);
       } else {
         console.log("getshelterNo와 userNo가 일치하지 않습니다.");
-        console.log(getshelterNo);
-        console.log(userData);
-        console.log(userNo);
       }
     }
     
@@ -236,7 +267,6 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
   const handleStopBroadcast = () => {
     const token = JSON.parse(sessionStorage.getItem("token"));
     const accessToken = token?.accessToken
-
 
     axios.delete('https://i9a203.p.ssafy.io/backapi/api/v1/broadcast', {
       headers: {

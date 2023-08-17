@@ -197,7 +197,6 @@ function BroadCastingMain() {
                 setVideoTitles(titles);
                 setVideoThumbnails(thumbnails);
                 setVideoDescriptions(descriptions);
-                console.log('로컬스토리지에서 받아옴');
                 return;
             }
 
