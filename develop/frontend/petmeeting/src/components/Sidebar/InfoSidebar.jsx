@@ -18,6 +18,7 @@ import {
 import MuiAlert from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
 import { logout, updateNickName } from "../../stores/Slices/UserSlice";
+import { BorderColor } from "@mui/icons-material";
 
 function InfoSidebar() {
   const user = useSelector((state) => state.user);
@@ -193,19 +194,19 @@ function InfoSidebar() {
           </form>
         )}
 
-        <Box mt={3} width="100%">
+        <Box mt={4} width="100%">
           <Button
             variant="contained"
-            color="primary"
             fullWidth
             onClick={handleMyPageClick}
+            style={{ backgroundColor: 'var(--yellow9)', fontWeight: 'bold' }}
           >
-            마이페이지
+            마이 페이지
           </Button>
           <Button
-            variant="outlined"
+            variant="contained"
             fullWidth
-            style={{ marginTop: "10px" }}
+            style={{ marginTop: "10px", backgroundColor: 'var(--yellow6)', fontWeight: 'bold' }}
             onClick={Logout}
           >
             로그아웃
