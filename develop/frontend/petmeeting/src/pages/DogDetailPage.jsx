@@ -14,7 +14,8 @@ import {
 import { config } from "../static/config";
 import { Snackbar, Alert } from "@mui/material";
 import DogDonationImage from "../assets/images/dogmoney.png";
-
+import { useDispatch } from "react-redux";
+import { setPoint } from "../stores/Slices/pointSlice";
 const modalStyle = {
   display: "flex",
   alignItems: "center",
@@ -22,6 +23,7 @@ const modalStyle = {
 };
 
 const DogDetailPage = () => {
+  const dispatch = useDispatch();
   const { dogId } = useParams();
   const [dogDetails, setDogDetails] = useState(null);
   const [donationAmount, setDonationAmount] = useState(""); // State for donation amount input
@@ -85,6 +87,7 @@ const DogDetailPage = () => {
       setError(""); // Clear any previous error messages
       setSnackbarMessage("후원에 성공했습니다!");
       setSnackbarOpen(true);
+      dispatch(setPoint(response.data.holdingPoint));
     } catch (error) {
       if (error.response.status === 403) {
         setError("후원 할 포인트가 충분하지 않습니다.");

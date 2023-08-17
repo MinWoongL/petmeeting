@@ -26,6 +26,8 @@ function InfoSidebar() {
   const [holdingPoint, setHoldingPoint] = useState(0);
   const [holdingToken, setHoldingToken] = useState(0);
   const [userGroup, setUserGroup] = useState("user");
+  const pointFromStore = useSelector((state) => state.point);
+
   const handleMyPageClick = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -35,6 +37,12 @@ function InfoSidebar() {
       navigate("/mypage");
     }
   };
+
+  useEffect(() => {
+    if (pointFromStore !== holdingPoint) {
+      setHoldingPoint(pointFromStore);
+    }
+  }, [pointFromStore]);
 
   useEffect(() => {
     // Define the async function inside the useEffect
