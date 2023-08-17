@@ -6,7 +6,19 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';  // 찜하기 아이콘
 import PaymentIcon from '@mui/icons-material/Payment';  // 후원하기 아이콘
 import axios from 'axios';
 import { config } from '../../static/config';
+import { Link } from 'react-router-dom';
 
+
+const buttonStyles = {
+  backgroundColor: '#b9a178',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: '#6f6048',
+  },
+  marginBottom: '10px',
+  borderRadius: '50px',
+  boxShadow: '2px 2px 5px rgba(0,0,0,0.2)'
+};
 
 function BroadCastingDetail() {
 
@@ -72,10 +84,19 @@ function BroadCastingDetail() {
           </Grid>
         </Grid>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mb: 2 }}>
-          <Button variant="contained" color="primary" startIcon={<HomeIcon />} sx={{ borderRadius: '50px', boxShadow: '2px 2px 5px rgba(0,0,0,0.2)' }}>보호소 가기</Button>
-          <Button variant="contained" color="secondary" startIcon={<PaymentIcon />} sx={{ borderRadius: '50px', boxShadow: '2px 2px 5px rgba(0,0,0,0.2)' }}>후원하기</Button>
-          <Button variant="outlined" startIcon={<FavoriteIcon />} sx={{ borderColor: 'gray', boxShadow: '1px 1px 3px rgba(0,0,0,0.1)', borderRadius: '50px' }}>좋아요</Button>
-          <Button variant="outlined" startIcon={<BookmarkIcon />} sx={{ borderColor: 'gray', boxShadow: '1px 1px 3px rgba(0,0,0,0.1)', borderRadius: '50px' }}>찜하기</Button>
+          <Link to={`/shelter/${shelterNo}`} style={{ textDecoration: 'none' }}>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              startIcon={<HomeIcon />} 
+              sx={{ ...buttonStyles, backgroundColor: 'var(--yellow7)', color: 'var(--yellow1)' }}
+            >
+              보호소 가기
+            </Button>
+          </Link>
+          <Button variant="contained" color="secondary" startIcon={<PaymentIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow8)', color: 'var(--yellow1)' }}>후원하기</Button>
+          <Button variant="outlined" startIcon={<FavoriteIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow9)', color: 'var(--yellow1)' }}>좋아요</Button>
+          <Button variant="outlined" startIcon={<BookmarkIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow9)', color: 'var(--yellow1)' }}>찜하기</Button>
         </Box>
         <Card sx={{ mb: 3, boxShadow: '0 4px 8px rgba(0,0,0,0.2)', border: '1px solid var(--yellow8)' }}>
           <Grid container spacing={2}>
