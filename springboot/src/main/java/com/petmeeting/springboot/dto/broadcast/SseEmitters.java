@@ -49,6 +49,11 @@ public class SseEmitters {
         });
     }
     public void sendMessage(String userId, Long remainTime) {
+        emitters.stream().map((emitter) -> {
+            System.out.println(emitter);
+            return emitter;
+        });
+
         emitters.forEach(emitter -> {
             try {
                 Map<String, Object> map = new HashMap<>();
@@ -58,10 +63,6 @@ public class SseEmitters {
                 emitter.send(SseEmitter.event()
                         .name("data")
                         .data(map));
-
-//                emitter.send(SseEmitter.event()
-//                        .name("remainTime")
-//                        .data(remainTime));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
