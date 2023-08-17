@@ -16,6 +16,11 @@ import UserVideoComponent from './OpenVidu/UserVideoComponent'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
+const commandMapping = {
+  "정지": 2,
+  "간식초기화": 8
+};
+
 function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getshelterNo }) {
   const dispatch = useDispatch();
 
@@ -66,6 +71,31 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
   useEffect(() => {
     if (!isPlaying) {
       setCurrentUserId(currentUser.userId);
+
+      ["정지", "간식초기화"].forEach(commandText => {
+        const commandValue = commandMapping[commandText];
+        if (commandValue === undefined) {
+            console.error("알 수 없는 명령:", commandText);
+            return;
+        }
+
+        const token = JSON.parse(sessionStorage.getItem("token"));
+        const accessToken = token.accessToken;
+
+        axios.post(`https://i9a203.p.ssafy.io/backapi/api/v1/iot/${broadcastId}`, {
+          command: commandValue
+        }, {
+          headers: {
+            AccessToken: `Bearer ${accessToken}`
+          }
+        })
+        .then(response => {
+          console.log(`'${commandText}' 명령이 성공적으로 전송되었습니다.`);
+        })
+        .catch(error => {
+          console.error(`'${commandText}' 명령 전송 중 오류 발생:`, error);
+        });
+      });
     }
   }, [isPlaying]);
 
