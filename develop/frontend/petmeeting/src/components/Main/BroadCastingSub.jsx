@@ -42,7 +42,7 @@ function BroadCastingSub() {
         <img
           src={broadcastIcon}
           alt="보호소 방송국"
-          style={{ maxHeight: "30px" }}
+          style={{ maxHeight: "39px" }}
         />
         <IconButton
           variant="contained"
