@@ -112,12 +112,10 @@ public class BroadcastServiceImpl implements BroadcastService {
         Member member = (Member) userRepository.findById(userNo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "올바르지 않은 유저입니다."));
 
-        if(member.getName().equals(vop.get("controlUser" + shelter.getId()))) {
+        if(!member.getId().equals(vop.get("controlUser" + shelter.getId()))) {
             log.error("[기기제어 종료] 사용자가 일치하지 않습니다.");
             throw new ResponseStatusException(HttpStatus.CONFLICT, "사용자가 일치하지 않습니다.");
         }
-        member.spendToken(1);
-        userRepository.save(member);
 
         log.info("[기기제어 종료] 기기제어 종료. controlUser : {}", member.getName());
         vop.getAndDelete("controlUser" + shelter.getId());
