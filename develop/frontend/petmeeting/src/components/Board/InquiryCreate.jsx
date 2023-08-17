@@ -94,7 +94,7 @@ export default function InquiryCreate() {
             onChange={handleTitleChange}
             sx={{ marginBottom: "16px" }}
             inputProps={{
-              maxLength: 50,
+              maxLength: 100,
             }}
           />
 
