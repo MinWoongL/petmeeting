@@ -141,15 +141,22 @@ function RankSide() {
             {displayedDogs.map((dog, index) => (
               <TableRow key={index}>
                 <TableCell>
-                  <Avatar
-                    src={`https://i9a203.p.ssafy.io/backapi/api/v1/image/${dog.imagePath}?option=dog`}
-                    alt={dog.name}
-                    sx={{ width: 60, height: 60, border: "2px solid #FF5733" }} // 보더 추가
-                  />
+                  <Link
+                    to={`/dog/${dog.dogNo}`}
+                    style={{
+                      textDecoration: "none",
+                      color: "inherit",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    <Avatar
+                      src={`https://i9a203.p.ssafy.io/backapi/api/v1/image/${dog.imagePath}?option=dog`}
+                      alt={dog.name}
+                      sx={{ width: 60, height: 60, border: "2px solid #FF5733" }} // 보더 추가
+                    />
+                  </Link>
                 </TableCell>
-                <TableCell
-                  sx={{ fontFamily: "Poor Story", fontSize: "1.1rem" }}
-                >
+                <TableCell sx={{ fontFamily: "Poor Story", fontSize: "1.1rem" }}>
                   <Link
                     to={`/dog/${dog.dogNo}`}
                     style={{
