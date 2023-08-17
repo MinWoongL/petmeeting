@@ -58,6 +58,7 @@ function InfoSidebar() {
         setUserGroup(responsePoint.data.userGroup);
       } catch (error) {
         console.error("Failed to fetch holding data:", error);
+        // console.log(error[0:2]);
       }
     };
 
@@ -198,7 +199,7 @@ function InfoSidebar() {
                 {user.userId}
               </Typography>
             </Stack>
-            
+
             {userGroup === "사용자" || userGroup === "user" ? (
               <>
                 <Typography

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
   Card,
@@ -13,14 +13,13 @@ import {
 } from "@mui/material";
 import { config } from "../static/config";
 import { Snackbar, Alert } from "@mui/material";
-import DogDonationImage from "../assets/images/dogmoney.png"
+import DogDonationImage from "../assets/images/dogmoney.png";
 
 const modalStyle = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
 };
-
 
 const DogDetailPage = () => {
   const { dogId } = useParams();
@@ -31,6 +30,8 @@ const DogDetailPage = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [user, setUser] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -51,7 +52,6 @@ const DogDetailPage = () => {
 
     fetchUser();
   }, []);
-
 
   const handleDonate = async () => {
     if (!donationAmount || isNaN(donationAmount)) {
@@ -113,6 +113,8 @@ const DogDetailPage = () => {
         setDogDetails(response.data);
       } catch (error) {
         console.error("Failed to fetch dog details:", error);
+        alert("로그인이 필요한 페이지 입니다.");
+        navigate("/login");
       }
     };
 
@@ -122,13 +124,13 @@ const DogDetailPage = () => {
   if (!dogDetails) return <div>Loading...</div>;
 
   return (
-    <Container sx={{display:"flex", justifyContent:"center"}}>
+    <Container sx={{ display: "flex", justifyContent: "center" }}>
       <Card sx={{ width: "70%", maxWidth: "100%" }}>
         <CardMedia
           component="img"
-          height= "500px"
-          sx = {{
-            objectFit: "contain"
+          height="500px"
+          sx={{
+            objectFit: "contain",
           }}
           image={
             config.baseURL +
@@ -186,20 +188,24 @@ const DogDetailPage = () => {
                 value={donationAmount}
                 onChange={(e) => setDonationAmount(e.target.value)}
                 placeholder="후원 할 금액을 입력하세요"
-                style={{ marginTop: "15px", marginRight: "10px", height: "25px", width:"200px" }}
+                style={{
+                  marginTop: "15px",
+                  marginRight: "10px",
+                  height: "25px",
+                  width: "200px",
+                }}
               />
 
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleDonate}
-                style={{ marginTop: "15px", backgroundColor: "#b9a178"  }}
+                style={{ marginTop: "15px", backgroundColor: "#b9a178" }}
               >
                 후원하기
               </Button>
             </div>
-            ) : null}
-          
+          ) : null}
         </CardContent>
       </Card>
       <Modal
@@ -213,12 +219,15 @@ const DogDetailPage = () => {
             alt="후원 완료"
             style={{ width: "100%", height: "auto" }}
           />
-          <Typography variant="h4" component="div" style={{ marginTop: "10px" }}>
+          <Typography
+            variant="h4"
+            component="div"
+            style={{ marginTop: "10px" }}
+          >
             후원 감사합니다
           </Typography>
         </div>
       </Modal>
-
 
       {/* <Snackbar
         open={snackbarOpen}
