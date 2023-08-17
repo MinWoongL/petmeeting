@@ -233,7 +233,6 @@ function InfoSidebar() {
         <Box mt={3} width="100%">
           <Button
             variant="contained"
-            // color="primary"
             fullWidth
             // style = {{backgroundColor: '#b9a178'}}
             style={{ backgroundColor: "var(--yellow9)", fontWeight: "bold" }}
@@ -242,13 +241,14 @@ function InfoSidebar() {
             마이페이지
           </Button>
           <Button
-            variant="outlined"
+            variant="contained"
             fullWidth
             // style={{ marginTop: "10px", backgroundColor: '#b9a178' }}
             style={{
               marginTop: "10px",
-              backgroundColor: "var(--yellow9)",
-              color: "white",
+              color: "var(--yellow9)",
+              backgroundColor: "var(--yellow2)",
+              // color: "white",
               fontWeight: "bold",
             }}
             onClick={Logout}
