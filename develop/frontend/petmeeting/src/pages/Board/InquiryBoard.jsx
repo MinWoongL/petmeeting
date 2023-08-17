@@ -72,7 +72,13 @@ function InquiryBoard() {
       >
         {accessToken ? (
           <Link to={`/board/inquiry/cr`}>
-            <Button startIcon={<AddIcon />} color="primary" variant="outlined">
+            <Button startIcon={<AddIcon />} color="primary" variant="outlined"
+              style={{
+                fontWeight: "bold",
+                color: "var(--yellow8)",
+                border: "1px solid var(--yellow8)",
+                marginTop: "15px"
+              }}>
               문의게시글 작성
             </Button>
           </Link>
@@ -87,31 +93,36 @@ function InquiryBoard() {
           <Grid container item xs={12} justifyContent="center">
             {inquiry.slice(startIndex, endIndex).map((inquiry, idx) => (
               <Grid item key={idx} xs={12} md={8}>
-                <Link to={`/board/inquiry/${inquiry.inquiryNo}`}>
-                  <Paper elevation={3} sx={{ p: 2, cursor: "pointer" }}>
+                <Link to={`/board/inquiry/${inquiry.inquiryNo}`} style={{ textDecoration: "none" }}>
+                  <Paper elevation={3} sx={{ p: 2, cursor: "pointer" }} style={{backgroundColor: "var(--yellow5)", marginTop: "25px"}}>
                     <InquiryList inquiry={inquiry} />
                   </Paper>
                 </Link>
               </Grid>
             ))}
           </Grid>
-
           {/* 페이지네이션 */}
-          <Grid container item justifyContent="center" sx={{ mt: 3 }}>
+          <Grid container item justifyContent="center" style={{marginTop: "15px"}}>
             <Button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
+              style={{ color: "var(--yellow8)" }}
             >
               이전
             </Button>
             {Array.from({ length: totalPages }, (_, index) => (
-              <Button key={index} onClick={() => handlePageChange(index + 1)}>
+              <Button
+                key={index}
+                onClick={() => handlePageChange(index + 1)}
+                style={{ color: "var(--yellow8)", fontWeight: "bolder" }}
+              >
                 {index + 1}
               </Button>
             ))}
             <Button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
+              style={{ color: "var(--yellow8)" }}
             >
               다음
             </Button>
