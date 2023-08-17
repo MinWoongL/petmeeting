@@ -130,8 +130,15 @@ function ChatSidebar({ shelterNo }) {
         value={newChat}
         onChange={(e) => setNewChat(e.target.value)}
         onKeyDown={handleKeyDown}
+        style={{
+          backgroundColor: "white", 
+          marginLeft: "10px", 
+          width: "73%", 
+          marginRight: "10px", 
+          borderRadius: "5px"
+        }}
       />
-      <Button onClick={handleChatSubmit} variant="contained" color="primary">
+      <Button onClick={handleChatSubmit} variant="contained" color="primary" style={{ marginTop: "7px", minHeight: "40px"}}>
         전송
       </Button>
     </div>
