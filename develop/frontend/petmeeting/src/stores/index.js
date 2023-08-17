@@ -8,6 +8,7 @@ import AdoptionReviewSlice from "./Slices/AdoptionReviewSlice";
 import sessionSlice from "./Slices/sessionSlice";
 import InquirySlice from "./Slices/InquirySlice";
 import pointReducer from "./Slices/pointSlice";
+import tokenSlice from "./Slices/tokenSlice";
 const store = configureStore({
   reducer: {
     message: messageReducer,
@@ -19,6 +20,7 @@ const store = configureStore({
     session: sessionSlice,
     inquiry: InquirySlice,
     point: pointReducer,
+    token: tokenSlice,
   },
 });
 
