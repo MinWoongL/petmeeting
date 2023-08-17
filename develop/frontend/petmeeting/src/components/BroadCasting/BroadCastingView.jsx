@@ -119,23 +119,23 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
 
   // 페이지 이동 감지해서 axios.delete 요청 보내기
-  useEffect(() => {
-    const sendDeleteRequest = async () => {
-      const token = JSON.parse(sessionStorage.getItem("token"));
-      const accessToken = token?.accessToken;
-      try {
-        await axios.delete('https://i9a203.p.ssafy.io/backapi/api/v1/broadcast', {
-          headers: {
-            AccessToken: `Bearer ${accessToken}`
-          }
-        });
-      } catch (error) {
-        console.error("Axios delete 요청 중 오류 발생:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const sendDeleteRequest = async () => {
+  //     const token = JSON.parse(sessionStorage.getItem("token"));
+  //     const accessToken = token?.accessToken;
+  //     try {
+  //       await axios.delete('https://i9a203.p.ssafy.io/backapi/api/v1/broadcast', {
+  //         headers: {
+  //           AccessToken: `Bearer ${accessToken}`
+  //         }
+  //       });
+  //     } catch (error) {
+  //       console.error("Axios delete 요청 중 오류 발생:", error);
+  //     }
+  //   };
     
-    sendDeleteRequest();
-  }, [location.pathname]);
+  //   sendDeleteRequest();
+  // }, [location.pathname]);
 
 
 
