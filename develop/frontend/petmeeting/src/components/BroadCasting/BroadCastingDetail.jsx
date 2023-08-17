@@ -1,23 +1,25 @@
 import { useState, useEffect } from 'react';
-import { Avatar, Typography, Button, Box, Card, CardContent, CardMedia, Grid } from '@mui/material';
+import { Avatar, Typography, Button, Box, Card, CardContent, CardMedia, Grid, Modal, TextField } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';  // 보호소 가기 아이콘
 import FavoriteIcon from '@mui/icons-material/Favorite';  // 좋아요 아이콘
 import BookmarkIcon from '@mui/icons-material/Bookmark';  // 찜하기 아이콘
 import PaymentIcon from '@mui/icons-material/Payment';  // 후원하기 아이콘
+import { Snackbar } from '@mui/material';
 import axios from 'axios';
 import { config } from '../../static/config';
 import { Link } from 'react-router-dom';
 
 
 const buttonStyles = {
-  backgroundColor: '#b9a178',
-  color: 'white',
-  '&:hover': {
-    backgroundColor: '#6f6048',
-  },
   marginBottom: '10px',
   borderRadius: '50px',
   boxShadow: '2px 2px 5px rgba(0,0,0,0.2)'
+};
+
+const modalStyle = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 };
 
 function BroadCastingDetail() {
@@ -26,6 +28,11 @@ function BroadCastingDetail() {
     const [dogNo, setDogNo] = useState(null);
     const [dogData, setDogData] = useState(null);
     const [shelterData, setShelterData] = useState(null);
+    const [donationAmount, setDonationAmount] = useState("");
+    const [error, setError] = useState("");
+    const [modalOpen, setModalOpen] = useState(false);
+    const [donationSuccessMessage, setDonationSuccessMessage] = useState("");
+    const [showSnackbar, setShowSnackbar] = useState(false);
 
 
     useEffect(() => {
@@ -73,6 +80,53 @@ function BroadCastingDetail() {
       }
     }, [shelterNo])
 
+    const handleDonate = async () => {
+      if (!donationAmount || isNaN(donationAmount)) {
+        setError("Please enter a valid donation amount.");
+        return;
+      }
+  
+      if (parseInt(donationAmount) <= 0) {
+        setError("0보다 큰 값을 입력해주세요");
+        return;
+      }
+  
+      const token = JSON.parse(sessionStorage.getItem("token"));
+  
+      const requestBody = {
+        dogNo: dogNo,
+        donationValue: parseInt(donationAmount),
+      };
+  
+      try {
+        const response = await axios.post(
+          `${config.baseURL}/api/v1/donation`,
+          requestBody,
+          {
+            headers: { AccessToken: `Bearer ${token.accessToken}` },
+          }
+        );
+  
+        console.log("Donation successful:", response.data);
+        setDonationSuccessMessage(`'${donationAmount}' 원을 '${dogData?.name}' 에게 후원했어요`);
+        setShowSnackbar(true);
+        setError("");
+        setModalOpen(false);
+      } catch (error) {
+        if (error.response.status === 403) {
+          setError("후원 할 포인트가 충분하지 않습니다.");
+        } else if (error.response.status === 401) {
+          setError("후원 하기 위해서는 로그인 해야 합니다.");
+        } else {
+          setError("Failed to donate.");
+        }
+  
+        console.error("Failed to donate:", error);
+      }
+    };
+
+
+
     return (
       <Box sx={{ padding: 3, width: '80%', margin: 'auto', mt: 1, fontFamily: 'Jua' }}>
         <Grid container alignItems="center" spacing={2}>
@@ -94,10 +148,23 @@ function BroadCastingDetail() {
               보호소 가기
             </Button>
           </Link>
-          <Button variant="contained" color="secondary" startIcon={<PaymentIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow8)', color: 'var(--yellow1)' }}>후원하기</Button>
+          <Button variant="contained" color="secondary" startIcon={<PaymentIcon />} onClick={() => setModalOpen(true)} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow8)', color: 'var(--yellow1)' }}>후원하기</Button>
           <Button variant="outlined" startIcon={<FavoriteIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow9)', color: 'var(--yellow1)' }}>좋아요</Button>
           <Button variant="outlined" startIcon={<BookmarkIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow9)', color: 'var(--yellow1)' }}>찜하기</Button>
         </Box>
+
+        <Snackbar 
+            open={showSnackbar}
+            autoHideDuration={6000}
+            onClose={() => setShowSnackbar(false)}
+            message={donationSuccessMessage}
+            action={
+                <Button color="inherit" size="small" onClick={() => setShowSnackbar(false)}>
+                    Close
+                </Button>
+            }
+        />
+
         <Card sx={{ mb: 3, boxShadow: '0 4px 8px rgba(0,0,0,0.2)', border: '1px solid var(--yellow8)' }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
@@ -133,6 +200,35 @@ function BroadCastingDetail() {
             </Grid>
           </Grid>
         </Card>
+        <Modal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          style={modalStyle}
+        >
+          <Card sx={{ padding: 2 }}>
+            <Typography variant="h5" gutterBottom>
+              후원 금액 입력
+            </Typography>
+            <TextField
+              type="number"
+              label="후원 금액"
+              value={donationAmount}
+              onChange={(e) => setDonationAmount(e.target.value)}
+              fullWidth
+              variant="outlined"
+              error={!!error}
+              helperText={error}
+            />
+            <Button 
+              variant="contained"
+              sx={{ ...buttonStyles, backgroundColor: '#948060', marginTop: 2 }}
+              fullWidth
+              onClick={handleDonate}
+            >
+              후원하기
+            </Button>
+          </Card>
+        </Modal>
       </Box>
     );     
 }
