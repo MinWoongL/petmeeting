@@ -115,21 +115,21 @@ const UserInformation = ({
             <>
               <TextField
                 fullWidth
-                label="Name"
+                label="이름"
                 value={editData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
                 style={{ marginBottom: "10px" }}
               />
               <TextField
                 fullWidth
-                label="Phone Number"
+                label="전화번호"
                 value={editData.phoneNumber}
                 onChange={(e) => handleChange("phoneNumber", e.target.value)}
                 style={{ marginBottom: "10px" }}
               />
               <TextField
                 fullWidth
-                label="Email"
+                label="이메일"
                 value={editData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 style={{ marginBottom: "10px" }}
@@ -137,7 +137,7 @@ const UserInformation = ({
               <TextField
                 fullWidth
                 type="password"
-                label="Password"
+                label="현재 비밀번호 확인"
                 onChange={(e) => handleChange("password", e.target.value)}
                 style={{ marginBottom: "30px" }}
               />
