@@ -40,6 +40,34 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
   const navigate = useNavigate();
 
+  // SSE 연결
+  function connect() {
+    const sse = new EventSource("https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/connect");
+
+    sse.addEventListener("connect", (e) => {
+      const { data: receivedConnectData } = e;
+      console.log("connect event data: ", receivedConnectData); // "connected!"
+    });
+
+    sse.addEventListener('data', e => {
+      const { data } = e;
+      const { userId, remainTime } = JSON.parse(data); // 문자열을 JSON으로 파싱
+
+      console.log("userName : " + userId);
+      setIsPlaying(true);
+      setSeconds(remainTime);
+    });
+
+    return () => {
+      sse.close();
+    };
+  }
+
+  // useEffect를 사용하여 페이지가 처음 렌더링될 때 connect 함수 호출
+  useEffect(() => {
+    connect();
+  }, []);
+
   useEffect(() => {
     if (isLiveSession && token) {
       const sessionInstance = sessionInstance2;
@@ -100,6 +128,14 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
 
   useEffect(() => {
+    const token = JSON.parse(sessionStorage.getItem("token"));
+
+    if(!token) {
+      window.alert("로그인이 필요합니다.")
+      navigate("/");
+      return;
+    }
+
     let interval;
     if (isPlaying && seconds > 0) {
       interval = setInterval(() => {
@@ -119,7 +155,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
   const handleStopBroadcast = () => {
     const token = JSON.parse(sessionStorage.getItem("token"));
-    const accessToken = token.accessToken
+    const accessToken = token?.accessToken
 
 
     axios.delete('https://i9a203.p.ssafy.io/backapi/api/v1/broadcast', {
@@ -149,7 +185,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
   const handlePlayClick = () => {
     const token = JSON.parse(sessionStorage.getItem("token"));
-    const accessToken = token.accessToken
+    const accessToken = token?.accessToken
 
     axios.post(`https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/request/${Number(broadcastId)}`, {}, {
     headers: {
@@ -194,7 +230,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
   const handleConfirmStop = () => {
     const token = JSON.parse(sessionStorage.getItem("token"));
-    const accessToken = token.accessToken;
+    const accessToken = token?.accessToken;
   
     axios.delete(`https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/request/${Number(broadcastId)}`, {
       headers: {
