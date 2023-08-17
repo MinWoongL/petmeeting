@@ -48,7 +48,7 @@ public class IotServiceImpl implements IotService {
         String controlUser = vop.get("controlUser" + shelterNo);
         String endTime = vop.get("remainTime" + shelterNo);
 
-        if (iotReqDto.getCommand() != 2) {
+        if (iotReqDto.getCommand() != 2 || iotReqDto.getCommand() != 8) {
             if (user instanceof Shelter && !userNo.equals(shelterNo)) {
                 log.error("[기기조작] (보호소) 자신의 기기만 조작할 수 있습니다.");
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "자신의 방송에서만 기기 조작을 할 수 있습니다.");
