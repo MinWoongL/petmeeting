@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Box, Button } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import axios from 'axios';
 
 
 function DeviceOperation() {
-    const [shelterNo, setshelterNo] = useState(null);
+    const { broadcastId } = useParams();
 
     const commandMapping = {
       "직진": 1,
@@ -17,19 +18,6 @@ function DeviceOperation() {
       "제자리걸음": 6,
       "간식주기": 7
     };
-
-    useEffect(() => {
-        // API 호출
-        axios.get("https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/shelter")
-          .then(response => {
-            const shelterNo = response.data.shelterNo;
-            
-            setshelterNo(shelterNo)
-          })
-          .catch(error => {
-            console.error("API 요청 중 오류 발생:", error);
-          });
-      }, []);
     
     const handleCommand = (commandText) => {
       const commandValue = commandMapping[commandText];
@@ -42,7 +30,7 @@ function DeviceOperation() {
       const accessToken = token.accessToken;
     //   console.log('토큰', accessToken)
 
-      axios.post(`https://i9a203.p.ssafy.io/backapi/api/v1/iot/${shelterNo}`, {
+      axios.post(`https://i9a203.p.ssafy.io/backapi/api/v1/iot/${broadcastId}`, {
         command: commandValue
       }, {
         headers: {
