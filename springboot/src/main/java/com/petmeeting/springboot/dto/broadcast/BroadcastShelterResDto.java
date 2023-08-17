@@ -10,4 +10,5 @@ public class BroadcastShelterResDto {
     private String name;
     private String onBroadcastTitle;
     private Integer dogNo;
+    private String imagePath;
 }
