@@ -93,6 +93,9 @@ export default function InquiryCreate() {
             value={title}
             onChange={handleTitleChange}
             sx={{ marginBottom: "16px" }}
+            inputProps={{
+              maxLength: 50,
+            }}
           />
 
           {/* 내용 */}
