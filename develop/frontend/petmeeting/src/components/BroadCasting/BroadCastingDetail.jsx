@@ -40,6 +40,8 @@ function BroadCastingDetail() {
     const [showSnackbar, setShowSnackbar] = useState(false);
     const { broadcastId } = useParams();
 
+    const userType = JSON.parse(localStorage.getItem('user'))?.userType;
+
     useEffect(() => {
       axios.get("https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/shelter")
         .then(response => {
@@ -166,12 +168,22 @@ function BroadCastingDetail() {
               보호소 가기
             </Button>
           </Link>
-          <Button variant="contained" color="secondary" startIcon={<PaymentIcon />} onClick={() => setModalOpen(true)} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow8)', color: 'var(--yellow1)' }}>후원하기</Button>
+          {userType !== "보호소" && (
+            <Button 
+                variant="contained" 
+                color="secondary" 
+                startIcon={<PaymentIcon />} 
+                onClick={() => setModalOpen(true)} 
+                sx={{ ...buttonStyles, backgroundColor: 'var(--yellow8)', color: 'var(--yellow1)' }}
+            >
+                후원하기
+            </Button>
+          )}
           {/* <Button variant="outlined" startIcon={<FavoriteIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow9)', color: 'var(--yellow1)' }}>좋아요</Button>
           <Button variant="outlined" startIcon={<BookmarkIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow9)', color: 'var(--yellow1)' }}>찜하기</Button> */}
         </Box>
 
-        <Snackbar 
+        <Snackbar
             open={showSnackbar}
             autoHideDuration={6000}
             onClose={() => setShowSnackbar(false)}
