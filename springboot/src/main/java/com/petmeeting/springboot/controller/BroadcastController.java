@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -32,10 +33,10 @@ public class BroadcastController {
             summary = "기기 조작 요청",
             description = "방송 중 기기 조작을 요청합니다. 5분으로 설정"
     )
+    @Transactional
     @PostMapping("/request/{shelterNo}")
     public ResponseEntity<Map<String, String>> controlRequest(@PathVariable Integer shelterNo, @RequestHeader(ACCESS_TOKEN) String token) {
         Map<String, String> result = broadcastService.control(shelterNo, token, CONTROL_TIME);
-
         sseEmitters.sendMessage(result.get("userId"), CONTROL_TIME);
         return ResponseEntity.ok(result);
     }

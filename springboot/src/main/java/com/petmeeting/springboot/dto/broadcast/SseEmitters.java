@@ -43,7 +43,7 @@ public class SseEmitters {
                 emitter.send(SseEmitter.event()
                         .name("count")
                         .data(count));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
@@ -58,7 +58,7 @@ public class SseEmitters {
                 emitter.send(SseEmitter.event()
                         .name("data")
                         .data(map));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 sendMessage(userId, remainTime); // 실패 시 다시 보내기
             }
         });
