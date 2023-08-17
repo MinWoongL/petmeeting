@@ -5,8 +5,6 @@ import {
   Routes,
   Link,
   useLocation,
-  Switch,
-  useHistory,
   useNavigate,
 } from "react-router-dom";
 import { Provider, useSelector, useDispatch } from "react-redux";
@@ -24,7 +22,6 @@ import {
   Toolbar,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import font from "./index.css";
 import "./styles/base.css";
 import TokenRefresher from "./apis/refresher";
 import { getAccessToken } from "./utils/tokenRefresher";
@@ -225,15 +222,6 @@ function App() {
 
   const [loading, setLoading] = useState(true);
 
-  // 현재 경로가 보호소 상세 페이지인지 확인
-  const isShelterDetailPage = location.pathname.startsWith("/shelter/");
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 1000); // 1초 후 로딩 상태 해제
-  // }, []); 
-
   useEffect(() => {
     const token = sessionStorage.getItem("token");
 
@@ -255,8 +243,6 @@ function App() {
 
   const authPage = ["/signup", "/login"];
   const pageCheck = authPage.includes(location.pathname);
-
-  const backgroundColor = pageCheck ? "var(--yellow1)" : "var(--yellow2)";
 
   const shelterNoMatch = location.pathname.match(/\/shelter\/(\d+)/);
   const shelterNo = shelterNoMatch ? shelterNoMatch[1] : null;

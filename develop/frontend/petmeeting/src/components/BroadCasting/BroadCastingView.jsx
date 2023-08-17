@@ -45,6 +45,13 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
   const navigate = useNavigate();
 
+
+  // useEffect를 사용하여 페이지가 처음 렌더링될 때 connect 함수 호출
+  useEffect(() => {
+    connect();
+  }, []);
+
+  
   // SSE 연결
   function connect() {
     const sse = new EventSource("https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/connect");
@@ -68,6 +75,46 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
       sse.close();
     };
   }
+  // 페이지 이탈시 세션 종료
+  useEffect(() => {
+    const handleBeforeUnload = async (e) => {
+        e.preventDefault();
+
+        // OpenVidu 세션 종료
+        if (sessionInstance2) {
+            sessionInstance2.disconnect();
+        }
+
+        // axios.delete 요청
+        const token = JSON.parse(sessionStorage.getItem("token"));
+        const accessToken = token?.accessToken;
+        try {
+            await axios.delete('https://i9a203.p.ssafy.io/backapi/api/v1/broadcast', {
+                headers: {
+                    AccessToken: `Bearer ${accessToken}`
+                }
+            });
+        } catch (error) {
+            console.error("Axios delete 요청 중 오류 발생:", error);
+        }
+
+        // 사용자에게 새로고침/페이지 이탈 시 경고 메시지를 표시
+        e.returnValue = 'Are you sure you want to leave?';
+
+        // 루트 경로로 이동
+        navigate('/');
+    };
+
+    // 이벤트 리스너 추가
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // 컴포넌트가 언마운트될 때 실행될 cleanup 함수
+    return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [sessionInstance2, navigate]);
+
+
   useEffect(() => {
     if (!isPlaying) {
       setCurrentUserId(currentUser.userId);
@@ -98,11 +145,6 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
       });
     }
   }, [isPlaying]);
-
-  // useEffect를 사용하여 페이지가 처음 렌더링될 때 connect 함수 호출
-  useEffect(() => {
-    connect();
-  }, []);
 
   useEffect(() => {
     if (isLiveSession && token) {
