@@ -26,9 +26,9 @@ spring:
 #    driverClassName: org.h2.Driver
 #    username: sa
 #    password:
-    url: jdbc:mysql://i9A203.p.ssafy.io:3306/mydb
-    username: backend
-    password: Backend@1234
+    url: ${DATABASE_URL}
+    username: ${DATABASE_ID}
+    password: ${DATABASE_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
 
@@ -63,12 +63,12 @@ server:
 
 jwt:
   issuer: petmeetingservice
-  secret_key: afd3ad5jf6i23FA89S9DCZ0Xa12sd3qbzxf56Sadvjoupiuy7D5A4F32Zcv14xxvbZ34X32v67QA234d38HG56FbxfDJvcxZFADFzxCV1321
+  secret_key: ${JWT_SECRET}
   access_expiration_ms: 10000000
   refresh_expiration_ms: 2592000000
 
 kakao:
-  admin_key: bef57d6c185d96c914e88393686973b1
+  admin_key: ${KAKAO_ADMIN_KEY}
   content_type: application/x-www-form-urlencoded;charset=utf-8
   cid: TC0ONETIME
 
