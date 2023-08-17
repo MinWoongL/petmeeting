@@ -152,7 +152,11 @@ function RankSide() {
                 >
                   <Link
                     to={`/dog/${dog.dogNo}`}
-                    style={{ textDecoration: "none", color: "inherit" }}
+                    style={{
+                      textDecoration: "none",
+                      color: "inherit",
+                      fontWeight: "bold",
+                    }}
                   >
                     {dog.name}
                   </Link>

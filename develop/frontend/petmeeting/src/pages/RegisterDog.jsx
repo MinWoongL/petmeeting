@@ -9,7 +9,7 @@ import {
   Container,
   Box,
   Typography,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import ImageUploadButton from "../components/Button/ImageUploadButton";
 import { config } from "../static/config";
@@ -65,9 +65,9 @@ const RegisterDog = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     const newImageUrl = await handleImageUpload();
-  
+
     // Check if any required fields are empty or null
     if (
       !form.name ||
@@ -86,35 +86,37 @@ const RegisterDog = () => {
       alert("필수 항목을 모두 입력해주세요.");
       return;
     }
-  
+
     let submitForm = { ...form };
-    submitForm.protectionStartDate = new Date(submitForm.protectionStartDate).getTime();
-  
+    submitForm.protectionStartDate = new Date(
+      submitForm.protectionStartDate
+    ).getTime();
+
     const token = JSON.parse(sessionStorage.getItem("token"));
     const config = {
       headers: { AccessToken: `Bearer ${token.accessToken}` },
     };
-  
+
     try {
       let jjinForm = { ...submitForm };
       jjinForm.imagePath = newImageUrl;
-  
+
       const response = await axios.post(
         "https://i9a203.p.ssafy.io/backapi/api/v1/dog",
         jjinForm,
         config
       );
-  
+
       if (response.status === 201) {
         navigate(-1);
       }
     } catch (error) {
       console.error("Failed to register the dog:", error);
     }
-  };  
+  };
 
   const handleChange = (event) => {
-    if(event.target.name === "age" || event.target.name === "weight") {
+    if (event.target.name === "age" || event.target.name === "weight") {
       event.target.value = event.target.value < 0 ? 0 : event.target.value;
       event.target.value = event.target.value > 100 ? 100 : event.target.value;
       event.target.value = Math.floor(event.target.value);
@@ -135,21 +137,25 @@ const RegisterDog = () => {
         <Typography component="h1" variant="h5">
           유기견 등록하기
         </Typography>
+        <Typography variant="body2" color="textSecondary" gutterBottom>
+          이미지를 포함하여 * 표시 된 항목은 필수로 입력해주셔야 합니다.
+        </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            label="Name"
+            label="이름"
             name="name"
             value={form.name}
             onChange={handleChange}
             autoFocus
             sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--yellow8)",
-              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
             }}
             InputLabelProps={{
               style: { color: "var(--yellow9)" },
@@ -161,14 +167,15 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Dog Size"
+            label="크기"
             name="dogSize"
             value={form.dogSize}
             onChange={handleChange}
             sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--yellow8)",
-              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
             }}
             InputLabelProps={{
               style: { color: "var(--yellow9)" },
@@ -184,14 +191,15 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Gender"
+            label="성별"
             name="gender"
             value={form.gender}
             onChange={handleChange}
             sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--yellow8)",
-              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
             }}
             InputLabelProps={{
               style: { color: "var(--yellow9)" },
@@ -205,15 +213,16 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Weight"
+            label="무게 (정수 단위로 입력해주세요)"
             name="weight"
             type="number"
             value={form.weight}
             onChange={handleChange}
             sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--yellow8)",
-              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
             }}
             InputLabelProps={{
               style: { color: "var(--yellow9)" },
@@ -224,7 +233,7 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Age"
+            label="추정나이"
             name="age"
             type="number"
             value={form.age}
@@ -233,9 +242,10 @@ const RegisterDog = () => {
             min={0}
             max={100}
             sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--yellow8)",
-              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
             }}
             InputLabelProps={{
               style: { color: "var(--yellow9)" },
@@ -246,14 +256,15 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Personality"
+            label="성격"
             name="personality"
             value={form.personality}
             onChange={handleChange}
             sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--yellow8)",
-              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
             }}
             InputLabelProps={{
               style: { color: "var(--yellow9)" },
@@ -264,23 +275,25 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Protection Start Date"
+            label="보호 시작 날짜"
             name="protectionStartDate"
             type="date"
             value={form.protectionStartDate}
             onChange={handleChange}
             InputProps={{
               inputProps: {
-                max: new Date().toISOString().split('T')[0], // 오늘 날짜 이후의 값은 못들어가게
+                max: new Date().toISOString().split("T")[0], // 오늘 날짜 이후의 값은 못들어가게
               },
             }}
             sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--yellow8)",
-              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
             }}
             InputLabelProps={{
               style: { color: "var(--yellow9)" },
+              shrink: true,
             }}
           />
           <TextField
@@ -289,14 +302,15 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="isInoculated"
+            label="접종여부"
             name="isInoculated"
             value={form.isInoculated}
             onChange={handleChange}
             sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--yellow8)",
-              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
             }}
             InputLabelProps={{
               style: { color: "var(--yellow9)" },
@@ -310,14 +324,15 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Current Status"
+            label="현재 상태"
             name="currentStatus"
             value={form.currentStatus}
             onChange={handleChange}
             sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--yellow8)",
-              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
             }}
             InputLabelProps={{
               style: { color: "var(--yellow9)" },
@@ -328,14 +343,15 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Dog Species"
+            label="품종"
             name="dogSpecies"
             value={form.dogSpecies}
             onChange={handleChange}
             sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--yellow8)",
-              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
             }}
             InputLabelProps={{
               style: { color: "var(--yellow9)" },
@@ -346,32 +362,37 @@ const RegisterDog = () => {
             margin="normal"
             required
             fullWidth
-            label="Reason for Abandonment"
+            label="유기된 이유"
             name="reasonAbandonment"
             value={form.reasonAbandonment}
             onChange={handleChange}
             sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--yellow8)",
-              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "var(--yellow8)",
+                },
             }}
             InputLabelProps={{
               style: { color: "var(--yellow9)" },
             }}
           />
-          
+
           <ImageUploadButton
-        setSelectedImage={setSelectedImage}
-        imageUrl={imageUrl}
-        option="dog"
-      />
-      <Button type="submit" fullWidth variant="contained" 
-      style={{ 
-        backgroundColor: "#948060",
-        marginTop: "15px" 
-        }}>
-        등록하기
-      </Button>
+            setSelectedImage={setSelectedImage}
+            imageUrl={imageUrl}
+            option="dog"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            style={{
+              backgroundColor: "#948060",
+              marginTop: "15px",
+            }}
+          >
+            등록하기
+          </Button>
         </form>
       </Box>
     </Container>
