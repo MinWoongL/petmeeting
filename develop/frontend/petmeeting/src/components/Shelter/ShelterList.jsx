@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { config } from "../../static/config";
-import RegisterImageUploadButton from "../Button/RegisterImageUploadButton"; // Adjust the path to the actual location of ImageUploadButton
 
 const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -72,7 +71,7 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
       sx={{
         border: "1px solid black",
         backgroundColor: "var(--yellow8)", // Set background color to yellow8
-        marginBottom: "16px", // Add margin bottom
+        margin: "16px", // Add margin bottom
       }}
     >
       <Card
@@ -119,21 +118,7 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
                   value={editData.image}
                   onChange={(e) => handleChange("image", e.target.value)}
                 />
-                {/* <RegisterImageUploadButton
-                  option="shelter"
-                  onImageUploadSuccess={(imagePath) =>
-                    handleChange("image", imagePath)
-                  }
-                /> */}
               </Box>
-
-              {/* <Box>
-                <TextField
-                  label="Image URL"
-                  value={editData.image}
-                  onChange={(e) => handleChange("image", e.target.value)}
-                />
-              </Box> */}
               <Box>
                 <TextField
                   type="password"
@@ -174,13 +159,10 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
         </CardContent>
         {cardMedia}
       </Card>
-      {/* <Button onClick={isEditing ? handleSave : handleEdit}>
-        {isEditing ? "Save" : "Edit"}
-      </Button> */}
       {isEditing ? (
         <Button onClick={handleSave}>Save</Button>
       ) : (
-        showEditButton && <Button onClick={handleEdit}>123Edit</Button> // showEditButton이 true일 때만 Edit 버튼을 표시
+        showEditButton && <Button onClick={handleEdit}>123Edit</Button>
       )}
     </Box>
   );
