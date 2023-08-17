@@ -48,20 +48,21 @@ ISR(USART1_RX_vect)
 	last_char = UDR1;
 }
 
-char str_pre[5][100] = {
-	"AT+RST\r\n",
-	"AT+CWMODE=3\r\n",
-	"AT+CWJAP=\"i9a203\",\"12345678\"\r\n",
-	"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
-	"AT+CIPMODE=0\r\n"
-};
-char str_main[2][200] = {
-	"AT+CIPSEND=78\r\n",
-	"GET /iot/1t HTTP/1.1\r\nHost: i9a203.p.ssafy.io:3010\r\nConnection: keep-alive\r\n\r\n"
-};
 
 int main( void )
 {
+	char str_pre[5][100] = {
+		"AT+RST\r\n",
+		"AT+CWMODE=3\r\n",
+		"AT+CWJAP=\"i9a203\",\"12345678\"\r\n",
+		"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
+		"AT+CIPMODE=0\r\n"
+	};
+	char str_main[2][200] = {
+		"AT+CIPSEND=78\r\n",
+		"GET /iot/1t HTTP/1.1\r\nHost: i9a203.p.ssafy.io:3010\r\nConnection: keep-alive\r\n\r\n"
+	};
+	
 	// initialization
 	cli();
 	USART1_Init ( MYUBRR );
@@ -169,6 +170,13 @@ void Init_Moter()
 
 void processCommand(unsigned char cmd)
 {
+	char str_pre[5][100] = {
+		"AT+RST\r\n",
+		"AT+CWMODE=3\r\n",
+		"AT+CWJAP=\"i9a203\",\"12345678\"\r\n",
+		"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
+		"AT+CIPMODE=0\r\n"
+	};
 	/* switch cases by command */
 	switch (cmd) {
 		case '0':
