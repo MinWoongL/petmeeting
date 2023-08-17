@@ -10,6 +10,7 @@ import {
   Grid,
   Button,
   Modal,
+  TextField
 } from "@mui/material";
 import { config } from "../static/config";
 import { Snackbar, Alert } from "@mui/material";
@@ -63,6 +64,14 @@ const DogDetailPage = () => {
 
     if (parseInt(donationAmount) <= 0) {
       setError("0보다 큰 값을 입력해주세요");
+
+      setTimeout(() => {
+        setError("");
+      }, 1000);
+      return;
+    }
+
+    if (!window.confirm(`${dogDetails.name}에게 ${donationAmount} 포인트를 후원할까요?`)) {
       return;
     }
 
@@ -82,8 +91,7 @@ const DogDetailPage = () => {
         }
       );
 
-      // Handle success, show a message or perform any other action
-      console.log("Donation successful:", response.data);
+      setDonationAmount(0);
       setError(""); // Clear any previous error messages
       setSnackbarMessage("후원에 성공했습니다!");
       setSnackbarOpen(true);
@@ -185,17 +193,36 @@ const DogDetailPage = () => {
           </Typography>
           {isLoggedIn && user && user.userGroup !== "보호소" ? (
             <div>
-              {error && <Typography color="error">{error}</Typography>}
-              <input
+              <TextField
                 type="number"
                 value={donationAmount}
-                onChange={(e) => setDonationAmount(e.target.value)}
-                placeholder="후원 할 금액을 입력하세요"
-                style={{
-                  marginTop: "15px",
-                  marginRight: "10px",
-                  height: "25px",
+                onChange={(e) => {
+                  e.target.value = e.target.value < 0 ? 0 : e.target.value;
+                  setDonationAmount(e.target.value)
+                }
+                }
+                label="후원 할 금액을 입력하세요"
+                variant="outlined"
+                size="small"
+                sx={{
                   width: "200px",
+                  margin: "15px 15px 0 0",
+                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "var(--yellow8)",
+                  },
+                  "& .MuiInput-input[type='number']::-webkit-inner-spin-button, .MuiInput-input[type='number']::-webkit-outer-spin-button": {
+                    WebkitAppearance: "none",
+                    margin: 0,
+                  },
+                  "& .MuiInput-input[type='number']": {
+                    "-moz-appearance": "textfield",
+                  },
+                  "& input[type='number']": {
+                    color: "var(--yellow9)",
+                  },
+                }}
+                InputLabelProps={{
+                  style: { color: "var(--yellow9)" },
                 }}
               />
 
@@ -207,6 +234,7 @@ const DogDetailPage = () => {
               >
                 후원하기
               </Button>
+              {error && <Typography color="error">{error}</Typography>}
             </div>
           ) : null}
         </CardContent>
@@ -220,32 +248,17 @@ const DogDetailPage = () => {
           <img
             src={DogDonationImage}
             alt="후원 완료"
-            style={{ width: "100%", height: "auto" }}
+            style={{ width: "300px", height: "auto" }}
           />
           <Typography
             variant="h4"
             component="div"
-            style={{ marginTop: "10px" }}
+            style={{ marginTop: "10px", color: "white", textAlign: "center" }}
           >
             후원 감사합니다
           </Typography>
         </div>
       </Modal>
-
-      {/* <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000} // Adjust the duration as needed
-        onClose={() => setSnackbarOpen(false)}
-        message={snackbarMessage}
-        sx={{
-          backgroundColor: "#efebe9", // Adjust the color code to your desired brownish color
-          color: "white", // Text color
-        }}
-      >
-        <Alert severity="success" sx={{ width: "100%" }}>
-          후원이 완료되었습니다!
-        </Alert>
-      </Snackbar> */}
     </Container>
   );
 };
