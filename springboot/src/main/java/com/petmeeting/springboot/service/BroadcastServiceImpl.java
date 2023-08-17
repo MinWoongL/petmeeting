@@ -20,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -47,10 +49,10 @@ public class BroadcastServiceImpl implements BroadcastService {
         int userNo = jwtUtils.getUserNo(token);
 
         log.info("[기기제어권] 방송 중인 보호소 불러오기");
-        Shelter shelter = shelterRepository.findShelterByOnBroadCastTitleNotNull()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "방송 중인 보호소가 없습니다."));
+        Shelter shelter = shelterRepository.findById(shelterNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "보호소를 찾을 수 없습니다."));
 
-        if (!shelter.getId().equals(shelterNo)) {
+        if (shelter.getOnBroadCastTitle() == null || shelter.getOnBroadCastTitle().trim().equals("")) {
             log.error("[기기제어권] 방송 중인 보호소가 아닙니다.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "방송 중인 보호소가 아닙니다.");
         }
@@ -91,10 +93,10 @@ public class BroadcastServiceImpl implements BroadcastService {
         int userNo = jwtUtils.getUserNo(token);
 
         log.info("[기기제어 종료] 방송 중인 보호소 불러오기");
-        Shelter shelter = shelterRepository.findShelterByOnBroadCastTitleNotNull()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "방송 중인 보호소가 없습니다."));
+        Shelter shelter = shelterRepository.findById(shelterNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "보호소를 찾을 수 없습니다."));
 
-        if (!shelter.getId().equals(shelterNo)) {
+        if (shelter.getOnBroadCastTitle() == null || shelter.getOnBroadCastTitle().trim().equals("")) {
             log.error("[기기제어 종료] 방송 중인 보호소가 아닙니다.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "방송 중인 보호소가 아닙니다.");
         }
@@ -133,26 +135,27 @@ public class BroadcastServiceImpl implements BroadcastService {
      * @return BroadcastShelterResDto
      */
     @Override
-    public BroadcastShelterResDto getBroadcastShelter() {
+    public List<BroadcastShelterResDto> getBroadcastShelter() {
         log.info("[방송 중 보호소] 방송 중 보호소 정보 요청");
 
-        Shelter shelter = shelterRepository.findShelterByOnBroadCastTitleNotNull()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "방송 중인 보호소가 없습니다."));
+        List<Shelter> shelters = shelterRepository.findShelterByOnBroadCastTitleNotNull();
 
-        if (shelter == null) {
+        if (shelters == null || shelters.size() == 0) {
             log.info("[방송 중 보호소] 방송 중인 보호소가 없습니다.");
             return null;
         }
 
-        log.info("[방송 중 보호소] 방송 중 보호소 정보. shelterId : {}", shelter.getId());
+        log.info("[방송 중 보호소] 방송 중 보호소 정보. shelters : {}", shelters);
 
-        return BroadcastShelterResDto
-                .builder()
-                .shelterNo(shelter.getId())
-                .name(shelter.getName())
-                .onBroadcastTitle(shelter.getOnBroadCastTitle())
-                .dogNo(shelter.getDogNo())
-                .build();
+        return shelters.stream().map((shelter -> {
+            return BroadcastShelterResDto
+                    .builder()
+                    .shelterNo(shelter.getId())
+                    .name(shelter.getName())
+                    .onBroadcastTitle(shelter.getOnBroadCastTitle())
+                    .dogNo(shelter.getDogNo())
+                    .build();
+            })).collect(Collectors.toList());
     }
 
     /**

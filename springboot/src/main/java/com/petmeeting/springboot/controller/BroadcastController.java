@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -56,7 +57,7 @@ public class BroadcastController {
             description = "방송 중인 보호소 정보를 가져옵니다."
     )
     @GetMapping("/shelter")
-    public ResponseEntity<BroadcastShelterResDto> getBroadcastShelter() {
+    public ResponseEntity<List<BroadcastShelterResDto>> getBroadcastShelter() {
         return ResponseEntity.ok(broadcastService.getBroadcastShelter());
     }
 
