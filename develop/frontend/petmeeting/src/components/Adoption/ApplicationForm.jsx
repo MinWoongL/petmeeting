@@ -258,6 +258,7 @@ export default function ApplicationForm() {
               ref={ageInputRef}
               min={0}
               max={100}
+              step={1}
             />
           </label>
           <br />

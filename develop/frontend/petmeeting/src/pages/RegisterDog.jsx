@@ -29,7 +29,6 @@ const RegisterDog = () => {
     imagePath: "",
   });
   const [imagePath, setImagePath] = useState("");
-  const [ableToSelectDate, setAbleToSelectDate] = useState(false);
   const [selectedImage, setSelectedImage] = useState();
   const [imageUrl, setImageUrl] = useState("");
 
@@ -52,8 +51,6 @@ const RegisterDog = () => {
       );
       setImagePath(response.data);
       setImageUrl(response.data);
-      console.log(response.data)
-      console.log(imageUrl, '이미지 유알엘임')
       return response.data;
     } catch (err) {
       console.error(err);
@@ -73,49 +70,59 @@ const RegisterDog = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+  
     const newImageUrl = await handleImageUpload();
-    let submitForm = { ...form };
-    if (submitForm.protectionStartDate) {
-      submitForm.protectionStartDate = new Date(
-        submitForm.protectionStartDate
-      ).getTime();
+  
+    // Check if any required fields are empty or null
+    if (
+      !form.name ||
+      !form.dogSize ||
+      !form.gender ||
+      form.weight === null ||
+      form.age === null ||
+      !form.personality ||
+      !form.protectionStartDate ||
+      form.isInoculated === null ||
+      !form.currentStatus ||
+      !form.dogSpecies ||
+      !form.reasonAbandonment ||
+      !newImageUrl
+    ) {
+      alert("필수 항목을 모두 입력해주세요.");
+      return;
     }
-    
-
+  
+    let submitForm = { ...form };
+    submitForm.protectionStartDate = new Date(submitForm.protectionStartDate).getTime();
+  
     const token = JSON.parse(sessionStorage.getItem("token"));
-    // Create the header
     const config = {
       headers: { AccessToken: `Bearer ${token.accessToken}` },
     };
+  
     try {
-      console.log("레지스터도그 실행");
-      console.log(submitForm);
-      console.log(newImageUrl)
       let jjinForm = { ...submitForm };
-      jjinForm.imagePath = `${newImageUrl}`;
-
+      jjinForm.imagePath = newImageUrl;
+  
       const response = await axios.post(
         "https://i9a203.p.ssafy.io/backapi/api/v1/dog",
-
         jjinForm,
         config
       );
-
+  
       if (response.status === 201) {
-        console.log("갈거지?");
         navigate(-1);
-        console.log("성공했는데 네비게이트 안됨...?");
       }
     } catch (error) {
-      console.log(error.data);
       console.error("Failed to register the dog:", error);
     }
-  };
+  };  
 
   const handleChange = (event) => {
-    if(event.target.name === "protectionStartDate") {
-      setAbleToSelectDate(true);
+    if(event.target.name === "age" || event.target.name === "weight") {
+      event.target.value = event.target.value < 0 ? 0 : event.target.value;
+      event.target.value = event.target.value > 100 ? 100 : event.target.value;
+      event.target.value = Math.floor(event.target.value);
     }
 
     setForm({
@@ -195,6 +202,9 @@ const RegisterDog = () => {
             type="number"
             value={form.age}
             onChange={handleChange}
+            step={1}
+            min={0}
+            max={100}
           />
           <TextField
             variant="outlined"
@@ -218,7 +228,7 @@ const RegisterDog = () => {
             onChange={handleChange}
             InputProps={{
               inputProps: {
-                max: form.protectionEndDate,
+                max: new Date().toISOString().split('T')[0], // 오늘 날짜 이후의 값은 못들어가게
               },
             }}
           />
