@@ -36,7 +36,7 @@ public class BroadcastController {
     public ResponseEntity<Map<String, String>> controlRequest(@PathVariable Integer shelterNo, @RequestHeader(ACCESS_TOKEN) String token) {
         Map<String, String> result = broadcastService.control(shelterNo, token, CONTROL_TIME);
 
-        sseEmitters.sendMessage(result.get("userId"), CONTROL_TIME);
+//        sseEmitters.sendMessage(result.get("userId"), CONTROL_TIME);
         return ResponseEntity.ok(result);
     }
 
@@ -48,7 +48,7 @@ public class BroadcastController {
     public ResponseEntity<Map<String, String>> breakControl(@PathVariable Integer shelterNo, @RequestHeader(ACCESS_TOKEN) String token) {
         Map<String, String> result = broadcastService.breakControl(shelterNo, token);
 
-        sseEmitters.sendMessage(result.get("userId"), 0L);
+//        sseEmitters.sendMessage(result.get("userId"), 0L);
         return ResponseEntity.ok(result);
     }
 
