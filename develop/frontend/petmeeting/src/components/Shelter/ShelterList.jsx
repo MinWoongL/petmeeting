@@ -137,22 +137,22 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
                 color="text.secondary"
                 component="div"
               >
-                임시 프로필 번호: {profile.shelterNO}
-                전화번호 : {profile.phoneNumber} 전화번호
+                {/* 임시 프로필 번호: {profile.shelterNO} */}
+                전화번호 : {profile.phoneNumber} 
               </Typography>
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
                 component="div"
               >
-                지역 : {profile.location} 이메일
+                지역 : {profile.location} 
               </Typography>
               <Typography
                 variant="body2"
                 color="text.secondary"
                 component="div"
               >
-                사이트 : {profile.siteUrl} 사이트
+                사이트 : {profile.siteUrl}
               </Typography>
             </>
           )}
