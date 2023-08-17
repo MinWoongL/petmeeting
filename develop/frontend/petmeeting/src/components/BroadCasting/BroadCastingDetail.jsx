@@ -8,7 +8,7 @@ import { Snackbar } from '@mui/material';
 import axios from 'axios';
 import { config } from '../../static/config';
 import { Link } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 
 const buttonStyles = {
@@ -24,6 +24,11 @@ const modalStyle = {
 };
 
 function BroadCastingDetail() {
+    const location = useLocation();
+    const title = location.state?.title;
+    const description = location.state?.description;
+    const thumbnail = location.state?.thumbnail;
+    const isLiveSession = location.state?.isLiveSession;
 
     const [shelterNo, setShelterNo] = useState(null);
     const [dogNo, setDogNo] = useState(null);
@@ -131,8 +136,17 @@ function BroadCastingDetail() {
       }
     };
 
-
-
+    if (!isLiveSession) {
+      return (
+          <Box sx={{ padding: 3, width: '80%', margin: 'auto', mt: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                  <Avatar src={thumbnail} sx={{ width: 65, height: 65, mr: 2 }} />
+                  <Typography variant="h5">{title}</Typography>
+              </Box>
+              <Typography variant="body1" style={{ minHeight: '100px' }}>{description}</Typography>
+          </Box>
+      );
+    }
     return (
       <Box sx={{ padding: 3, width: '80%', margin: 'auto', mt: 1, fontFamily: 'Jua' }}>
         <Grid container alignItems="center" spacing={2}>

@@ -175,6 +175,7 @@ function BroadCastingMain() {
       const userData = JSON.parse(localStorage.getItem('user'))
       const userNo = userData ? userData.userNo : undefined;
       if (userNo) { // 로그인된 상태
+        console.log('메인에서 클릭하고 넘어올때 쉘터넘버 잘 줌?',shelterNo)
         const mySession = `Session${userNo}`; // 로그인된 사용자의 세션
         joinSessionSub(shelterNo, mySession);
       } else { // 로그인되지 않은 상태

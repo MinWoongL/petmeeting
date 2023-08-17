@@ -34,7 +34,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
   const [isUserMatched, setIsUserMatched] = useState(false);
 
   const sessionInstance2 = useSelector(state => state.session.sessionInstance)
-  // const subscribers2 = useSelector(state => state.session.subscribers)
+  const subscribers2 = useSelector(state => state.session.subscribers)
   const [subscribers, setSubscribers] = useState([]);
   const publisherFromStore = useSelector(state => state.session.publisher);
 
@@ -42,27 +42,32 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
   useEffect(() => {
     if (isLiveSession && token) {
-        const sessionInstance = sessionInstance2
-        
-        sessionInstance.on('streamCreated', (event) => {
-            const subscriber = sessionInstance.subscribe(event.stream, 'myVideoContainer');
-            setSubscribers(prevSubscribers => [...prevSubscribers, subscriber]);
-            setHasStream(true);
-            console.log('hasStream',hasStream)
-        });
+      const sessionInstance = sessionInstance2;
 
-        sessionInstance.on('streamDestroyed', (event) => {
-          console.log('세션꺼짐')
+      sessionInstance.on('streamCreated', (event) => {
+          const subscriber = sessionInstance.subscribe(event.stream, 'myVideoContainer');
+          setSubscribers(prevSubscribers => [...prevSubscribers, subscriber]);
+          setHasStream(true);
+          console.log('hasStream', hasStream);
+      });
+
+      sessionInstance.on('streamDestroyed', (event) => {
+          console.log('세션꺼짐');
           setHasStream(false);
       });
 
-        
+      // 컴포넌트가 언마운트될 때 실행될 cleanup 함수
+      return () => {
+          if (sessionInstance2) {
+              sessionInstance2.disconnect();
+          }
+      };
     } else {
-      console.log('문제있는상태')
-      console.log('isLiveSession', isLiveSession)
-      console.log('받은token:',token)
+        console.log('문제있는상태');
+        console.log('isLiveSession', isLiveSession);
+        console.log('받은token:', token);
     }
-  }, [isLiveSession, token]);
+  }, [isLiveSession, token, sessionInstance2]);
 
   useEffect(() => {
     // localStorage에서 user 데이터 파싱
@@ -254,7 +259,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
           {isLiveSession ? (
               hasStream ? (
                 <div id="myVideoContainer" className="col-md-6">
-                    <UserVideoComponent style={{ width: '100%', height: '100%' }} streamManager={subscribers[0]} />
+                    <UserVideoComponent style={{ width: '100%', height: '100%' }} streamManager={isUserMatched ? subscribers[0] : subscribers2[0]} />
                 </div>
             ) : (
                 <Typography variant="h5" color="textSecondary" sx={{ alignSelf: "center" }}>
