@@ -1,5 +1,5 @@
 // 일반, 보호소 유저에 따라 항목 다르게 보이도록
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,12 +18,15 @@ import {
 import MuiAlert from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
 import { logout, updateNickName } from "../../stores/Slices/UserSlice";
-import { BorderColor } from "@mui/icons-material";
 
 function InfoSidebar() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [holdingPoint, setHoldingPoint] = useState(0);
+  const [holdingToken, setHoldingToken] = useState(0);
+  const [userGroup, setUserGroup] = useState("user");
+  const pointFromStore = useSelector((state) => state.point);
 
   const handleMyPageClick = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -35,8 +38,43 @@ function InfoSidebar() {
     }
   };
 
+  useEffect(() => {
+    if (pointFromStore !== holdingPoint) {
+      setHoldingPoint(pointFromStore);
+    }
+  }, [pointFromStore]);
+
+  useEffect(() => {
+    // Define the async function inside the useEffect
+    const fetchHoldingData = async () => {
+      try {
+        const token = JSON.parse(sessionStorage.getItem("token"));
+        const config = {
+          headers: { AccessToken: `Bearer ${token.accessToken}` },
+        };
+
+        // Replace the API endpoints with the actual endpoints of your backend
+        const responsePoint = await axios.get(
+          "https://i9a203.p.ssafy.io/backapi/api/v1/user",
+          config
+        );
+
+        console.log(responsePoint.data);
+        // Assuming that the data returned from your API is in the "data" property of the response object
+        setHoldingPoint(responsePoint.data.holdingPoint);
+        setHoldingToken(responsePoint.data.holdingToken);
+        setUserGroup(responsePoint.data.userGroup);
+      } catch (error) {
+        console.error("Failed to fetch holding data:", error);
+        // console.log(error[0:2]);
+      }
+    };
+
+    // Call the async function
+    fetchHoldingData();
+  }, []);
+
   const [nicknameInput, setNicknameInput] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -106,10 +144,13 @@ function InfoSidebar() {
               }}
             />
             <Typography variant="h6">Guest</Typography>
-            <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
+            <div style={{ display: "flex", gap: "12px", marginTop: "10px" }}>
               <Button
                 variant="contained"
-                style={{ backgroundColor: 'var(--yellow9)', fontWeight: 'bold' }}
+                style={{
+                  backgroundColor: "var(--yellow9)",
+                  fontWeight: "bold",
+                }}
                 component={Link}
                 to="/login"
               >
@@ -117,7 +158,10 @@ function InfoSidebar() {
               </Button>
               <Button
                 variant="contained"
-                style={{ backgroundColor: 'var(--yellow9)', fontWeight: 'bold' }}
+                style={{
+                  backgroundColor: "var(--yellow9)",
+                  fontWeight: "bold",
+                }}
                 component={Link}
                 to="/signup"
               >
@@ -156,57 +200,57 @@ function InfoSidebar() {
 
           <Box>
             <Stack direction="row" alignItems="center" spacing={1}>
-              <Typography variant="h6">{user.userId}</Typography>
-              <IconButton size="small" onClick={() => setIsEditing(!isEditing)}>
-                <EditIcon fontSize="small" />
-              </IconButton>
+              <Typography
+                variant="h5"
+                sx={{ fontFamily: "Jua", fontWeight: "bold" }}
+              >
+                {user.userId}
+              </Typography>
             </Stack>
-            <Typography variant="body2">
-              내 포인트: {user.holdingPoint}
-            </Typography>
-            <Typography variant="body2">
-              내 멍코인: {user.holdingToken}
-            </Typography>
+
+            {userGroup === "사용자" || userGroup === "user" ? (
+              <>
+                <Typography
+                  variant="body2"
+                  sx={{ fontFamily: "Jua", fontWeight: "normal" }}
+                >
+                  {/* 내 포인트: {user.holdingPoint ? user.holdingPoint : 0} */}
+                  내 포인트: {holdingPoint ? holdingPoint : 0}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ fontFamily: "Jua", fontWeight: "normal" }}
+                >
+                  내 멍코인: {holdingToken ? holdingToken : 0}
+                </Typography>
+              </>
+            ) : (
+              <div></div>
+            )}
           </Box>
         </Box>
 
-        {isEditing && (
-          <form
-            onSubmit={handleSubmit}
-            style={{ width: "100%", marginTop: "20px" }}
-          >
-            <TextField
-              variant="outlined"
-              size="small"
-              fullWidth
-              label="Change Nickname"
-              value={nicknameInput}
-              onChange={(e) => setNicknameInput(e.target.value)}
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              style={{ marginTop: "10px", width: "100%" }}
-            >
-              Save
-            </Button>
-          </form>
-        )}
-
-        <Box mt={4} width="100%">
+        <Box mt={3} width="100%">
           <Button
             variant="contained"
             fullWidth
+            // style = {{backgroundColor: '#b9a178'}}
+            style={{ backgroundColor: "var(--yellow9)", fontWeight: "bold" }}
             onClick={handleMyPageClick}
-            style={{ backgroundColor: 'var(--yellow9)', fontWeight: 'bold' }}
           >
-            마이 페이지
+            마이페이지
           </Button>
           <Button
             variant="contained"
             fullWidth
-            style={{ marginTop: "10px", backgroundColor: 'var(--yellow6)', fontWeight: 'bold' }}
+            // style={{ marginTop: "10px", backgroundColor: '#b9a178' }}
+            style={{
+              marginTop: "10px",
+              color: "var(--yellow9)",
+              backgroundColor: "var(--yellow2)",
+              // color: "white",
+              fontWeight: "bold",
+            }}
             onClick={Logout}
           >
             로그아웃
