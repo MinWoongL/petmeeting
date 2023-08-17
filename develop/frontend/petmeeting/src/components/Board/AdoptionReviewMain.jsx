@@ -70,8 +70,8 @@ export default function AdoptionReviewDetail() {
         setEditedDate(
           response.data.modifiedTime
             ? "작성 시간 : " +
-            formatDateTime(response.data.modifiedTime * 1000) +
-            " (수정됨)"
+                formatDateTime(response.data.modifiedTime * 1000) +
+                " (수정됨)"
             : "작성 시간 : " + formatDateTime(response.data.createdTime * 1000)
         );
 
@@ -80,8 +80,8 @@ export default function AdoptionReviewDetail() {
         } else {
           setImagePath(
             `https://i9a203.p.ssafy.io/backapi/api/v1/image/` +
-            response.data.imagePath +
-            "?option=board"
+              response.data.imagePath +
+              "?option=board"
           );
         }
       });
@@ -261,10 +261,10 @@ export default function AdoptionReviewDetail() {
                     color="primary"
                     variant="contained"
                     style={{
-                      backgroundColor: "#FF4848"
+                      backgroundColor: "#FF4848",
                     }}
                   >
-                    좋아요 
+                    좋아요
                   </Button>
                 </Box>
               )}
@@ -278,7 +278,7 @@ export default function AdoptionReviewDetail() {
                     color="error"
                     variant="outlined"
                     style={{
-                      color: "#FF4848"
+                      color: "#FF4848",
                     }}
                   >
                     좋아요 취소
@@ -385,14 +385,15 @@ export default function AdoptionReviewDetail() {
                   sx={{
                     mt: 1,
                     height: "30px",
-                    margin: "auto",                    
-                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "var(--yellow8)",
-                    },
+                    margin: "auto",
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                      {
+                        borderColor: "var(--yellow8)",
+                      },
                   }}
                   InputLabelProps={{
                     style: { color: "var(--yellow9)" },
-                  }}                  
+                  }}
                   onClick={loadMoreComments}
                 >
                   모든 댓글 보기
@@ -431,15 +432,18 @@ export default function AdoptionReviewDetail() {
                           setEditedReplyContent(event.target.value)
                         }
                         inputProps={{
-                          maxLength: 50,
+                          maxLength: 300,
                         }}
                       />
                     ) : (
                       // Display the reply content
-                      <Typography variant="body2" sx={{
-                        wordWrap: "break-word",
-                        overflowY: "auto",
-                      }}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          wordWrap: "break-word",
+                          overflowY: "auto",
+                        }}
+                      >
                         {reply.content.split("\n").map((line, index) => (
                           <React.Fragment key={index}>
                             {line}
@@ -541,7 +545,7 @@ export default function AdoptionReviewDetail() {
             value={replyContent}
             onChange={(event) => setReplyContent(event.target.value)}
             inputProps={{
-              maxLength: 50,
+              maxLength: 300,
             }}
           />
           <Button
@@ -633,11 +637,11 @@ export default function AdoptionReviewDetail() {
   async function updateBoard(boardNo, editedTitle, editedContent, imageFile) {
     if (window.confirm("변경된 내용을 저장하시겠습니까?")) {
       let imagePath = null;
-  
+
       if (imageFile) {
         const formData = new FormData();
         formData.append("image", imageFile.files[0]);
-  
+
         try {
           const imageResponse = await axios.post(
             "https://i9a203.p.ssafy.io/backapi/api/v1/image?option=board",
@@ -649,14 +653,14 @@ export default function AdoptionReviewDetail() {
               },
             }
           );
-  
+
           imagePath = imageResponse.data;
         } catch (error) {
           console.error("이미지 업로드 오류:", error);
           return;
         }
       }
-  
+
       try {
         const response = await axios.put(
           "https://i9a203.p.ssafy.io/backapi/api/v1/board/" + boardNo,
@@ -671,7 +675,7 @@ export default function AdoptionReviewDetail() {
             },
           }
         );
-  
+
         setIsEditing(false);
         setSelectedReview(response.data);
         setEditedDate(
@@ -684,7 +688,6 @@ export default function AdoptionReviewDetail() {
       }
     }
   }
-  
 
   async function submitReply() {
     if (!userNo) {
@@ -757,26 +760,28 @@ export default function AdoptionReviewDetail() {
 
   async function updateReply(replyId, editedContent) {
     if (!window.confirm("저장하시겠습니까?")) return;
-  
+
     if (editedContent.trim() === "") {
       alert("댓글 내용을 입력해주세요.");
       return;
     }
-  
+
     try {
       let updateReply;
-      await axios.put(
-        `https://i9a203.p.ssafy.io/backapi/api/v1/reply/${replyId}`,
-        { content: editedContent },
-        {
-          headers: {
-            AccessToken: "Bearer " + accessToken,
-          },
-        }
-      ).then((response) => {
-        updateReply = response.data;
-      });
-  
+      await axios
+        .put(
+          `https://i9a203.p.ssafy.io/backapi/api/v1/reply/${replyId}`,
+          { content: editedContent },
+          {
+            headers: {
+              AccessToken: "Bearer " + accessToken,
+            },
+          }
+        )
+        .then((response) => {
+          updateReply = response.data;
+        });
+
       const updatedReplyList = replyList.map((reply) =>
         updateReply.replyNo === reply.replyNo
           ? {
@@ -786,7 +791,7 @@ export default function AdoptionReviewDetail() {
             }
           : reply
       );
-  
+
       setReplyList(updatedReplyList);
       cancelEdit(); // Clear the editing state
       alert("댓글이 수정되었습니다.");
@@ -794,7 +799,6 @@ export default function AdoptionReviewDetail() {
       alert("댓글 수정에 실패했습니다.");
     }
   }
-  
 
   function formatDateTime(timestamp) {
     const date = new Date(timestamp);
