@@ -140,11 +140,12 @@ export default function AdoptionReviewDetail() {
 
       <Box
         sx={{
-          border: "1px solid black",
+          border: "1px solid white",
           padding: "10px",
-          borderRadius: "10px",
+          borderRadius: "5px",
           width: "80%",
           maxWidth: "800px",
+          backgroundColor: "var(--yellow1)",
         }}
       >
         {/* 제목과 조회수 */}
@@ -259,8 +260,11 @@ export default function AdoptionReviewDetail() {
                     startIcon={<FavoriteIcon />}
                     color="primary"
                     variant="contained"
+                    style={{
+                      backgroundColor: "#FF4848"
+                    }}
                   >
-                    좋아요
+                    좋아요 
                   </Button>
                 </Box>
               )}
@@ -273,6 +277,9 @@ export default function AdoptionReviewDetail() {
                     startIcon={<FavoriteIcon />}
                     color="error"
                     variant="outlined"
+                    style={{
+                      color: "#FF4848"
+                    }}
                   >
                     좋아요 취소
                   </Button>
@@ -378,8 +385,14 @@ export default function AdoptionReviewDetail() {
                   sx={{
                     mt: 1,
                     height: "30px",
-                    margin: "auto",
+                    margin: "auto",                    
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "var(--yellow8)",
+                    },
                   }}
+                  InputLabelProps={{
+                    style: { color: "var(--yellow9)" },
+                  }}                  
                   onClick={loadMoreComments}
                 >
                   모든 댓글 보기

@@ -103,7 +103,7 @@ function AdoptionReview() {
   return (
     <Box sx={{ mt: 5, mb: 4 }}>
       <span style={{ display: 'flex', alignItems: 'center' }}>
-        <img src={reviewIcon} alt="입양후기" style={{ maxHeight: '35px' }}/>
+        <img src={reviewIcon} alt="입양후기" style={{ maxHeight: '34px' }}/>
         <IconButton
           variant="contained" 
           style={{
