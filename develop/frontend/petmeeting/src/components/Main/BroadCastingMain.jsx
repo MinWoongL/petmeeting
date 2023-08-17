@@ -14,6 +14,7 @@ import { OpenVidu } from 'openvidu-browser';
 import { useDispatch } from 'react-redux';
 import { setSessionInstance, setSubscribers } from '../../stores/Slices/sessionSlice';
 import liveIcon from './LiveIcon.png';
+import { config } from '../../static/config';
 
 const APPLICATION_SERVER_URL = 'https://i9a203.p.ssafy.io/openvidu/';
 const OPENVIDU_PASSWORD = process.env.REACT_APP_OPENVIDU_PASSWORD;
@@ -65,8 +66,6 @@ function BroadCastingMain() {
           dispatch(setSubscribers(temp))
       });
 
-      
-      console.log(sessionInstance)
       console.log('Session내용: ', sessionInstance)
       return sessionInstance
     };
@@ -75,14 +74,11 @@ function BroadCastingMain() {
       const customSessionId = shelterNo.toString();
       const sessionInstance = await initializeSession();
       dispatch(setSessionInstance(sessionInstance));
-      console.log('join1')
+      // console.log('join1')
       const token = await getToken(customSessionId);
-      // console.log('session(Join에서):',sessionInstance)
-      // console.log('token 잘 들어옴?', token)
       sessionInstance.connect(token, { clientData: mySession })
           .then(async() => {
               console.log('Successfully connected to the session as a subscriber');
-              // console.log('넘겨줄 세션:',sessionInstance)
               navigate(`/broadcasting/${customSessionId}`, {
                 state: {
                     title: "OpenVidu Live Session",
@@ -96,11 +92,9 @@ function BroadCastingMain() {
           .catch((error) => {
               console.log('There was an error connecting to the session:', error.code, error.message);
           });
-      // setmytoken(token)
     };
 
     const getToken = async(customSessionId) => {
-      // console.log('gettoken1')
       const sessionId = await createSession(customSessionId);
       return await createToken(sessionId);
     }
@@ -276,7 +270,7 @@ function BroadCastingMain() {
                                 style={{
                                     flexGrow: 5,
                                     width: '100%',
-                                    backgroundImage: `url(path_to_dummy_thumbnail.jpg)`,
+                                    backgroundImage: `url(${config.baseURL}/api/v1/image/${session.imagePath}?option=dog)`,
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center'
                                 }}

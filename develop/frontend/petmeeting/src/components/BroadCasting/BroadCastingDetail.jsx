@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Avatar, Typography, Button, Box, Card, CardContent, CardMedia, Grid, Modal, TextField } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';  // 보호소 가기 아이콘
-import FavoriteIcon from '@mui/icons-material/Favorite';  // 좋아요 아이콘
-import BookmarkIcon from '@mui/icons-material/Bookmark';  // 찜하기 아이콘
 import PaymentIcon from '@mui/icons-material/Payment';  // 후원하기 아이콘
 import { Snackbar } from '@mui/material';
 import axios from 'axios';
 import { config } from '../../static/config';
 import { Link } from 'react-router-dom';
 import { useParams, useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
 
 
 const buttonStyles = {
@@ -40,7 +39,6 @@ function BroadCastingDetail() {
     const [donationSuccessMessage, setDonationSuccessMessage] = useState("");
     const [showSnackbar, setShowSnackbar] = useState(false);
     const { broadcastId } = useParams();
-
 
     useEffect(() => {
       axios.get("https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/shelter")
@@ -169,8 +167,8 @@ function BroadCastingDetail() {
             </Button>
           </Link>
           <Button variant="contained" color="secondary" startIcon={<PaymentIcon />} onClick={() => setModalOpen(true)} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow8)', color: 'var(--yellow1)' }}>후원하기</Button>
-          <Button variant="outlined" startIcon={<FavoriteIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow9)', color: 'var(--yellow1)' }}>좋아요</Button>
-          <Button variant="outlined" startIcon={<BookmarkIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow9)', color: 'var(--yellow1)' }}>찜하기</Button>
+          {/* <Button variant="outlined" startIcon={<FavoriteIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow9)', color: 'var(--yellow1)' }}>좋아요</Button>
+          <Button variant="outlined" startIcon={<BookmarkIcon />} sx={{ ...buttonStyles, backgroundColor: 'var(--yellow9)', color: 'var(--yellow1)' }}>찜하기</Button> */}
         </Box>
 
         <Snackbar 
