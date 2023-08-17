@@ -52,11 +52,8 @@ import AdoptionReviewCreate from "./components/Board/AdoptionReviewCreate";
 import InquiryMain from "./components/Board/InquiryMain";
 import InquiryCreate from "./components/Board/InquiryCreate";
 import ApplicationForm from "./components/Adoption/ApplicationForm";
-import PetMeetingLogo1 from "./assets/images/petmeeting_logo1.png";
-import PetMeetingLogo2 from "./assets/images/petmeeting_logo2.png";
 import PetMeetingLogo3 from "./assets/images/petmeeting_logo3.png";
 import LoadingMain from "./components/loading/LoadingMain";
-import Page_404 from "./pages/404";
 
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -231,11 +228,11 @@ function App() {
   // 현재 경로가 보호소 상세 페이지인지 확인
   const isShelterDetailPage = location.pathname.startsWith("/shelter/");
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000); // 1초 후 로딩 상태 해제
-  }, []); 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 1000); // 1초 후 로딩 상태 해제
+  // }, []); 
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -245,7 +242,16 @@ function App() {
       const userData = JSON.parse(user);
       dispatch(login({ userId: userData.name }));
     }
-  }, [dispatch]);
+
+    // 메인 라우터(/)일때만 로딩화면 적용
+    if(location.pathname === "/") {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000); // 1초 후 로딩 상태 해제   
+    } else {
+      setLoading(false); // 다른 경로일 때는 로딩 상태 해제
+    }
+  }, [dispatch, location.pathname]);
 
   const authPage = ["/signup", "/login"];
   const pageCheck = authPage.includes(location.pathname);
@@ -385,8 +391,6 @@ function App() {
                   <Route path="/board/usage-guide" element={<UsageGuide />} />
                   <Route path="/loading" element={<LoadingMain />} />
                   <Route path="/payment/success" element={<PaymentSuccess />} />
-
-                  <Route path="/*" element={<Page_404/>}/>
                 </Routes>
               </Box>
             </Grid>

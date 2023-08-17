@@ -58,8 +58,12 @@ function BroadCastingSub() {
 
   return (
     <Box sx={{ mt: 3 }}>
-      <span style={{ display: 'flex', alignItems: 'center' }}>
-        <img src={broadcastIcon} alt="보호소 방송국" style={{ maxHeight: '30px' }} />
+      <span style={{ display: "flex", alignItems: "center" }}>
+        <img
+          src={broadcastIcon}
+          alt="보호소 방송국"
+          style={{ maxHeight: "39px" }}
+        />
         <IconButton
           variant="contained"
           style={{

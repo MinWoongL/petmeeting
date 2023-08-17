@@ -16,7 +16,7 @@ import UserVideoComponent from './OpenVidu/UserVideoComponent'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
-function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
+function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getshelterNo }) {
   const dispatch = useDispatch();
 
   const [seconds, setSeconds] = useState(timerLimit);
@@ -34,12 +34,11 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
   const [isUserMatched, setIsUserMatched] = useState(false);
 
   const sessionInstance2 = useSelector(state => state.session.sessionInstance)
-  const subscribers2 = useSelector(state => state.session.subscribers)
+  // const subscribers2 = useSelector(state => state.session.subscribers)
   const [subscribers, setSubscribers] = useState([]);
-  const [shelterNo, setshelterNo] = useState(null);
+  const publisherFromStore = useSelector(state => state.session.publisher);
 
   const navigate = useNavigate();
-
 
   useEffect(() => {
     if (isLiveSession && token) {
@@ -49,7 +48,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
             const subscriber = sessionInstance.subscribe(event.stream, 'myVideoContainer');
             setSubscribers(prevSubscribers => [...prevSubscribers, subscriber]);
             setHasStream(true);
-            console.log(hasStream)
+            console.log('hasStream',hasStream)
         });
 
         sessionInstance.on('streamDestroyed', (event) => {
@@ -66,37 +65,34 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
   }, [isLiveSession, token]);
 
   useEffect(() => {
-    // API 호출
-    axios.get("https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/shelter")
-      .then(response => {
-        const shelterNo = response.data.shelterNo;
-        setshelterNo(shelterNo)
-        
-        // localStorage에서 user 데이터 파싱
-        let userData;
-        try {
-          userData = JSON.parse(localStorage.getItem("user"));
-        } catch (error) {
-          console.error("localStorage에서 user 데이터 파싱 중 오류 발생:", error);
-        }
+    // localStorage에서 user 데이터 파싱
+    let userData;
+    try {
+      userData = JSON.parse(localStorage.getItem("user"));
+    } catch (error) {
+      console.error("localStorage에서 user 데이터 파싱 중 오류 발생:", error);
+    }
 
-        // userNo 값 확인 및 숫자로 변환
-        const userNo = userData && userData.userNo ? Number(userData.userNo) : null;
+    // userNo 값 확인 및 숫자로 변환
+    const userNo = userData && userData.userNo ? Number(userData.userNo) : null;
 
-        if (shelterNo === userNo) {
-          console.log("shelterNo와 userNo가 일치합니다.");
-          setIsUserMatched(true);
-        } else {
-          console.log("shelterNo와 userNo가 일치하지 않습니다.");
-          console.log(shelterNo);
-          console.log(userData);
-          console.log(userNo);
-        }
-      })
-      .catch(error => {
-        console.error("API 요청 중 오류 발생:", error);
-      });
-  }, []);
+    if (getshelterNo === userNo.toString()) {
+      console.log("getshelterNo와 userNo가 일치합니다.");
+      setIsUserMatched(true);
+    } else {
+      console.log("getshelterNo와 userNo가 일치하지 않습니다.");
+      console.log(getshelterNo);
+      console.log(userData);
+      console.log(userNo);
+    }
+  }, [getshelterNo]);
+
+  useEffect(() => {
+    if (isUserMatched && subscribers.length === 0 && publisherFromStore) {
+      setSubscribers([publisherFromStore]);
+    }
+  }, [isUserMatched, subscribers, publisherFromStore]);
+
 
   useEffect(() => {
     let interval;
@@ -109,11 +105,12 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
     if (isPlaying && seconds === 0) {
       setIsPlaying(false);
       setOpenDialog(true);
+      setSeconds(timerLimit);
       dispatch(setshowDevice(false));
     }
 
     return () => clearInterval(interval);
-  }, [isPlaying, seconds, dispatch]);
+  }, [isPlaying, seconds, dispatch, timerLimit]);
 
   const handleStopBroadcast = () => {
     const token = JSON.parse(sessionStorage.getItem("token"));
@@ -149,7 +146,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
     const token = JSON.parse(sessionStorage.getItem("token"));
     const accessToken = token.accessToken
 
-    axios.post(`https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/request/${shelterNo}`, {}, {
+    axios.post(`https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/request/${Number(broadcastId)}`, {}, {
     headers: {
       AccessToken: `Bearer ${accessToken}`
     }
@@ -194,7 +191,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
     const token = JSON.parse(sessionStorage.getItem("token"));
     const accessToken = token.accessToken;
   
-    axios.delete(`https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/request/${shelterNo}`, {
+    axios.delete(`https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/request/${Number(broadcastId)}`, {
       headers: {
         AccessToken: `Bearer ${accessToken}`
       },
@@ -257,7 +254,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token }) {
           {isLiveSession ? (
               hasStream ? (
                 <div id="myVideoContainer" className="col-md-6">
-                    <UserVideoComponent style={{ width: '100%', height: '100%' }} streamManager={subscribers2[0]} />
+                    <UserVideoComponent style={{ width: '100%', height: '100%' }} streamManager={subscribers[0]} />
                 </div>
             ) : (
                 <Typography variant="h5" color="textSecondary" sx={{ alignSelf: "center" }}>

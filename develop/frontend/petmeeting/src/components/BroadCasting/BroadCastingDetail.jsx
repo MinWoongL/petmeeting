@@ -8,6 +8,7 @@ import { Snackbar } from '@mui/material';
 import axios from 'axios';
 import { config } from '../../static/config';
 import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 
 const buttonStyles = {
@@ -33,15 +34,20 @@ function BroadCastingDetail() {
     const [modalOpen, setModalOpen] = useState(false);
     const [donationSuccessMessage, setDonationSuccessMessage] = useState("");
     const [showSnackbar, setShowSnackbar] = useState(false);
+    const { broadcastId } = useParams();
 
 
     useEffect(() => {
       axios.get("https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/shelter")
         .then(response => {
-          const fetchedShelterNo = response.data.shelterNo;
-          const fetchedDogNo = response.data.dogNo;
-          setShelterNo(fetchedShelterNo);
-          setDogNo(fetchedDogNo);
+          const matchedData = response.data.find(item => item.shelterNo.toString() === broadcastId);
+
+          if (matchedData) {
+            setShelterNo(matchedData.shelterNo);
+            setDogNo(matchedData.dogNo);
+          } else {
+            console.error("customSessionId와 일치하는 shelterNo를 찾을 수 없습니다.");
+          }
         })
         .catch(error => {
           console.error("shelterNo를 가져오는 중 오류 발생:", error);

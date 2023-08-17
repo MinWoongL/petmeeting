@@ -16,10 +16,7 @@ import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import {
-  setSessionInstance,
-  setSubscribers,
-} from "../../stores/Slices/sessionSlice";
+import { setSessionInstance, setSubscribers, setPublisher } from '../../stores/Slices/sessionSlice';
 import useDogDetail from "../../apis/useDogDetail";
 import { config } from "../../static/config";
 
@@ -40,10 +37,8 @@ const ShelterMypageProfile = ({
   const userData = JSON.parse(localStorage.getItem("user"));
 
   const [mainStreamManager, setMainStreamManager] = useState(null);
-  const [publisher, setPublisher] = useState(null);
-  const [subscribers, setSubscribers] = useState([]);
 
-  const dogData = useDogDetail(userData.userNo);
+  const dogData = useDogDetail(userData?.userNo);
   const [dogSelectionModalOpen, setDogSelectionModalOpen] = useState(false);
   const [selectedDog, setSelectedDog] = useState(null);
 
@@ -131,8 +126,11 @@ const ShelterMypageProfile = ({
           insertMode: "APPEND",
           mirror: false,
         });
+        dispatch(setPublisher(publisher));
+        // dispatch(setSubscribers(prevSubscribers => [...prevSubscribers, publisher]));
         console.log("publisher >> ", publisher);
-        sessionInstance
+        
+        await sessionInstance
           .publish(publisher)
           .then(async () => {
             console.log("퍼블리싱 성공");
@@ -163,6 +161,7 @@ const ShelterMypageProfile = ({
             );
 
             console.log("Broadcast POST response:", response.data);
+            
             navigate(`/broadcasting/${customSessionId}`, {
               state: {
                 title: "OpenVidu Live Session",
@@ -170,6 +169,7 @@ const ShelterMypageProfile = ({
                 thumbnail: `${config.baseURL}/api/v1/image/${dog.imagePath}?option=dog`,
                 isLiveSession: true,
                 token: token, // 직접 token 변수를 사용
+                shelterNo: customSessionId
               },
             });
           })
@@ -189,11 +189,12 @@ const ShelterMypageProfile = ({
   };
 
   const getToken = async (customSessionId) => {
-    // console.log('gettoken1')
+    console.log('gettoken1')
     const sessionId = await createSession(customSessionId);
     return await createToken(sessionId);
   };
   const createSession = (sessionId) => {
+    console.log('createSession 들어왔나?')
     return new Promise((resolve, reject) => {
       let data = JSON.stringify({ customSessionId: sessionId });
 
@@ -230,6 +231,7 @@ const ShelterMypageProfile = ({
   };
 
   const createToken = (sessionId) => {
+    console.log('createToken 들어왔나?')
     return new Promise((resolve, reject) => {
       let data = {};
 

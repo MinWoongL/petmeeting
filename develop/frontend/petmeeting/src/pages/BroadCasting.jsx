@@ -12,12 +12,13 @@ function BroadCasting() {
   const isLiveSession = location.state?.isLiveSession
   const token = location.state?.token
   const session = location.state?.session
+  const shelterNo = location.state?.shelterNo
 
 
   return (
     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {/* 다른 컨텐츠와 컴포넌트들이 여기에 추가될 수 있습니다. */}
-      <BroadCastingView isLiveSession={isLiveSession} token={token} session={session}/>
+      <BroadCastingView isLiveSession={isLiveSession} token={token} session={session} getshelterNo={shelterNo}/>
       {showDevice ? <DeviceOperation /> : <BroadCastingDetail />}
     </Box>
     

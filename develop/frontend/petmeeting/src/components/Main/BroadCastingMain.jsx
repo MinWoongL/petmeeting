@@ -35,9 +35,13 @@ function BroadCastingMain() {
     const fetchOpenViduSessions = async () => {
       try {
           const response = await axios.get(`https://i9a203.p.ssafy.io/backapi/api/v1/broadcast/shelter`);
-          const sessions = Array.isArray(response.data) ? response.data : [response.data];
-          setOpenViduSessions(sessions);
-          console.log('방송중인보호소',response.data)
+          if (response.data && response.data.length > 0) {
+            const sessions = Array.isArray(response.data) ? response.data : [response.data];
+            setOpenViduSessions(sessions);
+        } else {
+            // response.data가 비어있는 경우 빈 배열로 상태를 업데이트합니다.
+            setOpenViduSessions([]);
+        }
       } catch (error) {
           console.error('OpenVidu 세션 데이터를 가져오는 데 실패했습니다:', error);
       }
