@@ -49,11 +49,6 @@ public class SseEmitters {
         });
     }
     public void sendMessage(String userId, Long remainTime) {
-        emitters.stream().map((emitter) -> {
-            System.out.println(emitter);
-            return emitter;
-        });
-
         emitters.forEach(emitter -> {
             try {
                 Map<String, Object> map = new HashMap<>();
@@ -64,7 +59,7 @@ public class SseEmitters {
                         .name("data")
                         .data(map));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                sendMessage(userId, remainTime); // 실패 시 다시 보내기
             }
         });
     }
