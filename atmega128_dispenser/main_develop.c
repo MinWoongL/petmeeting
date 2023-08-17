@@ -33,6 +33,8 @@ void processCommand(unsigned char cmd);
 int opened = 0;
 
 // PWM
+#define BASE_MS 1500
+#define OPEN_MS 3500
 void Init_PWM();
 
 // Interrupt
@@ -44,27 +46,29 @@ ISR(USART1_RX_vect)
 	USART0_Transmit(last_char);
 }
 
-char str_pre[5][100] = {
-	"AT+RST\r\n",
-	"AT+CWMODE=3\r\n",
-	"AT+CWJAP=\"i9a203\",\"12345678\"\r\n",
-	"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
-	"AT+CIPMODE=0\r\n"
-};
-char str_main[2][200] = {
-	"AT+CIPSEND=78\r\n",
-	"GET /iot/1d HTTP/1.1\r\nHost: i9a203.p.ssafy.io:3010\r\nConnection: keep-alive\r\n\r\n"
-};
+
 
 int main( void )
 {
+	char str_pre[5][100] = {
+		"AT+RST\r\n",
+		"AT+CWMODE=3\r\n",
+		"AT+CWJAP=\"i9a203\",\"12345678\"\r\n",
+		"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
+		"AT+CIPMODE=0\r\n"
+	};
+	char str_main[2][200] = {
+		"AT+CIPSEND=78\r\n",
+		"GET /iot/1d HTTP/1.1\r\nHost: i9a203.p.ssafy.io:3010\r\nConnection: keep-alive\r\n\r\n"
+	};
+	
 	// initialization
 	cli();
 	USART0_Init ( MYUBRR );
 	USART1_Init ( MYUBRR );
+	Init_PWM();
 	sei();
 	
-	Init_PWM();
 	
 	// run AT command
 	
@@ -237,18 +241,25 @@ void Open_Door_Once()
 		return;
 	}
 	opened = 1;
-	OCR0 = 0xFF;
+	OCR1A = OPEN_MS;
 	_delay_ms(1000);
-	OCR0 = 0x00;
+	OCR1A = BASE_MS;
 }
 
 void Close_Door()
 {
 	opened = 0;
-	OCR0 = 0x00;
+	OCR1A = BASE_MS;
 }
 
 void processCommand(unsigned char cmd) {
+	char str_pre[5][100] = {
+		"AT+RST\r\n",
+		"AT+CWMODE=3\r\n",
+		"AT+CWJAP=\"i9a203\",\"12345678\"\r\n",
+		"AT+CIPSTART=\"TCP\",\"i9a203.p.ssafy.io\",3010\r\n",
+		"AT+CIPMODE=0\r\n"
+	};
 	switch (cmd) {
 		case '0':
 		Close_Door();
@@ -270,8 +281,10 @@ void processCommand(unsigned char cmd) {
 
 void Init_PWM()
 {
-	/* Enable OC0(PB4) and use correct phase PWM */
-	DDRB |= (1 << PB4);
-	TCCR0 = (1 << WGM00)|(1 << COM01)|(0b001 << CS0);
-	OCR0 = 0xBF;
+	/* Enable OC1A(PB5) and use correct phase PWM */
+	DDRB |= (1 << PB5);
+	TCCR1A = (1 << COM1A1)|(1 << WGM11);
+	TCCR1B = (1 << WGM13)|(1 << WGM12)|(1 << CS11);
+	OCR1A = BASE_MS;
+	ICR1 = 19999;
 }
