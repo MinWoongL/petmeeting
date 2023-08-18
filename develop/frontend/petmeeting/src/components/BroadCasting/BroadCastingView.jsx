@@ -409,7 +409,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
           )}
       </Box>
 
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
+      <Dialog open={openDialog && currentUserId === currentUser.userId} onClose={handleCloseDialog}>
         <DialogTitle>
           저와 놀아주셔서 감사해요! 다음에 또 놀아주세요
         </DialogTitle>
