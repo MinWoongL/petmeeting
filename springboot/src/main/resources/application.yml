@@ -1,0 +1,82 @@
+# sql 보기
+spring:
+  jpa:
+#    properties:
+#      hibernate:
+#        format_sql: true
+#        show_sql: true
+#   <H2 인메모리 DB>
+#    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+#     <H2 인메모리 DB>
+#      ddl-auto: create
+      ddl-auto: none
+    defer-datasource-initialization: true
+
+    open-in-view: false # SSE 통신 간 HTTP Connection 열려있는 것 방지
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+#    <H2 인메모리 DB>
+#    url: jdbc:h2:mem:testdb
+#    driverClassName: org.h2.Driver
+#    username: sa
+#    password:
+    url: jdbc:mysql://i9A203.p.ssafy.io:3306/mydb
+    username: backend
+    password: Backend@1234
+    driver-class-name: org.mariadb.jdbc.Driver
+
+
+  ########################################################################################
+# 파일 업로드 설정
+  servlet:
+    multipart:
+      max-file-size: 10MB           # 파일의 최대 사이즈(default:1MB)
+      max-request-size: 10MB        # 요청의 최대 사이즈(default:10MB)
+      file-size-threshold: 1MB      # 파일이 메모리에 기록되는 임계값(default:0MB)
+  output:
+    ansi:
+      enabled: DETECT             # 멀티파일 업로드 지원 여부(default: true)
+  redis:
+    host: i9a203.p.ssafy.io
+    port: 6379
+
+######################################################################################
+
+#logging.level:
+#    org.hibernate:
+#      sql: debug
+#      type.descriptor.sql: trace # sql의 데이터까지 보이게
+
+server:
+  error:
+    include-exception: false      # Response 에 Exception 을 표시할지
+    include-message: always       # Response 에 Exception Message 를 표시할지 (never | always | on_param)
+    include-stacktrace: on_param  # Response 에 Stack Trace 를 표시할지 (never | always | on_param) on_trace_params 은 deprecated
+  port: 5000
+  forward-headers-strategy: native
+
+jwt:
+  issuer: petmeetingservice
+  secret_key: afd3ad5jf6i23FA89S9DCZ0Xa12sd3qbzxf56Sadvjoupiuy7D5A4F32Zcv14xxvbZ34X32v67QA234d38HG56FbxfDJvcxZFADFzxCV1321
+  access_expiration_ms: 10000000
+  refresh_expiration_ms: 2592000000
+
+kakao:
+  admin_key: bef57d6c185d96c914e88393686973b1
+  content_type: application/x-www-form-urlencoded;charset=utf-8
+  cid: TC0ONETIME
+
+cors:
+  front_url: "*"
+
+springdoc:
+  api-docs:
+    path: /spring/api-docs/json
+  swagger-ui:
+    path: /spring/api-docs
