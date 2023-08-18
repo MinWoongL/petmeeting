@@ -153,7 +153,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
         }
 
         const token = JSON.parse(sessionStorage.getItem("token"));
-        const accessToken = token.accessToken;
+        const accessToken = token?.accessToken;
 
         axios.post(`https://i9a203.p.ssafy.io/backapi/api/v1/iot/${broadcastId}`, {
           command: commandValue
