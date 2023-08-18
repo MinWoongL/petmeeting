@@ -79,6 +79,7 @@ public class BroadcastController {
     @DeleteMapping
     public ResponseEntity<MessageDto> stopBroadcast(@RequestHeader(ACCESS_TOKEN) String token) {
         broadcastService.stopBroadcast(token);
+        sseEmitters.remove();
         return ResponseEntity.ok(MessageDto.msg("Stop Broadcast"));
     }
 
