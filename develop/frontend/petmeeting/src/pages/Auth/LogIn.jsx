@@ -30,16 +30,11 @@ export default function Login() {
   const [password, setPassword] = useState(""); // 비밀번호 상태
   //   const dispatch = useDispatch(); // Redux dispatch 사용
   const user = useSelector((state) => state.user);
-  const [userType, setUserType] = useState("user"); // 사용자 타입 상태
-
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   //네비게이션 로직
 
-  const handleUserTypeChange = (event, newUserType) => {
-    setUserType(newUserType);
-  };
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -153,16 +148,6 @@ export default function Login() {
           </Box>
 
           <form onSubmit={handleSubmit}>
-            <ToggleButtonGroup
-              value={userType}
-              exclusive
-              onChange={handleUserTypeChange}
-              style={{ marginBottom: "15px" }}
-            >
-              <ToggleButton value="사용자">사용자</ToggleButton>
-              <ToggleButton value="보호소">보호소</ToggleButton>
-            </ToggleButtonGroup>
-
             <TextField
               fullWidth
               label="ID"
