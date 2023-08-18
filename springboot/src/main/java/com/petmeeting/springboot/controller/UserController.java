@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import nonapi.io.github.classgraph.json.JSONSerializer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -103,7 +104,7 @@ public class UserController {
             description = "UserNo로 회원의 정보를 가져옵니다."
     )
     @GetMapping("/admin/{userNo}")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AdminUserResDto> getUser (@PathVariable Integer userNo) {
         return ResponseEntity.ok(userService.getUser(userNo));
     }
@@ -114,6 +115,7 @@ public class UserController {
                     "default : all / disabled-shelter : 비활성 보호소 / shelter : 보호소 / member : 사용자"
     )
     @GetMapping("/admin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<AdminUserResDto>> getUserList(@RequestParam String option) {
         return ResponseEntity.ok(userService.getUserList(option));
     }
@@ -123,6 +125,7 @@ public class UserController {
             description = "성공 시 회원의 변경된 정보를 반환합니다."
     )
     @PutMapping("/admin/{userNo}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AdminUserResDto> updateStatus(@PathVariable Integer userNo,@RequestBody AdminUpdateReqDto adminUpdateReqDto) {
         return ResponseEntity.ok(userService.updateStatus(userNo, adminUpdateReqDto.getIsActivated()));
     }

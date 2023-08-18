@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class DogController {
             description = "새로운 유기견을 등록합니다."
     )
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_SHELTER')")
     public ResponseEntity<DogResDto> createDog(@RequestBody DogReqDto reqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(dogService.createDog(reqDto, token));
@@ -42,7 +44,7 @@ public class DogController {
                     "만약 '보호종료', '입양완료'가 되면 해당 유기견의 입양신청서가 모두 '미채택'으로 변경됩니다."
     )
     @PutMapping("/status/{dogNo}")
-//    @PreAuthorize("hasRole('ROLE_SHELTER')")
+    @PreAuthorize("hasRole('ROLE_SHELTER')")
     public ResponseEntity<DogResDto> updateDogStatus(@PathVariable Integer dogNo, @RequestBody DogStatusUpdateReqDto reqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(dogService.updateDogStatus(dogNo, reqDto, token));
     }
@@ -61,6 +63,7 @@ public class DogController {
             description = "shelter의 번호와 유기견의 보호소가 일치하는 경우에만 수정됩니다."
     )
     @PutMapping("/{dogNo}")
+    @PreAuthorize("hasRole('ROLE_SHELTER')")
     public ResponseEntity<DogResDto> updateDog(@PathVariable Integer dogNo, @RequestBody DogReqDto registerDogReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(dogService.updateDog(dogNo, registerDogReqDto, token));
     }
@@ -70,6 +73,7 @@ public class DogController {
             description = "해당 넘버의 유기견을 삭제합니다. 성공시 Delete Succuess 메세지를 반환합니다."
     )
     @DeleteMapping("/{dogNo}")
+    @PreAuthorize("hasRole('ROLE_SHELTER')")
     public ResponseEntity<MessageDto> deleteDog(@PathVariable Integer dogNo, @RequestHeader(ACCESS_TOKEN) String token) {
         dogService.deleteDog(dogNo, token);
         return ResponseEntity.ok(MessageDto.msg("Delete Success"));
@@ -158,11 +162,6 @@ public class DogController {
     public ResponseEntity<List<DogResDto>> getLikeDogList(@RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(dogService.getLikeDogList(token)); // 메서드 이름 맞춤
     }
-
-
-
-
-
 
     @Operation(
             summary = "유기견 찜",

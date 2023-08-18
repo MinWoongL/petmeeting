@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -67,6 +68,7 @@ public class BroadcastController {
             description = "보호소가 방송을 시작합니다."
     )
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_SHELTER')")
     public ResponseEntity<MessageDto> startBroadcast(@RequestBody BroadcastReqDto broadcastReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         broadcastService.startBroadcast(broadcastReqDto, token);
         return ResponseEntity.ok(MessageDto.msg("Start Broadcast"));
@@ -77,6 +79,7 @@ public class BroadcastController {
             description = "보호소가 방송을 종료합니다."
     )
     @DeleteMapping
+    @PreAuthorize("hasRole('ROLE_SHELTER')")
     public ResponseEntity<MessageDto> stopBroadcast(@RequestHeader(ACCESS_TOKEN) String token) {
         broadcastService.stopBroadcast(token);
         sseEmitters.remove();
@@ -115,14 +118,5 @@ public class BroadcastController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("X-Accel-Buffering", "no");
         return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(emitter);
-    }
-
-    @Operation(
-            hidden = true
-    )
-    @PostMapping("/test")
-    public ResponseEntity<Void> count() {
-        sseEmitters.sendMessage("hi", 1000L);
-        return ResponseEntity.ok().build();
     }
 }
