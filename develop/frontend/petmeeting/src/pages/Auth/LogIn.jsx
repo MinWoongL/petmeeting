@@ -84,7 +84,6 @@ export default function Login() {
           console.log("No token found in response");
         }
 
-        console.log(response);
         // Create new user object
         const newUser = {
           userNo: response.data.userNo,
