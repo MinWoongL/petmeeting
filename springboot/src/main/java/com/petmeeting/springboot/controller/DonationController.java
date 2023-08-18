@@ -24,7 +24,7 @@ public class DonationController {
             description = "사용자가 강아지에게 후원합니다. 남은 포인트를 반환받습니다."
     )
     @PostMapping
-    @PreAuthorize("hasRole('MEMBER')")
+//    @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<DonateResDto> donateToDog(@RequestBody DonateReqDto donateReqDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(donateService.donateToDog(donateReqDto, token));
     }
