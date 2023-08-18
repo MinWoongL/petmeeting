@@ -27,7 +27,7 @@ public class BroadcastController {
 
     private final BroadcastService broadcastService;
     private final String ACCESS_TOKEN = "AccessToken";
-    private final Long CONTROL_TIME = 30L; // 5분 설정
+    private final Long CONTROL_TIME = 300L; // 5분 설정
 
     @Operation(
             summary = "기기 조작 요청",
