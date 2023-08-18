@@ -25,8 +25,8 @@ const UserInformation = ({
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const token = JSON.parse(sessionStorage.getItem("token"));
   const user = useSelector((state) => state.user);
-
-  let image = user?.imagePath ? user.imagePath : "profile2.png";
+  let image = JSON.parse(localStorage.getItem('user'))?.imagePath ? JSON.parse(localStorage.getItem('user')).imagePath : "profile2.png"
+  // let image = user?.imagePath ? user.imagePath : "profile2.png";
   const imagePath = `https://i9a203.p.ssafy.io/backapi/api/v1/image/${image}?option=member`;
 
   const handleEdit = () => {

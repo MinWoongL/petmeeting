@@ -51,7 +51,20 @@ function InfoSidebar() {
     // Define the async function inside the useEffect
     const fetchHoldingData = async () => {
       try {
-        const token = JSON.parse(sessionStorage.getItem("token"));
+        // const token = JSON.parse(sessionStorage.getItem("token"));
+        const tokenString = sessionStorage.getItem("token");
+        if (!tokenString) {
+          console.warn("No token found in session storage.");
+          return;
+        }
+        
+        const token = JSON.parse(tokenString);
+
+        if (!token.accessToken) {
+          console.warn("No accessToken found in token object.");
+          return;
+        }
+
         const config = {
           headers: { AccessToken: `Bearer ${token.accessToken}` },
         };
