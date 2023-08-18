@@ -139,7 +139,7 @@ const ShelterMypageProfile = ({
             )?.accessToken;
             console.log(dog);
 
-            const broadcastTitle = `${dog.name} 이 방송 중입니다.`;
+            const broadcastTitle = `${dog.name} 가(이) 방송 중입니다.`;
             const dogNumber = dog.dogNo;
             console.log("데이터 확인");
             console.log(dog);
