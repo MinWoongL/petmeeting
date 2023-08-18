@@ -52,6 +52,8 @@ import ApplicationForm from "./components/Adoption/ApplicationForm";
 import PetMeetingLogo3 from "./assets/images/petmeeting_logo3.png";
 import LoadingMain from "./components/loading/LoadingMain";
 
+import PageNotFound from "./pages/404";
+
 function NavBar({ isLoggedIn }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorEl2, setAnchorEl2] = useState(null);
@@ -377,6 +379,7 @@ function App() {
                   <Route path="/board/usage-guide" element={<UsageGuide />} />
                   <Route path="/loading" element={<LoadingMain />} />
                   <Route path="/payment/success" element={<PaymentSuccess />} />
+                  <Route path="/*" element={<PageNotFound/>}/>
                 </Routes>
               </Box>
             </Grid>
