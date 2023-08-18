@@ -77,13 +77,14 @@ function InfoSidebar() {
     fetchHoldingData();
   }, []);
 
-  const [nicknameInput, setNicknameInput] = useState("");
-
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  let image = user?.imagePath ? user.imagePath : "profile2.png";
+  const image = localStorage.getItem("user")?.imagePath ? localStorage.getItem("user").imagePath : "profile2.png";
+  console.log("User Image Path:", user?.imagePath); // user.imagePath 값을 콘솔에 출력
 
   const imagePath = `https://i9a203.p.ssafy.io/backapi/api/v1/image/${image}?option=member`;
+  console.log("Constructed Image Path:", imagePath); // imagePath 값을 콘솔에 출력
+
 
   const handleSnackbarClose = (event, reason) => {
     console.log("Snackbar is closing due to:", reason);
@@ -122,10 +123,7 @@ function InfoSidebar() {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(updateNickName(nicknameInput));
-  };
+
   if (!user.isLoggedIn) {
     return (
       <Card variant="outlined" style={{ width: "100%", height: "100%" }}>
