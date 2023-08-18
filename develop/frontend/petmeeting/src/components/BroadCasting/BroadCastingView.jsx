@@ -21,7 +21,7 @@ const commandMapping = {
   "간식초기화": 8
 };
 
-function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getshelterNo }) {
+function BroadCastingView({ timerLimit = 300, isLiveSession = false, token, getshelterNo }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
