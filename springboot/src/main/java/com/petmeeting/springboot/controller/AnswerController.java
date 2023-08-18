@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +22,7 @@ public class AnswerController {
             description = "문의게시글 답변 작성 결과를 반환합니다. 문의게시글 상태도 true(답변완료)로 변경합니다."
     )
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AnswerResDto> createAnswer(@RequestBody AnswerReqDto answerReqDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(answerService.createAnswer(answerReqDto));
@@ -31,6 +33,7 @@ public class AnswerController {
             description = "문의게시글 답변을 삭제합니다."
     )
     @PostMapping("/{answerNo}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageDto> deleteAnswer(@PathVariable Integer answerNo) {
         answerService.deleteAnswer(answerNo);
         return ResponseEntity.ok(MessageDto.msg("Delete Success"));
