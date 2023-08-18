@@ -125,7 +125,7 @@ public class UserController {
             description = "성공 시 회원의 변경된 정보를 반환합니다."
     )
     @PutMapping("/admin/{userNo}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AdminUserResDto> updateStatus(@PathVariable Integer userNo,@RequestBody AdminUpdateReqDto adminUpdateReqDto) {
         return ResponseEntity.ok(userService.updateStatus(userNo, adminUpdateReqDto.getIsActivated()));
     }
