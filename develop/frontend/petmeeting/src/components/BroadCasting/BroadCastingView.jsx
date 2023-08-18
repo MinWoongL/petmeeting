@@ -37,6 +37,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
   const currentUser = useSelector((state) => state.user);
   const isLoggedIn = currentUser.isLoggedIn;
   const [currentUserId, setCurrentUserId] = useState(currentUser.userId);
+  const [controlUser, setControlUser] = useState(null);
 
   const [isUserMatched, setIsUserMatched] = useState(false);
 
@@ -67,7 +68,8 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
       const { userId, remainTime } = JSON.parse(data); // 문자열을 JSON으로 파싱
 
       console.log("userName : " + userId);
-      setCurrentUserId(userId);
+      // setCurrentUserId(userId);
+      setControlUser(userId)
       setIsPlaying(true);
       setSeconds(remainTime);
     });
@@ -248,9 +250,11 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
 
     if (isPlaying && seconds === 0) {
       setIsPlaying(false);
-      setOpenDialog(true);
       setSeconds(timerLimit);
       dispatch(setshowDevice(false));
+      if (controlUser === currentUserId) {
+        setOpenDialog(true);
+      }
     }
 
     return () => clearInterval(interval);
@@ -364,7 +368,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
             <>
               <Avatar src={currentUser.avatarUrl} />
               <Typography variant="h6" sx={{ ml: 2, color: "gray" }}>
-                {currentUserId} 님과 놀고있어요
+                {controlUser} 님과 놀고있어요
               </Typography>
             </>
           ) : (
@@ -382,7 +386,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
           )}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", backgroundColor: "red", padding: "0.5rem", borderRadius: "8px" }}>
-          {isPlaying && currentUserId === currentUser.userId && (
+          {isPlaying && currentUserId === controlUser && (
             <Button variant="contained" color="secondary" sx={{ mr: 2, fontSize: "0.75rem", textTransform: "none" }} onClick={handleConfirmOpen}>
               그만놀기
             </Button>
@@ -409,7 +413,7 @@ function BroadCastingView({ timerLimit = 30, isLiveSession = false, token, getsh
           )}
       </Box>
 
-      <Dialog open={openDialog && currentUserId === currentUser.userId} onClose={handleCloseDialog}>
+      <Dialog open={openDialog && currentUserId === controlUser} onClose={handleCloseDialog}>
         <DialogTitle>
           저와 놀아주셔서 감사해요! 다음에 또 놀아주세요
         </DialogTitle>
