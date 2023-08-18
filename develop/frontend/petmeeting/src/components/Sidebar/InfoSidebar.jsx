@@ -79,7 +79,7 @@ function InfoSidebar() {
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const image = localStorage.getItem("user")?.imagePath ? localStorage.getItem("user").imagePath : "profile2.png";
+  const image = JSON.parse(localStorage.getItem("user"))?.imagePath ? JSON.parse(localStorage.getItem("user")).imagePath : "profile2.png";
   console.log("User Image Path:", user?.imagePath); // user.imagePath 값을 콘솔에 출력
 
   const imagePath = `https://i9a203.p.ssafy.io/backapi/api/v1/image/${image}?option=member`;
