@@ -134,7 +134,7 @@ export default function AdoptionReviewDetail() {
         marginBottom: "30px",
       }}
     >
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom fontFamily={"JUA"}>
         입양후기 상세보기
       </Typography>
 
@@ -170,10 +170,10 @@ export default function AdoptionReviewDetail() {
             />
           ) : (
             <>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom fontFamily={"JUA"}>
                 {selectedReview.title}
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="body2" fontFamily={"JUA"}>
                 조회수: {Math.round(selectedReview.viewCnt / 2)}
               </Typography>
             </>
@@ -234,17 +234,17 @@ export default function AdoptionReviewDetail() {
                 }}
               >
                 {editedDate ? (
-                  <Typography variant="body2">{editedDate}</Typography>
+                  <Typography variant="body2" fontFamily={"JUA"}>{editedDate}</Typography>
                 ) : (
-                  <Typography variant="body2">{date}</Typography>
+                  <Typography variant="body2" fontFamily={"JUA"}>{date}</Typography>
                 )}
                 {selectedReview.likeCnt === 0 && (
-                  <Typography variant="body2">
+                  <Typography variant="body2" fontFamily={"JUA"}>
                     첫 좋아요를 눌러주세요
                   </Typography>
                 )}
                 {selectedReview.likeCnt !== 0 && (
-                  <Typography variant="body2">
+                  <Typography variant="body2" fontFamily={"JUA"}>
                     좋아요 {selectedReview.likeCnt}개
                   </Typography>
                 )}
@@ -294,6 +294,7 @@ export default function AdoptionReviewDetail() {
                   overflowY: "auto",
                   padding: "10px 0 0 0",
                 }}
+                fontFamily={"JUA"}
               >
                 {selectedReview.content.split("\n").map((line, index) => (
                   <React.Fragment key={index}>
@@ -367,9 +368,12 @@ export default function AdoptionReviewDetail() {
         {/* 댓글 목록 */}
         {replyList[0] ? (
           <>
-            <Typography variant="h6" gutterBottom>
+          <br></br>
+          <hr></hr>
+          <br></br>
+            <Typography variant="h6" gutterBottom fontFamily={"JUA"}>
               댓글 목록{" "}
-              <Typography>작성된 댓글 {replyList.length}개</Typography>
+              <Typography fontFamily={"JUA"}>작성된 댓글 {replyList.length}개</Typography>
             </Typography>
             <Box
               sx={{
@@ -443,6 +447,7 @@ export default function AdoptionReviewDetail() {
                           wordWrap: "break-word",
                           overflowY: "auto",
                         }}
+                        fontFamily={"JUA"}
                       >
                         {reply.content.split("\n").map((line, index) => (
                           <React.Fragment key={index}>
