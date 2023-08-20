@@ -7,6 +7,6 @@ import com.petmeeting.springboot.dto.donate.DonateResDto;
 import java.util.List;
 
 public interface DonateService {
-    List<DonateHistoryResDto> donateHistory(String token);
+    List<DonateHistoryResDto> donateHistory(Integer userNo);
     DonateResDto donateToDog(DonateReqDto donateReqDto, String token);
 }
