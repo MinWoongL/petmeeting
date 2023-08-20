@@ -34,8 +34,8 @@ public class DonationController {
             description = "1. 사용자의 경우, 해당 사용자의 후원기록을 반환합니다.\n" +
                     "2. 보호소의 경우, 해당 보호소에 후원한 사용자와 금액을 반환합니다."
     )
-    @GetMapping
-    public ResponseEntity<List<DonateHistoryResDto>> donateToDog(@RequestHeader(ACCESS_TOKEN) String token) {
-        return ResponseEntity.ok(donateService.donateHistory(token));
+    @GetMapping("/{userNo}")
+    public ResponseEntity<List<DonateHistoryResDto>> donateToDog(@PathVariable Integer userNo) {
+        return ResponseEntity.ok(donateService.donateHistory(userNo));
     }
 }

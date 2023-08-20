@@ -82,10 +82,10 @@ public class DonateServiceImpl implements DonateService {
 
     @Override
     @Transactional
-    public List<DonateHistoryResDto> donateHistory(String token) {
-        log.info("[후원기록 조회] 후원기록 조회 요청. token : {}", token);
+    public List<DonateHistoryResDto> donateHistory(Integer userNo) {
+        log.info("[후원기록 조회] 후원기록 조회 요청. userNo : {}", userNo);
 
-        Users user = userRepository.findById(jwtUtils.getUserNo(token))
+        Users user = userRepository.findById(userNo)
                 .orElseThrow(() -> {
                     log.error("[후원기록 조회] 사용자를 찾을 수 없습니다.");
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.");
