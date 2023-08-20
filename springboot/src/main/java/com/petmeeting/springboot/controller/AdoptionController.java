@@ -68,7 +68,6 @@ public class AdoptionController {
                     "해당 유기견의 모든 adoptionStatus가 '미채택'으로 변경됩니다."
     )
     @PutMapping("/status/{adoptionNo}")
-//    @PreAuthorize("hasRole('SHELTER')")
     public ResponseEntity<AdoptionResDto> updateAdoptionStatus(@PathVariable Integer adoptionNo, @RequestBody AdoptStatusUpdateReqDto adoptStatusUpdateDto, @RequestHeader(ACCESS_TOKEN) String token) {
         return ResponseEntity.ok(adoptionService.updateAdoptionStatus(adoptionNo, adoptStatusUpdateDto, token));
     }
