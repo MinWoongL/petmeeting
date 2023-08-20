@@ -30,6 +30,8 @@ function ShelterDetailPage() {
   const [view, setView] = useState("dogs"); // The default view is 'dogs'
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     axios
       .get(`https://i9a203.p.ssafy.io/backapi/api/v1/shelter/${shelterNo}`)
       .then((res) => {
