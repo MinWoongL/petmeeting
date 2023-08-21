@@ -139,6 +139,7 @@ function ShelterMyPage() {
       <StyledButtonContainer>
         <StyledButton onClick={() => setView("dogs")}>강아지 목록</StyledButton>
         <StyledButton onClick={() => setView("adoption")}>입양신청내역</StyledButton>
+        <StyledButton onClick={() => setView("donations")}>후원 내역</StyledButton>
       </StyledButtonContainer>
       {view === "dogs" ? (
         <div>
@@ -154,6 +155,7 @@ function ShelterMyPage() {
         <></>
       )}
       {view === "adoption" ? <ShelterAdoptionList shelterNo={userNo} /> : <></>}
+      {view === "donations" ? <DonationRanking shelterNo={userNo} /> : <></>}
     </div>
   );
 }

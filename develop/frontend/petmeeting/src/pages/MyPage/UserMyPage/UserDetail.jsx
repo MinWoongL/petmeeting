@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { updatePointsAndTokens } from "../../../stores/Slices/UserSlice";
 import { setPoint } from "../../../stores/Slices/pointSlice";
 import { setToken } from "../../../stores/Slices/tokenSlice";
+import UserDonationList from "../../../components/MyPage/UserDonationList";
 
 const StyledButtonContainer = styled(Container)`
   display: flex;
@@ -44,7 +45,6 @@ function UserProfilePage() {
   };
 
   useEffect(() => {
-    console.log(userData);
     axios
       .get(`https://i9a203.p.ssafy.io/backapi/api/v1/user`, {
         headers: { AccessToken: `Bearer ${token.accessToken}` },
@@ -61,8 +61,6 @@ function UserProfilePage() {
 
         dispatch(setPoint(res.data.holdingPoint));
         dispatch(setToken(res.data.holdingToken));
-
-        console.log(res.data, "마이페이지 정보 겟받아옴");
       })
       .catch((err) => {
         console.log(err);
@@ -84,7 +82,10 @@ function UserProfilePage() {
           북마크 목록
         </StyledButton>
         <StyledButton onClick={() => setView("adoptionList")}>
-          입양신청내역
+          입양신청 내역
+        </StyledButton>
+        <StyledButton onClick={() => setView("donationList")}>
+          후원 내역
         </StyledButton>
       </StyledButtonContainer>
       {view === "like" ? (
@@ -93,6 +94,8 @@ function UserProfilePage() {
         <UserBookmarkDog bookmarkedDogs={userData.bookmarkedDogs} />
       ) : view === "adoptionList" ? (
         <UserAdoptionList />
+      ) : view === "donationList" ? (
+        <UserDonationList userNo={userData.userNo} />
       ) : null}
     </div>
   );
