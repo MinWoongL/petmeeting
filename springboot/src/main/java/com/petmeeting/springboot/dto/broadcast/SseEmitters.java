@@ -50,6 +50,7 @@ public class SseEmitters {
                         .name("data")
                         .data(map));
             } catch (Exception e) {
+                log.error("emitter : " + emitter.toString() + " error : " + e.getMessage());
                 sendMessage(userId, remainTime); // 실패 시 다시 보내기
             }
         });
