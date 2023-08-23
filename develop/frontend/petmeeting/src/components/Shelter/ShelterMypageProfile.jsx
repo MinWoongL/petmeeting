@@ -352,13 +352,6 @@ const ShelterMypageProfile = ({
                 color="text.secondary"
                 component="div"
               >
-                임시 프로필 번호: {profile.shelterNo}
-              </Typography>
-              <Typography
-                variant="subtitle1"
-                color="text.secondary"
-                component="div"
-              >
                 연락처: {profile.phoneNumber}
               </Typography>
               <Typography

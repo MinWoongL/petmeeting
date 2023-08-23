@@ -33,7 +33,6 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
     const token = JSON.parse(sessionStorage.getItem("token"));
     const { shelterNo, joinDate, image, ...dataToSend } = editData;
     try {
-      console.log(dataToSend);
       await axios.put(
         "https://i9a203.p.ssafy.io/backapi/api/v1/user",
         dataToSend,
@@ -69,16 +68,17 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
   return (
     <Box
       sx={{
-        border: "1px solid black",
-        backgroundColor: "var(--yellow8)", // Set background color to yellow8
-        margin: "16px", // Add margin bottom
+        backgroundColor: "var(--yellow8)",
+        margin: "16px",
+        borderRadius: "16px",
+        overflow: "hidden",
       }}
     >
       <Card
         sx={{
           display: "flex",
           flexDirection: "row",
-          minHeight: "200px", // Set minimum height for the card
+          minHeight: "200px",
         }}
       >
         <CardContent sx={{ flex: "1 0 auto" }}>
@@ -128,22 +128,23 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
               </Box>
             </>
           ) : (
-            <>
-              <Typography component="div" variant="h5">
+            <Box sx={{display:"flex", flexDirection: "column"}}>
+              <Typography component="div" variant="h4" sx={{fontFamily: "Jua"}} >
                 {profile.name}
               </Typography>
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
                 component="div"
+                sx={{fontFamily: "Jua"}} 
               >
-                {/* 임시 프로필 번호: {profile.shelterNO} */}
                 전화번호 : {profile.phoneNumber} 
               </Typography>
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
                 component="div"
+                sx={{fontFamily: "Jua"}} 
               >
                 지역 : {profile.location} 
               </Typography>
@@ -151,10 +152,11 @@ const ProfileCard = ({ profile, onChange, onUpdate, showEditButton }) => {
                 variant="body2"
                 color="text.secondary"
                 component="div"
+                sx={{fontFamily: "Jua"}} 
               >
                 사이트 : {profile.siteUrl}
               </Typography>
-            </>
+            </Box>
           )}
         </CardContent>
         {cardMedia}

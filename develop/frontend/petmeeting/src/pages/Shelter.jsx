@@ -64,10 +64,6 @@ function DataTable() {
     getTableProps,
     page,
     prepareRow,
-    canPreviousPage,
-    canNextPage,
-    nextPage,
-    previousPage,
     gotoPage,
     pageCount, // 전체 페이지 수
     state: { pageIndex }, // 현재 페이지 인덱스
