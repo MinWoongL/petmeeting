@@ -1,10 +1,32 @@
-# 삼인성호팀
+# A203삼인성호팀 - PetMeeting
+![메인베너](./assets/images/petmeeting_logo3.png)
 
-## 9기 3팀 gitlab repository
+## 프로젝트 개요
+🟧 SSAFY 9기 공통프로젝트 - **최우수상**
 
+2023.07.10 ~ 2023.08.18
 <br><br>
 
-# 📝PR & Commit Message Rule
+## 목차
+1.
+2.
+3. [Convention](#📝PR-&-Commit-Message-Rule)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 📝PR & Commit Message Rule
 <details>
 <summary>📌 PR & Commit 컨벤션</summary>
 
