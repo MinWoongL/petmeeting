@@ -23,12 +23,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
         Users user = userRepository.findUsersByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다. : " + userId));
 
-        if (user instanceof Member) {
             return UserDetailsImpl.buildFromMember((Member) user);
-        } else if (user instanceof Shelter){
-            return UserDetailsImpl.buildFromShelter((Shelter) user);
-        } else {
-            return UserDetailsImpl.buildFromAdmin((Admin) user);
-        }
     }
 }

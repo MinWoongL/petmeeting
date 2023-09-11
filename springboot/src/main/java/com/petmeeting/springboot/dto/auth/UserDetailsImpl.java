@@ -26,7 +26,7 @@ public class UserDetailsImpl implements UserDetails {
         this.id = id;
         this.userId = userId;
         this.password = password;
-        this.authority = authority;
+//        this.authority = authority;
     }
 
     public static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -65,7 +65,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority(authority));
+        return Arrays.asList(new SimpleGrantedAuthority("MEMBER"));
     }
 
     @Override

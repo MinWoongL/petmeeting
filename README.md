@@ -8,25 +8,57 @@
 <br><br>
 
 ## 목차
-1.
-2.
+1. [프로젝트 소개](#프로젝트-소개)
+2. [주요 기능](#주요-기능)
 3. [Convention](#📝PR-&-Commit-Message-Rule)
+4. [개발환경]()
+5. [팀원 및 역할](#팀원-및-역할)
+6. [프로젝트 구조](#프로젝트-구조)
+7. [서비스 아키텍처](#서비스-아키텍처)
+
+## 프로젝트 소개
+
+
+## 주요 기능
+
+<details>
+<summary>기능 목록</summary>
+
+### **1. 회원가입**
+![회원가입](./assets/PetMeeting영상모음/공통%20GIF/1.%20회원가입.gif)
+
+### **2. 충전**
+![충전](./assets/PetMeeting영상모음/공통%20GIF/2.%20충전.gif)
+
+### **3. 입양신청**
+![회원가입](./assets/PetMeeting영상모음/공통%20GIF/1.%20회원가입.gif)
+
+### **4. IOT기기조작**
+![IOT](./assets/PetMeeting영상모음/공통%20GIF/11.%20IoT%20기기%20조작.gif)
+
+### **5. 유기견 상세 및 후원**
+![상세 및 후원](./assets/PetMeeting영상모음/공통%20GIF/7.%20유기견%20상세%20및%20후원.gif)
+
+### **6. 입양후기**
+![입양후기](./assets/PetMeeting영상모음/공통%20GIF/3.%20입양후기.gif)
+
+### **7. 문의게시판**
+![문의게시판](./assets/PetMeeting영상모음/공통%20GIF/4.%20문의게시판.gif)
+
+### **8. 마이페이지**
+![문의게시판](./assets/PetMeeting영상모음/공통%20GIF/8.%20마이페이지.gif)
+
+### **9. 이용방법**
+![문의게시판](./assets/PetMeeting영상모음/공통%20GIF/5.%20이용방법.gif)
+
+</details>
+<br><br>
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-## 📝PR & Commit Message Rule
+# 📝PR & Commit Message Rule
 <details>
 <summary>📌 PR & Commit 컨벤션</summary>
 
@@ -223,3 +255,15 @@ ex) [BE]1-1-1 일반회원가입 , [FE]1-1-1 일반회원가입, [IOT]1-1-3 기�
 
 
 </details>
+
+
+## 팀원 및 역할
+
+
+
+## 프로젝트 구조
+
+
+
+## 서비스 아키텍처
+![flowchart](./assets/FlowChart.png)
