@@ -1,5 +1,5 @@
 # A203삼인성호팀 - PetMeeting
-![메인베너](./assets/images/petmeeting_logo3.png)
+![메인베너](./assets/images/가로로고-photoaidcom-invert-removebg-preview.png)
 
 ## 프로젝트 개요
 🟧 SSAFY 9기 공통프로젝트 - **최우수상**
