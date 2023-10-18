@@ -21,6 +21,7 @@ public class AnswerServiceImpl implements AnswerService {
     private final InquiryRepository inquiryRepository;
     private final AnswerRepository answerRepository;
 
+
     /**
      * 문의게시글 답변 작성
      * @param answerReqDto
@@ -48,6 +49,7 @@ public class AnswerServiceImpl implements AnswerService {
         inquiry.makeAnswer(answer);
 
         answerRepository.save(answer);
+
         inquiryRepository.save(inquiry);
 
         log.info("[문의게시글 답변 작성] 문의게시글에 답변이 작성되었습니다.");

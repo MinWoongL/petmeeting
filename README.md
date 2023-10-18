@@ -58,7 +58,10 @@
 
 
 
-# 📝PR & Commit Message Rule
+## 📝Convention
+<details>
+<summary>Conventions</summary>
+
 <details>
 <summary>📌 PR & Commit 컨벤션</summary>
 
@@ -256,9 +259,19 @@ ex) [BE]1-1-1 일반회원가입 , [FE]1-1-1 일반회원가입, [IOT]1-1-3 기�
 
 </details>
 
+</details>
+<br><br>
 
 ## 팀원 및 역할
 
+| 이름                      | 역할       | 설명                                                         |
+| ------------------------- | ---------- | ------------------------------------------------------------ |
+| 이재홍 (팀장)             | IOT, Infra | ATmega128, Raspberry Pi 기반 DC 모터 제어, esp-01 모듈을 이용한 wifi 통신, node.js를 이용한 IoT backend 웹 서버 운용, Docker와 Docker Compose를 이용한 서비스 가상화 및 오케스트레이션, Nginx를 이용한 리버스 프록시 기능 구현, Shell script를 이용한 배포 및 이미지 빌드 자동화 |
+| 안희준                    | IOT | ATmega128 기반으로 DC motor 제어, esp-01 wifi 모듈로 web server와 TCP 통신, 3D printer를 활용하여 custom 하드웨어 부품 디자인, 제작 |
+| 김두희<br/>BackEnd Leader | Full Stack | Backend : 카카오페이 결제, SSE 적용, Spring Security + JWT를 이용한 인증 및 권한 인가, Docker를 이용한 Redis 구축 및 적용, CRUD - JPA, QueryDSL 활용 (회원, 보호소, 관리자, 입양후기게시글, 입양후기게시글댓글, 게시글 좋아요 및 취소, 후원, IoT, 입양신청, 결제내역) <br/> Frontend : 입양후기 게시판 페이지, SSE 적용, 보호소 후원랭킹 페이지 (React + MobX)<br/> 설계 : ERD 설계 및 최종 마무리, API 명세 작성, 목업 작성 |
+| 조윤영                    | Full Stack | "백엔드 로직, 웹 디자인, JPA를 이용한 DB 매핑, queryDsl을 사용한 ddl 등등" |
+| 이민웅<br/>FrontEnd Leader| Full Stack | 퍼블리싱, Components 구조 설계, Page Layout 설계, OpenVidu 기반 WebRTC 연결, IOT기기, 보호소, 유기견 API 통신 로직 개발 |
+| 김영우<br/>발표 및 시연 | Full Stack, Infra | "Jira, GitLab, Jenkins 기반 CI/CD 구축 로그인, 회원가입 로직 구현, token 인증, 회원 및 게시판 API 통신 로직 구현" |
 
 
 ## 프로젝트 구조
